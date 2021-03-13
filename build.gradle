@@ -7,24 +7,32 @@
  */
 
 plugins {
-    // Apply the application plugin to add support for building a CLI application in Java.
+    // Apply the application plugin to add support for building an application in Java.
     id 'application'
 }
 
+// Version and description of the project.
+version = '0.0.1-SNAPSHOT'
+description = 'Project for ATTSD Course - Simple app to manage reservations of a guesthouse'
+
+java {
+	// Set Java version for building the project. Setup all compile and test tasks to use the defined toolchain.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 repositories {
-    // Use JCenter for resolving dependencies.
-    jcenter()
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
 }
 
 dependencies {
     // Use JUnit Jupiter API for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
 
     // Use JUnit Jupiter Engine for testing.
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
-    // This dependency is used by the application.
-    implementation 'com.google.guava:guava:29.0-jre'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
 }
 
 application {
@@ -32,7 +40,7 @@ application {
     mainClass = 'guesthouse.reservations.App'
 }
 
-tasks.named('test') {
+test {
     // Use junit platform for unit tests.
     useJUnitPlatform()
 }
