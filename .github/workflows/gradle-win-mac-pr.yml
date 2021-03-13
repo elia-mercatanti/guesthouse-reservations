@@ -35,6 +35,6 @@ jobs:
       -  name: Upload jar and fatjar as Artifacts
          uses: actions/upload-artifact@v2
          with:
-            name: guesthouse-reservations-packages
+            name: guesthouse-reservations-packages-${{ matrix.os }}
             path: '**/build/libs'
          
