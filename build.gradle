@@ -9,11 +9,15 @@
 plugins {
     // Apply the application plugin to add support for building an application in Java.
     id 'application'
+    
+    // Plugin for generating fatjars, add shadowJar task to manage that.
+    id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}"
 }
 
-// Version and description of the project.
+// Version, description and main class of the project.
 version = '0.0.1-SNAPSHOT'
 description = 'Project for ATTSD Course - Simple app to manage reservations of a guesthouse'
+mainClassName = 'guesthouse.reservations.App'
 
 java {
 	// Set Java version for building the project. Setup all compile and test tasks to use the defined toolchain.
@@ -36,8 +40,15 @@ dependencies {
 }
 
 application {
-    // Define the main class for the application.
+    // Define the main class for the application, for run task.
     mainClass = 'guesthouse.reservations.App'
+}
+
+// Jar task will generate a jar file with main java class in the MANIFEST. Inherited by shadowJar task.
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
 }
 
 test {

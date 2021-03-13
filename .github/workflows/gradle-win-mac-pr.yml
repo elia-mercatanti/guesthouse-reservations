@@ -32,4 +32,9 @@ jobs:
          run: chmod +x gradlew
       -  name: Build with Gradle
          run: ./gradlew build
+      -  name: Upload jar and fatjar as Artifacts
+         uses: actions/upload-artifact@v2
+         with:
+            name: guesthouse-reservations-packages-${{ matrix.os }}
+            path: '**/build/libs'
          
