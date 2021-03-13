@@ -32,9 +32,9 @@ jobs:
          run: chmod +x gradlew
       -  name: Build with Gradle
          run: ./gradlew build
-      -  name: Archive JUnit Report
+      -  name: Upload jar and fatjar as Artifacts
          uses: actions/upload-artifact@v2
          with:
-            name: guesthouse-reservations-fatjar
+            name: guesthouse-reservations-packages
             path: '**/build/libs'
          
