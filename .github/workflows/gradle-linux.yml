@@ -34,7 +34,7 @@ jobs:
          uses: actions/upload-artifact@v2
          with:
             name: junit-report
-            path: '**/build/libs/reports/tests/test'
+            path: '**/build/reports/tests/test'
       -  name: Upload jar and fatjar as Artifacts
          uses: actions/upload-artifact@v2
          with:
