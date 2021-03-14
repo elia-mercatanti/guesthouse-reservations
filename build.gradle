@@ -13,8 +13,11 @@ plugins {
     // Apply jacoco plugin to generate code coverage.
     id 'jacoco'
     
+    // Apply coveralls plugin to send coverage data to coveralls.io.
+    id 'com.github.nbaztec.coveralls-jacoco' version "${coverallsPluginVersion}"
+    
     // Plugin for generating fatjars, add shadowJar task to manage that.
-    id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}"
+    id 'com.github.johnrengelman.shadow' version "${fatjarPluginVersion}"
 }
 
 // Version, description and main class of the project.
