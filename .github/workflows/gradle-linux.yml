@@ -30,6 +30,11 @@ jobs:
          run: chmod +x gradlew
       -  name: Build with Gradle
          run: ./gradlew build
+      -  name: Archive JUnit Report
+         uses: actions/upload-artifact@v2
+         with:
+            name: junit-report
+            path: '**/build/libs/reports/tests/test'
       -  name: Upload jar and fatjar as Artifacts
          uses: actions/upload-artifact@v2
          with:
