@@ -10,8 +10,14 @@ plugins {
     // Apply the application plugin to add support for building an application in Java.
     id 'application'
     
+    // Apply jacoco plugin to generate code coverage.
+    id 'jacoco'
+    
+    // Apply coveralls plugin to send coverage data to coveralls.io.
+    id 'com.github.nbaztec.coveralls-jacoco' version "${coverallsPluginVersion}"
+    
     // Plugin for generating fatjars, add shadowJar task to manage that.
-    id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}"
+    id 'com.github.johnrengelman.shadow' version "${fatjarPluginVersion}"
 }
 
 // Version, description and main class of the project.
@@ -54,4 +60,12 @@ jar {
 test {
     // Use junit platform for unit tests.
     useJUnitPlatform()
+}
+
+// Generate html and xml Jacoco report.
+jacocoTestReport {
+    reports {
+        xml.enabled = true 
+        html.enabled = true
+    }
 }
