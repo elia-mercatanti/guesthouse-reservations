@@ -13,6 +13,8 @@ jobs:
       
       steps:
       -  uses: actions/checkout@v2
+         with:
+            fetch-depth: 0
       -  name: Set up JDK 11
          uses: actions/setup-java@v1
          with:
@@ -23,6 +25,7 @@ jobs:
             path: |
                ~/.gradle/caches
                ~/.gradle/wrapper
+               ~/.sonar/cache
             key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/*.yml') }}
             restore-keys: |
                $(( runner.os ))-gradle-
@@ -31,7 +34,9 @@ jobs:
       -  name: Build with Gradle
          env:
             COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-         run: ./gradlew build pitest jacocoTestReport coverallsJacoco
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+         run: ./gradlew build pitest jacocoTestReport coverallsJacoco sonarqube -i
       -  name: Archive JUnit Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}
