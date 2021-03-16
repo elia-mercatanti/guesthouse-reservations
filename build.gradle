@@ -20,10 +20,11 @@ plugins {
     id 'com.github.johnrengelman.shadow' version "${fatjarPluginVersion}"
 }
 
-// Version, description and main class of the project.
+// Group, version, description and main class of the project.
+group = "com.eliamercatanti"
 version = '0.0.1-SNAPSHOT'
 description = 'Project for ATTSD Course - Simple app to manage reservations of a guesthouse'
-mainClassName = 'guesthouse.reservations.App'
+mainClassName = 'com.eliamercatanti.guesthousebooking.app.App'
 
 java {
 	// Set Java version for building the project. Setup all compile and test tasks to use the defined toolchain.
@@ -47,7 +48,7 @@ dependencies {
 
 application {
     // Define the main class for the application, for run task.
-    mainClass = 'guesthouse.reservations.App'
+    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
 }
 
 // Jar task will generate a jar file with main java class in the MANIFEST. Inherited by shadowJar task.
