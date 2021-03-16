@@ -13,11 +13,14 @@ plugins {
     // Apply PIT plugin to perform mutation testing.
     id 'info.solidsoft.pitest' version "${pitPluginVersion}"
     
-    // Apply jacoco plugin to generate code coverage.
+    // Apply JaCoCo plugin to generate code coverage.
     id 'jacoco'
     
-    // Apply coveralls plugin to send coverage data to coveralls.io.
+    // Apply Coveralls plugin to send coverage data to coveralls.io.
     id 'com.github.nbaztec.coveralls-jacoco' version "${coverallsPluginVersion}"
+    
+	// Apply SonarQube plugin to analyze the project with SonarCloud.
+    id 'org.sonarqube' version "${sonarQubePluginVersion}"
     
     // Plugin for generating fatjars, add shadowJar task to manage that.
     id 'com.github.johnrengelman.shadow' version "${fatjarPluginVersion}"
@@ -49,32 +52,46 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
 }
 
-// Jar task will generate a jar file with main java class in the MANIFEST. Inherited by shadowJar task.
+// Jar task configurations.
 jar {
+	// Generate a jar file with main java class in the MANIFEST. Inherited by shadowJar task.
     manifest {
         attributes 'Main-Class': mainClassName
     }
 }
 
+// Test task configurationsm.
 test {
     // Use junit platform for unit tests.
     useJUnitPlatform()
 }
 
+// PIT mutation testing plugin configurations.
 pitest {
     junit5PluginVersion = '0.12'
     mutators = ["STRONGER"]
     mutationThreshold = 0
 }
 
-// Generate html and xml Jacoco report.
+// Jacoco plugin configurations.
 jacocoTestReport {
+    // Generate html and xml Jacoco report.
     reports {
         xml.enabled = true 
         html.enabled = true
     }
 }
 
+// SonarQube plugin configurations.
+sonarqube {
+	properties {
+		property "sonar.projectKey", "elia-mercatanti_guesthouse-reservations"
+	    property "sonar.organization", "elia-mercatanti"
+	    property "sonar.host.url", "https://sonarcloud.io"
+	}
+}
+
+// Application plugin configurations.
 application {
     // Define the main class for the application, for run task.
     mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
