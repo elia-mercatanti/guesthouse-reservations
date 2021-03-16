@@ -4,8 +4,11 @@
 package com.eliamercatanti.guesthousebooking.app;
 
 public class App {
+
+	private static final String HELLO_WORLD = "Hello World!";
+
 	public String getGreeting() {
-		return "Hello World!";
+		return HELLO_WORLD;
 	}
 
 	public static void main(String[] args) {
