@@ -31,14 +31,20 @@ jobs:
       -  name: Build with Gradle
          env:
             COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-         run: ./gradlew build jacocoTestReport coverallsJacoco
+         run: ./gradlew build pitest jacocoTestReport coverallsJacoco
       -  name: Archive JUnit Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}
          with:
             name: junit-report
             path: '**/build/reports/tests/test'
-      -  name: Upload jar and fatjar as Artifacts
+      -  name: Archive PIT Report
+         uses: actions/upload-artifact@v2
+         if: ${{ failure() }}
+         with:
+            name: pit-report
+            path: '**/build/reports/pitest'
+      -  name: Archive jar and fatjar
          uses: actions/upload-artifact@v2
          with:
             name: guesthouse-reservations-packages

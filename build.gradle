@@ -10,6 +10,9 @@ plugins {
     // Apply the application plugin to add support for building an application in Java.
     id 'application'
     
+    // Apply PIT plugin to perform mutation testing.
+    id 'info.solidsoft.pitest' version "${pitPluginVersion}"
+    
     // Apply jacoco plugin to generate code coverage.
     id 'jacoco'
     
@@ -46,11 +49,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
 }
 
-application {
-    // Define the main class for the application, for run task.
-    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
-}
-
 // Jar task will generate a jar file with main java class in the MANIFEST. Inherited by shadowJar task.
 jar {
     manifest {
@@ -63,10 +61,21 @@ test {
     useJUnitPlatform()
 }
 
+pitest {
+    junit5PluginVersion = '0.12'
+    mutators = ["STRONGER"]
+    mutationThreshold = 0
+}
+
 // Generate html and xml Jacoco report.
 jacocoTestReport {
     reports {
         xml.enabled = true 
         html.enabled = true
     }
+}
+
+application {
+    // Define the main class for the application, for run task.
+    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
 }
