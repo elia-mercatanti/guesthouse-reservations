@@ -64,6 +64,7 @@ test {
 pitest {
     junit5PluginVersion = '0.12'
     mutators = ["STRONGER"]
+    mutationThreshold = 90
 }
 
 // Generate html and xml Jacoco report.
