@@ -50,6 +50,9 @@ dependencies {
 
     // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
+    
+    // Use AssertJ for fluent style testing.
+    testCompile "org.assertj:assertj-core:" + assertJVersion
 }
 
 // Jar task configurations.
