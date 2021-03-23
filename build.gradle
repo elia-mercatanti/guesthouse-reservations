@@ -86,14 +86,25 @@ jacocoTestReport {
         xml.enabled = true 
         html.enabled = true
     }
+    
+    // Exclude some classes from tests.
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['**/model/*.*', '**/App.*'])
+        }))
+    }
 }
 
 // SonarQube plugin configurations.
 sonarqube {
 	properties {
+		//Properties for project configuration.
 		property "sonar.projectKey", "elia-mercatanti_guesthouse-reservations"
 	    property "sonar.organization", "elia-mercatanti"
 	    property "sonar.host.url", "https://sonarcloud.io"
+	    
+	    //Property for excluding some classes from code coverage.
+	    property 'sonar.coverage.exclusions', ['**/model/*.*', '**/App.*']
 	}
 }
 
