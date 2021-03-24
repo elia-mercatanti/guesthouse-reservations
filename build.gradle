@@ -77,6 +77,7 @@ pitest {
     junit5PluginVersion = '0.12'
     mutators = ["STRONGER"]
     mutationThreshold = 0
+    excludedClasses = ['com.eliamercatanti.guesthousebooking.app.**']
 }
 
 // Jacoco plugin configurations.
