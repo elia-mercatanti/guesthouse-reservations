@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,6 +44,26 @@ class GuestControllerTest {
 			verify(guesthouseView).showAllGuests(guestsList);
 		}
 
+		@Test
+		@DisplayName("testNewGuest: delegate to repository a new guest request, delegate to the view the result")
+		void testNewGuest() {
+			Guest newGuest = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			guestController.newGuest(newGuest);
+			InOrder inOrder = inOrder(guestRepository, guesthouseView);
+			inOrder.verify(guestRepository).save(newGuest);
+			inOrder.verify(guesthouseView).guestAdded(newGuest);
+		}
+		
+		@Test
+		@DisplayName("testDeleteGuestWhenGuestExist: delegate to repository a guest delete request when the Guest Exist")
+		void testDeleteGuestWhenGuestExist() {
+			Guest guestToDelete = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			when(guestRepository.findById("1")).thenReturn(guestToDelete);
+			guestController.deleteGuest(guestToDelete);
+			InOrder inOrder = inOrder(guestRepository, guesthouseView);
+			inOrder.verify(guestRepository).delete(guestToDelete.getId());
+			inOrder.verify(guesthouseView).guestRemoved(guestToDelete);
+		}
 	}
 
 	@Nested
