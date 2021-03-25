@@ -21,4 +21,9 @@ public class GuesthouseView {
 		
 	}
 
+	public void errorGuestNotFound(String message, Guest guest) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

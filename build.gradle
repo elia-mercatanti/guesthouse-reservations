@@ -77,7 +77,7 @@ pitest {
     junit5PluginVersion = '0.12'
     mutators = ["STRONGER"]
     mutationThreshold = 0
-    excludedClasses = ['com.eliamercatanti.guesthousebooking.app.**']
+    excludedClasses = ['**.app.**', '**.model.**', '**.repository.**']
 }
 
 // Jacoco plugin configurations.
@@ -91,7 +91,7 @@ jacocoTestReport {
     // Exclude some classes from tests.
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/model/*.*', '**/App.*'])
+            fileTree(dir: it, exclude: ['**/model/**', '**/app/**'])
         }))
     }
 }
@@ -105,12 +105,12 @@ sonarqube {
 	    property "sonar.host.url", "https://sonarcloud.io"
 	    
 	    //Property for excluding some classes from code coverage.
-	    property 'sonar.coverage.exclusions', ['**/model/*.*', '**/App.*']
+	    property 'sonar.coverage.exclusions', ['**/model/**', '**/app/**']
 	}
 }
 
 // Application plugin configurations.
 application {
     // Define the main class for the application, for run task.
-    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
+    mainClass = mainClassName
 }
