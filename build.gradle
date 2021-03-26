@@ -50,6 +50,12 @@ dependencies {
 
     // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
+    
+    // Use AssertJ for fluent style testing.
+    testCompile "org.assertj:assertj-core:" + assertJVersion
+    
+    // Use Mockito with JUnit 5 for mocking during tests.
+    testCompile "org.mockito:mockito-junit-jupiter:" + mockitoVersion
 }
 
 // Jar task configurations.
@@ -71,6 +77,7 @@ pitest {
     junit5PluginVersion = '0.12'
     mutators = ["STRONGER"]
     mutationThreshold = 0
+    excludedClasses = ['**.app.**', '**.model.**', '**.repository.**']
 }
 
 // Jacoco plugin configurations.
@@ -80,19 +87,30 @@ jacocoTestReport {
         xml.enabled = true 
         html.enabled = true
     }
+    
+    // Exclude some classes from tests.
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['**/model/**', '**/app/**'])
+        }))
+    }
 }
 
 // SonarQube plugin configurations.
 sonarqube {
 	properties {
+		//Properties for project configuration.
 		property "sonar.projectKey", "elia-mercatanti_guesthouse-reservations"
 	    property "sonar.organization", "elia-mercatanti"
 	    property "sonar.host.url", "https://sonarcloud.io"
+	    
+	    //Property for excluding some classes from code coverage.
+	    property 'sonar.coverage.exclusions', ['**/model/**', '**/app/**']
 	}
 }
 
 // Application plugin configurations.
 application {
     // Define the main class for the application, for run task.
-    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
+    mainClass = mainClassName
 }
