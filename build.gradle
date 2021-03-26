@@ -52,10 +52,13 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
     // Use AssertJ for fluent style testing.
-    testCompile "org.assertj:assertj-core:" + assertJVersion
+    testImplementation "org.assertj:assertj-core:" + assertJVersion
     
     // Use Mockito with JUnit 5 for mocking during tests.
-    testCompile "org.mockito:mockito-junit-jupiter:" + mockitoVersion
+    testImplementation "org.mockito:mockito-junit-jupiter:" + mockitoVersion
+    
+    // Use AssertJ Swing for GUI tests.
+    testImplementation 'org.assertj:assertj-swing-junit:' + assertJSwingVersion
 }
 
 // Jar task configurations.
