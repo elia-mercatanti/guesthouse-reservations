@@ -3,8 +3,8 @@ package com.eliamercatanti.guesthousebooking.model;
 public class Guest {
 
 	private String id;
-	private String name;
-	private String surname;
+	private String firstName;
+	private String lastName;
 	private String email;
 	private String telephoneNumber;
 
@@ -13,8 +13,8 @@ public class Guest {
 
 	public Guest(String id, String name, String surname, String email, String telephoneNumber) {
 		this.id = id;
-		this.name = name;
-		this.surname = surname;
+		this.firstName = name;
+		this.lastName = surname;
 		this.email = email;
 		this.telephoneNumber = telephoneNumber;
 	}
@@ -27,20 +27,20 @@ public class Guest {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getSurname() {
-		return surname;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
