@@ -4,26 +4,14 @@ import java.util.List;
 
 import com.eliamercatanti.guesthousebooking.model.Guest;
 
-public class GuestRepository {
+public interface GuestRepository {
 
-	public List<Guest> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public List<Guest> findAll();
 
-	public void save(Guest guest) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void save(Guest guest);
 
-	public Guest findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Guest findById(String id);
 
-	public void delete(String id) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void delete(String id);
 
 }
