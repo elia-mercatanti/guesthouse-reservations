@@ -35,7 +35,7 @@ mainClassName = 'com.eliamercatanti.guesthousebooking.app.App'
 java {
 	// Set Java version for building the project. Setup all compile and test tasks to use the defined toolchain.
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
@@ -45,19 +45,18 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit Jupiter API for testing.
+    // Use JUnit 5 Jupiter API and Engine for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
-
-    // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
-    
-    // Use AssertJ for fluent style testing.
-    testImplementation 'org.assertj:assertj-core:' + assertJVersion
     
     // Use Mockito with JUnit 5 for mocking during tests.
     testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion
     
-    // Use AssertJ Swing for GUI tests.
+    // Use JUnit 4 for GUI tests.
+    testImplementation 'junit:junit:' + junit4Version
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
+    
+    // Use AssertJ and Swing for for fluent style testing and GUI tests.
     testImplementation 'org.assertj:assertj-swing-junit:' + assertJSwingVersion
 }
 
@@ -77,10 +76,10 @@ test {
 
 // PIT mutation testing plugin configurations.
 pitest {
-    junit5PluginVersion = '0.12'
+    //junit5PluginVersion = '0.12'
     mutators = ['STRONGER']
     mutationThreshold = 0
-    excludedClasses = ['**.app.**', '**.model.**']
+    excludedClasses = ['**.app.**', '**.model.**', '**.swing.**']
 }
 
 // Jacoco plugin configurations.
@@ -123,5 +122,5 @@ sonarqube {
 // Application plugin configurations.
 application {
     // Define the main class for the application, for run task.
-    mainClass = mainClassName
+    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
 }
