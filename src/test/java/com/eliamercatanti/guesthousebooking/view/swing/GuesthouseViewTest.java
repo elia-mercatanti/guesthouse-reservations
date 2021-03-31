@@ -1,9 +1,10 @@
 package com.eliamercatanti.guesthousebooking.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.JButtonFixture;
+import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 
@@ -45,7 +46,7 @@ public class GuesthouseViewTest extends AssertJSwingJUnitTestCase {
 		window.table("guestsTable").requireVisible().requireEnabled();
 		window.button("deleteGuestButton").requireVisible().requireDisabled().requireText("Delete Guest");
 	}
-	
+
 	@Test
 	public void testControlsInitialStatesOfBookingsTab() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings").requireVisible().requireEnabled();
@@ -68,6 +69,54 @@ public class GuesthouseViewTest extends AssertJSwingJUnitTestCase {
 		window.table("bookingsTable").requireVisible().requireEnabled();
 		window.button("deleteBookingButton").requireVisible().requireDisabled().requireText("Delete Booking");
 		window.button("allBookingsButton").requireVisible().requireDisabled().requireText("All Bookings");
+	}
+
+	@Test
+	public void testWhenGuestInfosAreNonEmptyThenAddGuestButtonShouldBeEnabled() {
+		window.textBox("firstNameTextBox").enterText("test");
+		window.textBox("lastNameTextBox").enterText("test");
+		window.textBox("emailTextBox").setText("test@email.com");
+		window.textBox("telephoneNumberTextBox").enterText("0000000000");
+		window.button("addGuestButton").requireEnabled();
+	}
+	
+	@Test
+	public void testWhenSomeGuestInfosAreBlankThenAddGuestButtonShouldBeDisabled() {
+		JTextComponentFixture firstNameTextBox = window.textBox("firstNameTextBox");
+		JTextComponentFixture lastNameTextBox = window.textBox("lastNameTextBox");
+		JTextComponentFixture emailTextBox = window.textBox("emailTextBox");
+		JTextComponentFixture telephoneNumberTextBox = window.textBox("telephoneNumberTextBox");
+		JButtonFixture addGuestButton = window.button("addGuestButton");
+		
+		firstNameTextBox.setText(" ");
+		lastNameTextBox.setText(" ");
+		emailTextBox.setText(" ");
+		telephoneNumberTextBox.setText(" ");
+		addGuestButton.requireDisabled();
+
+		firstNameTextBox.setText("test");
+		lastNameTextBox.setText(" ");
+		emailTextBox.setText(" ");
+		telephoneNumberTextBox.setText(" ");
+		addGuestButton.requireDisabled();
+		
+		firstNameTextBox.setText(" ");
+		lastNameTextBox.setText("test");
+		emailTextBox.setText(" ");
+		telephoneNumberTextBox.setText(" ");
+		addGuestButton.requireDisabled();
+		
+		firstNameTextBox.setText(" ");
+		lastNameTextBox.setText(" ");
+		emailTextBox.setText("email.com");
+		telephoneNumberTextBox.setText(" ");
+		addGuestButton.requireDisabled();
+		
+		firstNameTextBox.setText(" ");
+		lastNameTextBox.setText(" ");
+		emailTextBox.setText(" ");
+		telephoneNumberTextBox.setText("0000000000");
+		addGuestButton.requireDisabled();
 	}
 
 }

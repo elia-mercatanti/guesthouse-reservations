@@ -11,10 +11,10 @@ public class Guest {
 	public Guest() {
 	}
 
-	public Guest(String id, String name, String surname, String email, String telephoneNumber) {
+	public Guest(String id, String firstName, String lastName, String email, String telephoneNumber) {
 		this.id = id;
-		this.firstName = name;
-		this.lastName = surname;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.telephoneNumber = telephoneNumber;
 	}

@@ -47,7 +47,7 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testNewGuest - New guest request")
 		void testNewGuest() {
-			Guest newGuest = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			Guest newGuest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			guestController.newGuest(newGuest);
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
@@ -57,7 +57,7 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testDeleteGuestWhenGuestExist - Delete guest request when exist")
 		void testDeleteGuestWhenGuestExist() {
-			Guest guestToDelete = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			Guest guestToDelete = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestToDelete.getId())).thenReturn(guestToDelete);
 			guestController.deleteGuest(guestToDelete);
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
@@ -73,7 +73,7 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testDeleteGuestWhenGuestNotExist - Delete guest request when not exist")
 		void testDeleteGuestWhenGuestNotExist() {
-			Guest guestNotPresent = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			Guest guestNotPresent = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestNotPresent.getId())).thenReturn(null);
 			guestController.deleteGuest(guestNotPresent);
 			verify(guesthouseView).errorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".", guestNotPresent);
