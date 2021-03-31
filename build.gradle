@@ -76,10 +76,11 @@ test {
 
 // PIT mutation testing plugin configurations.
 pitest {
-    //junit5PluginVersion = '0.12'
+    junit5PluginVersion = '0.12'
     mutators = ['STRONGER']
     mutationThreshold = 0
     excludedClasses = ['**.app.**', '**.model.**', '**.swing.**']
+    excludedTestClasses = ['**.swing.**']
 }
 
 // Jacoco plugin configurations.

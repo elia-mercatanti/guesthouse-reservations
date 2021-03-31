@@ -35,7 +35,7 @@ jobs:
          env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         run: ./gradlew build pitest jacocoTestReport coverallsJacoco sonarqube -i
+         run: ./gradlew build jacocoTestReport coverallsJacoco pitest sonarqube -i
       -  name: Archive JUnit Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}
