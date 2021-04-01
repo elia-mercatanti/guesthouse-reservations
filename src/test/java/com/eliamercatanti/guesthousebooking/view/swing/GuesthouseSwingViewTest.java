@@ -1,6 +1,7 @@
 package com.eliamercatanti.guesthousebooking.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
@@ -9,8 +10,9 @@ import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
+import com.eliamercatanti.guesthousebooking.model.Guest;
 
-public class GuesthouseViewTest extends AssertJSwingJUnitTestCase {
+public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
 
@@ -30,9 +32,13 @@ public class GuesthouseViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testControlsInitialStatesOfGuestsTab() {
+	public void testErrorLogInitialState() {
 		window.label("errorLogLabel").requireVisible().requireEnabled().requireText("Error Log:");
 		window.label("errorLogMessageLabel").requireEnabled().requireText(" ");
+	}
+
+	@Test
+	public void testControlsInitialStatesOfGuestsTab() {
 		window.tabbedPane("tabbedPane").selectTab("Guests").requireVisible().requireEnabled();
 		window.label("firstNameLabel").requireVisible().requireEnabled().requireText("First Name");
 		window.textBox("firstNameTextBox").requireVisible().requireEnabled().requireEmpty();
@@ -43,7 +49,7 @@ public class GuesthouseViewTest extends AssertJSwingJUnitTestCase {
 		window.label("telephoneNumberLabel").requireVisible().requireEnabled().requireText("Telephone N.");
 		window.textBox("telephoneNumberTextBox").requireVisible().requireEnabled().requireEmpty();
 		window.button("addGuestButton").requireVisible().requireDisabled().requireText("Add Guest");
-		window.table("guestsTable").requireVisible().requireEnabled();
+		window.list("guestsList").requireVisible().requireEnabled();
 		window.button("deleteGuestButton").requireVisible().requireDisabled().requireText("Delete Guest");
 	}
 
@@ -66,28 +72,30 @@ public class GuesthouseViewTest extends AssertJSwingJUnitTestCase {
 		window.comboBox("guestIdComBox").requireVisible().requireEnabled();
 		window.button("addBookingButton").requireVisible().requireDisabled().requireText("Add Booking");
 		window.button("searchBookingsButton").requireVisible().requireDisabled().requireText("Search Bookings");
-		window.table("bookingsTable").requireVisible().requireEnabled();
+		window.list("bookingsList").requireVisible().requireEnabled();
 		window.button("deleteBookingButton").requireVisible().requireDisabled().requireText("Delete Booking");
 		window.button("allBookingsButton").requireVisible().requireDisabled().requireText("All Bookings");
 	}
 
 	@Test
 	public void testWhenGuestInfosAreNonEmptyThenAddGuestButtonShouldBeEnabled() {
+		window.tabbedPane("tabbedPane").selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("test");
 		window.textBox("lastNameTextBox").enterText("test");
 		window.textBox("emailTextBox").setText("test@email.com");
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 		window.button("addGuestButton").requireEnabled();
 	}
-	
+
 	@Test
 	public void testWhenSomeGuestInfosAreBlankThenAddGuestButtonShouldBeDisabled() {
+		window.tabbedPane("tabbedPane").selectTab("Guests");
 		JTextComponentFixture firstNameTextBox = window.textBox("firstNameTextBox");
 		JTextComponentFixture lastNameTextBox = window.textBox("lastNameTextBox");
 		JTextComponentFixture emailTextBox = window.textBox("emailTextBox");
 		JTextComponentFixture telephoneNumberTextBox = window.textBox("telephoneNumberTextBox");
 		JButtonFixture addGuestButton = window.button("addGuestButton");
-		
+
 		firstNameTextBox.setText(" ");
 		lastNameTextBox.setText(" ");
 		emailTextBox.setText(" ");
@@ -99,24 +107,37 @@ public class GuesthouseViewTest extends AssertJSwingJUnitTestCase {
 		emailTextBox.setText(" ");
 		telephoneNumberTextBox.setText(" ");
 		addGuestButton.requireDisabled();
-		
+
 		firstNameTextBox.setText(" ");
 		lastNameTextBox.setText("test");
 		emailTextBox.setText(" ");
 		telephoneNumberTextBox.setText(" ");
 		addGuestButton.requireDisabled();
-		
+
 		firstNameTextBox.setText(" ");
 		lastNameTextBox.setText(" ");
-		emailTextBox.setText("email.com");
+		emailTextBox.setText("test@email.com");
 		telephoneNumberTextBox.setText(" ");
 		addGuestButton.requireDisabled();
-		
+
 		firstNameTextBox.setText(" ");
 		lastNameTextBox.setText(" ");
 		emailTextBox.setText(" ");
 		telephoneNumberTextBox.setText("0000000000");
 		addGuestButton.requireDisabled();
+	}
+
+	@Test
+	public void testDeleteGuestButtonShouldBeEnabledOnlyWhenAGuestIsSelected() {
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel()
+				.addElement(new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000")));
+		window.list("guestsList").selectItem(0);
+		window.list("guestsList").requireSelection(0);
+		window.button("deleteGuestButton").requireEnabled();
+		window.list("guestsList").clearSelection();
+		window.list("guestsList").requireNoSelection();
+		window.button("deleteGuestButton").requireDisabled();
 	}
 
 }
