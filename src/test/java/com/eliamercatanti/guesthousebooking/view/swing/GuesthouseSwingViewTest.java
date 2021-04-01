@@ -2,6 +2,8 @@ package com.eliamercatanti.guesthousebooking.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
@@ -138,6 +140,18 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.list("guestsList").clearSelection();
 		window.list("guestsList").requireNoSelection();
 		window.button("deleteGuestButton").requireDisabled();
+	}
+
+	@Test
+	public void testsShowAllGuestShouldAddGuestInfosToTheList() {
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
+		Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		GuiActionRunner.execute(() -> guesthouseSwingView.showAllGuests(Arrays.asList(guest1, guest2)));
+		assertThat(window.list("guestsList").contents()).containsExactly(
+				"1 - testFirstName1 - testLastName1 - test1@email.com - 0000000000",
+				"2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
 	}
 
 }
