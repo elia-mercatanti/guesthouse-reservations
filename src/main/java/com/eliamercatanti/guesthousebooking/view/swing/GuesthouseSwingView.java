@@ -316,8 +316,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 	@Override
 	public void showAllGuests(List<Guest> guests) {
-		// TODO Auto-generated method stub
-
+		guests.stream().forEach(listGuestsModel::addElement);
 	}
 
 	@Override

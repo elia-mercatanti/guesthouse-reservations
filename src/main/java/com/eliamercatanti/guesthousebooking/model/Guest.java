@@ -59,4 +59,9 @@ public class Guest {
 		this.telephoneNumber = telephoneNumber;
 	}
 
+	@Override
+	public String toString() {
+		return id + " - " + firstName + " - " + lastName + " - " + email + " - " + telephoneNumber;
+	}
+
 }
