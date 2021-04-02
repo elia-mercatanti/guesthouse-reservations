@@ -13,7 +13,7 @@ public interface GuesthouseView {
 
 	public void guestRemoved(Guest guest);
 
-	public void errorGuestNotFound(String message, Guest guest);
+	public void showErrorGuestNotFound(String message, Guest guest);
 
 	public void setGuestController(GuestController guestController);
 

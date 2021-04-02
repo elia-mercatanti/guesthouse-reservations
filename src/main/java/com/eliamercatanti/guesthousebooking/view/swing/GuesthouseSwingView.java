@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -24,9 +25,11 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JList;
@@ -42,6 +45,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JTextField textCheckOutDate;
 	private JButton btnAddGuest;
 	private DefaultListModel<Guest> listGuestsModel;
+	private JLabel lblErrorLogMessage;
 
 	public GuesthouseSwingView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -54,7 +58,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setName("tabbedPane");
 
-		JLabel lblErrorLogMessage = new JLabel(" ");
+		lblErrorLogMessage = new JLabel(" ");
 		lblErrorLogMessage.setForeground(Color.RED);
 		lblErrorLogMessage.setName("errorLogMessageLabel");
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
@@ -175,11 +179,23 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(guestsScrollPane, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnDeleteGuest).addGap(6)));
-		
+
 		listGuestsModel = new DefaultListModel<>();
 		JList<Guest> listGuest = new JList<>(listGuestsModel);
 		listGuest.addListSelectionListener(e -> btnDeleteGuest.setEnabled(listGuest.getSelectedIndex() != -1));
 		listGuest.setName("guestsList");
+		listGuest.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listGuest.setCellRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				Guest guest = (Guest) value;
+				return super.getListCellRendererComponent(list, getGuestDisplayString(guest), index, isSelected,
+						cellHasFocus);
+			}
+		});
 		guestsScrollPane.setViewportView(listGuest);
 		guestsPanel.setLayout(layoutGuestsPanel);
 
@@ -236,82 +252,83 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		JButton btnAllBookings = new JButton("All Bookings");
 		btnAllBookings.setName("allBookingsButton");
 		btnAllBookings.setEnabled(false);
-		
+
 		JScrollPane bookingsScrollPane = new JScrollPane();
 		bookingsScrollPane.setName("bookingsScrollPane");
 		GroupLayout layoutBookingsPanel = new GroupLayout(bookingsPanel);
-		layoutBookingsPanel.setHorizontalGroup(
-			layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(layoutBookingsPanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(bookingsScrollPane, GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
-						.addGroup(layoutBookingsPanel.createSequentialGroup()
-							.addComponent(btnDeleteBooking)
-							.addPreferredGap(ComponentPlacement.RELATED, 273, Short.MAX_VALUE)
-							.addComponent(btnAllBookings))
-						.addGroup(layoutBookingsPanel.createSequentialGroup()
-							.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(textCheckInDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblCheckInDate))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblCheckOutDate)
-								.addComponent(textCheckOutDate, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(comBoxNumberOfGuests, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNumberOfGuests))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(comBoxRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblRoom))
-							.addGap(18)
-							.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblGuestId)
-								.addComponent(comBoxGuestId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(69))
-						.addGroup(layoutBookingsPanel.createSequentialGroup()
-							.addComponent(btnAddBooking)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnSearchBookings)))
-					.addContainerGap())
-		);
-		layoutBookingsPanel.setVerticalGroup(
-			layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(layoutBookingsPanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblCheckInDate)
-						.addComponent(lblCheckOutDate)
-						.addComponent(lblNumberOfGuests, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblGuestId)
-						.addComponent(lblRoom))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textCheckInDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(textCheckOutDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comBoxNumberOfGuests, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comBoxGuestId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comBoxRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnAddBooking)
-						.addComponent(btnSearchBookings))
-					.addGap(8)
-					.addComponent(bookingsScrollPane, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnDeleteBooking)
-						.addComponent(btnAllBookings))
-					.addContainerGap())
-		);
-		
+		layoutBookingsPanel.setHorizontalGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(layoutBookingsPanel.createSequentialGroup().addContainerGap()
+						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(bookingsScrollPane, GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+								.addGroup(layoutBookingsPanel.createSequentialGroup().addComponent(btnDeleteBooking)
+										.addPreferredGap(ComponentPlacement.RELATED, 273, Short.MAX_VALUE)
+										.addComponent(btnAllBookings))
+								.addGroup(layoutBookingsPanel.createSequentialGroup()
+										.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+												.addComponent(textCheckInDate, GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblCheckInDate))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblCheckOutDate).addComponent(textCheckOutDate,
+														GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+												.addComponent(comBoxNumberOfGuests, GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblNumberOfGuests))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+												.addComponent(comBoxRoom, GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblRoom))
+										.addGap(18)
+										.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblGuestId).addComponent(comBoxGuestId,
+														GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+										.addGap(69))
+								.addGroup(layoutBookingsPanel.createSequentialGroup().addComponent(btnAddBooking)
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSearchBookings)))
+						.addContainerGap()));
+		layoutBookingsPanel.setVerticalGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(layoutBookingsPanel.createSequentialGroup().addContainerGap()
+						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblCheckInDate).addComponent(lblCheckOutDate)
+								.addComponent(lblNumberOfGuests, GroupLayout.PREFERRED_SIZE, 14,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblGuestId).addComponent(lblRoom))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textCheckInDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(textCheckOutDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(comBoxNumberOfGuests, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(comBoxGuestId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(comBoxRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnAddBooking).addComponent(btnSearchBookings))
+						.addGap(8).addComponent(bookingsScrollPane, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnDeleteBooking).addComponent(btnAllBookings))
+						.addContainerGap()));
+
 		JList<Booking> listBookings = new JList<>();
 		listBookings.setName("bookingsList");
 		bookingsScrollPane.setViewportView(listBookings);
 		bookingsPanel.setLayout(layoutBookingsPanel);
 		getContentPane().setLayout(groupLayout);
+	}
+
+	private String getGuestDisplayString(Guest guest) {
+		return guest.getId() + " - " + guest.getFirstName() + " - " + guest.getLastName() + " - " + guest.getEmail()
+				+ " - " + guest.getTelephoneNumber();
 	}
 
 	@Override
@@ -321,18 +338,22 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 	@Override
 	public void guestAdded(Guest guest) {
-		// TODO Auto-generated method stub
-
+		listGuestsModel.addElement(guest);
+		clearErrorLog();
 	}
 
 	@Override
 	public void guestRemoved(Guest guest) {
-		// TODO Auto-generated method stub
-
+		listGuestsModel.removeElement(guest);
+		clearErrorLog();
+	}
+	
+	private void clearErrorLog() {
+		lblErrorLogMessage.setText(" ");
 	}
 
 	@Override
-	public void errorGuestNotFound(String message, Guest guest) {
+	public void showErrorGuestNotFound(String message, Guest guest) {
 		// TODO Auto-generated method stub
 
 	}
@@ -346,4 +367,5 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	public DefaultListModel<Guest> getListGuestsModel() {
 		return listGuestsModel;
 	}
+
 }

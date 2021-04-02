@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
+import javax.swing.DefaultListModel;
+
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
@@ -36,7 +38,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	public void testErrorLogInitialState() {
 		window.label("errorLogLabel").requireVisible().requireEnabled().requireText("Error Log:");
-		window.label("errorLogMessageLabel").requireEnabled().requireText(" ");
+		window.label("errorLogMessageLabel").requireVisible().requireEnabled().requireText(" ");
 	}
 
 	@Test
@@ -131,27 +133,53 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testDeleteGuestButtonShouldBeEnabledOnlyWhenAGuestIsSelected() {
+		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
-		GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel()
-				.addElement(new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000")));
+		GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guest));
 		window.list("guestsList").selectItem(0);
-		window.list("guestsList").requireSelection(0);
 		window.button("deleteGuestButton").requireEnabled();
 		window.list("guestsList").clearSelection();
-		window.list("guestsList").requireNoSelection();
 		window.button("deleteGuestButton").requireDisabled();
 	}
 
 	@Test
 	public void testsShowAllGuestShouldAddGuestInfosToTheList() {
-		window.tabbedPane("tabbedPane").selectTab("Guests");
 		Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		GuiActionRunner.execute(() -> guesthouseSwingView.showAllGuests(Arrays.asList(guest1, guest2)));
-		assertThat(window.list("guestsList").contents()).containsExactly(
+		String[] guestsListContent = window.list("guestsList").contents();
+		assertThat(guestsListContent).containsExactly(
 				"1 - testFirstName1 - testLastName1 - test1@email.com - 0000000000",
 				"2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
+	}
+
+	@Test
+	public void testGuestAddedShouldBeAddedToTheGuestListAndClearTheErrorLogLabel() {
+		Guest guestToAdd = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guestToAdd));
+		String[] guestsListContent = window.list("guestsList").contents();
+		assertThat(guestsListContent).containsExactly("1 - testFirstName - testLastName - test@email.com - 0000000000");
+		window.label("errorLogMessageLabel").requireText(" ");
+	}
+
+	@Test
+	public void testGuestRemovedShouldRemoveTheGuestFromTheListAndClearTheErrorLogLabel() throws InterruptedException {
+		Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
+		Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		GuiActionRunner.execute(() -> {
+			DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
+			listGuestsModel.addElement(guest1);
+			listGuestsModel.addElement(guest2);
+		});
+		GuiActionRunner.execute(() -> guesthouseSwingView
+				.guestRemoved(new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000")));
+		String[] guestsListContent = window.list("guestsList").contents();
+		assertThat(guestsListContent)
+				.containsExactly("2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
+		window.label("errorLogMessageLabel").requireText(" ");
 	}
 
 }
