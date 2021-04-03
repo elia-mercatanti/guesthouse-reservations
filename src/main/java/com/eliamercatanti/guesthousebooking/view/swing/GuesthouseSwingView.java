@@ -368,9 +368,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		return listGuestsModel;
 	}
 
-	public Object showError(String string) {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public void showError(String message) {
+		lblErrorLogMessage.setText(message);
 	}
 	
 }

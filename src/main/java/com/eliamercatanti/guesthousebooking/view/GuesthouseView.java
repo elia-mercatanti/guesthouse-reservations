@@ -17,4 +17,6 @@ public interface GuesthouseView {
 
 	public void setGuestController(GuestController guestController);
 
+	void showError(String message);
+
 }
