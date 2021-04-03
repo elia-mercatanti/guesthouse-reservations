@@ -188,4 +188,22 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.label("errorLogMessageLabel").requireText("Error message test");
 	}
 
+	@Test
+	public void testShowErrorGuestNotFound() {
+		Guest guestNoLongerPresent = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
+		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		GuiActionRunner.execute(() -> {
+			DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
+			listGuestsModel.addElement(guestNoLongerPresent);
+			listGuestsModel.addElement(anotherGuest);
+		});
+		GuiActionRunner
+				.execute(() -> guesthouseSwingView.showErrorGuestNotFound("Error message test", guestNoLongerPresent));
+		window.label("errorLogMessageLabel").requireText("Error message test: 1 - testFirstName1 - testLastName1");
+		String[] guestsListContent = window.list("guestsList").contents();
+		assertThat(guestsListContent)
+				.containsExactly("2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
+	}
+
 }

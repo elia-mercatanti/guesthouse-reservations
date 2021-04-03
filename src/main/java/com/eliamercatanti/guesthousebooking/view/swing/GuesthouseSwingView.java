@@ -354,8 +354,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 	@Override
 	public void showErrorGuestNotFound(String message, Guest guest) {
-		// TODO Auto-generated method stub
-
+		lblErrorLogMessage
+				.setText(message + ": " + guest.getId() + " - " + guest.getFirstName() + " - " + guest.getLastName());
+		listGuestsModel.removeElement(guest);
 	}
 
 	@Override
@@ -372,5 +373,5 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	public void showError(String message) {
 		lblErrorLogMessage.setText(message);
 	}
-	
+
 }
