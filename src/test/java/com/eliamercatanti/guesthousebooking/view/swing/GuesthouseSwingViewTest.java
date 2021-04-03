@@ -172,13 +172,13 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testGuestRemovedShouldRemoveTheGuestFromTheListAndClearTheErrorLogLabel() {
-		Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
-		Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
+		Guest guestToRemove = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
+		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		GuiActionRunner.execute(() -> {
 			DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
-			listGuestsModel.addElement(guest1);
-			listGuestsModel.addElement(guest2);
+			listGuestsModel.addElement(guestToRemove);
+			listGuestsModel.addElement(anotherGuest);
 		});
 		GuiActionRunner.execute(() -> guesthouseSwingView
 				.guestRemoved(new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000")));
@@ -221,6 +221,21 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 		window.button("addGuestButton").click();
 		verify(guestController).newGuest(new Guest("testFirstName", "testLastName", "test@email.com", "0000000000"));
+	}
+
+	@Test
+	public void testDeleteGuestShouldDelegateToGuestControllerDeleteGuest() {
+		Guest guestToDelete = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
+		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		GuiActionRunner.execute(() -> {
+			DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
+			listGuestsModel.addElement(guestToDelete);
+			listGuestsModel.addElement(anotherGuest);
+		});
+		window.list("guestsList").selectItem(0);
+		window.button("deleteGuestButton").click();
+		verify(guestController).deleteGuest(guestToDelete);
 	}
 
 }

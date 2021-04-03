@@ -44,7 +44,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JButton btnAddGuest;
 	private DefaultListModel<Guest> listGuestsModel;
 	private JLabel lblErrorLogMessage;
-	private GuestController guestController;
+	private transient GuestController guestController;
+	private JList<Guest> listGuest;
 
 	public GuesthouseSwingView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -130,6 +131,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		guestsScrollPane.setName("guestsScrollPane");
 
 		JButton btnDeleteGuest = new JButton("Delete Guest");
+		btnDeleteGuest.addActionListener(e -> guestController.deleteGuest(listGuest.getSelectedValue()));
 		btnDeleteGuest.setEnabled(false);
 		btnDeleteGuest.setName("deleteGuestButton");
 		GroupLayout layoutGuestsPanel = new GroupLayout(guestsPanel);
@@ -182,7 +184,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnDeleteGuest).addGap(6)));
 
 		listGuestsModel = new DefaultListModel<>();
-		JList<Guest> listGuest = new JList<>(listGuestsModel);
+		listGuest = new JList<>(listGuestsModel);
 		listGuest.addListSelectionListener(e -> btnDeleteGuest.setEnabled(listGuest.getSelectedIndex() != -1));
 		listGuest.setName("guestsList");
 		listGuest.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
