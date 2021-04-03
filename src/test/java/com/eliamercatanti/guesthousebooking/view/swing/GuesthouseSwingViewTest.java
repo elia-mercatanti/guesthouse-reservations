@@ -165,7 +165,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testGuestRemovedShouldRemoveTheGuestFromTheListAndClearTheErrorLogLabel() throws InterruptedException {
+	public void testGuestRemovedShouldRemoveTheGuestFromTheListAndClearTheErrorLogLabel() {
 		Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
@@ -180,6 +180,12 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(guestsListContent)
 				.containsExactly("2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
 		window.label("errorLogMessageLabel").requireText(" ");
+	}
+
+	@Test
+	public void testShowErrorShouldShowTheMessageInTheErrorLog() {
+		GuiActionRunner.execute(() -> guesthouseSwingView.showError("Error message test"));
+		window.label("errorLogMessageLabel").requireText("Error message test");
 	}
 
 }

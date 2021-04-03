@@ -76,7 +76,8 @@ class GuestControllerTest {
 			Guest guestNotPresent = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestNotPresent.getId())).thenReturn(null);
 			guestController.deleteGuest(guestNotPresent);
-			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".", guestNotPresent);
+			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".",
+					guestNotPresent);
 			verifyNoMoreInteractions(ignoreStubs(guestRepository));
 		}
 
