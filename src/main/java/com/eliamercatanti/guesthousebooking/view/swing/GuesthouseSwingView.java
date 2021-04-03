@@ -44,6 +44,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JButton btnAddGuest;
 	private DefaultListModel<Guest> listGuestsModel;
 	private JLabel lblErrorLogMessage;
+	private GuestController guestController;
 
 	public GuesthouseSwingView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -120,6 +121,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		textTelephoneNumber.addKeyListener(btnAddGuestEnabler);
 
 		btnAddGuest = new JButton("Add Guest");
+		btnAddGuest.addActionListener(e -> guestController.newGuest(new Guest(textFirstName.getText(),
+				textLastName.getText(), textEmail.getText(), textTelephoneNumber.getText())));
 		btnAddGuest.setEnabled(false);
 		btnAddGuest.setName("addGuestButton");
 
@@ -357,10 +360,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		listGuestsModel.removeElement(guest);
 	}
 
-	@Override
 	public void setGuestController(GuestController guestController) {
-		// TODO Auto-generated method stub
-
+		this.guestController = guestController;
 	}
 
 	public DefaultListModel<Guest> getListGuestsModel() {

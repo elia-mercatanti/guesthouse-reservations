@@ -21,8 +21,11 @@ public class Guest {
 		this.telephoneNumber = telephoneNumber;
 	}
 
-	public Guest(String string, String string2, String string3, String string4) {
-		// TODO Auto-generated constructor stub
+	public Guest(String firstName, String lastName, String email, String telephoneNumber) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.telephoneNumber = telephoneNumber;
 	}
 
 	public String getId() {

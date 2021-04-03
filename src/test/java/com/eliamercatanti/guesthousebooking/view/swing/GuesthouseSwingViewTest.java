@@ -13,20 +13,18 @@ import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
 import com.eliamercatanti.guesthousebooking.model.Guest;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
 
-	@InjectMocks
 	private GuesthouseSwingView guesthouseSwingView;
 
 	@Mock
