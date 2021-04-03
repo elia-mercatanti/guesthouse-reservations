@@ -1,6 +1,7 @@
 package com.eliamercatanti.guesthousebooking.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 
@@ -12,16 +13,23 @@ import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
 import com.eliamercatanti.guesthousebooking.model.Guest;
 
+@ExtendWith(MockitoExtension.class)
 public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
 
+	@InjectMocks
 	private GuesthouseSwingView guesthouseSwingView;
 
+	@Mock
 	private GuestController guestController;
 
 	@Override
@@ -204,6 +212,17 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		String[] guestsListContent = window.list("guestsList").contents();
 		assertThat(guestsListContent)
 				.containsExactly("2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
+	}
+
+	@Test
+	public void testAddGuestShouldDelegateToGuestControllerNewGuest() {
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		window.textBox("firstNameTextBox").enterText("testFirstName");
+		window.textBox("lastNameTextBox").enterText("testLastName");
+		window.textBox("emailTextBox").setText("test@email.com");
+		window.textBox("telephoneNumberTextBox").enterText("0000000000");
+		window.button("addGuestButton").click();
+		verify(guestController).newGuest(new Guest("testFirstName", "testLastName", "test@email.com", "0000000000"));
 	}
 
 }
