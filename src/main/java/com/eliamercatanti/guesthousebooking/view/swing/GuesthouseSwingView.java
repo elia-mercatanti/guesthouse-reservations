@@ -46,6 +46,11 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JLabel lblErrorLogMessage;
 	private transient GuestController guestController;
 	private JList<Guest> listGuest;
+	private DefaultComboBoxModel<Guest> comboBoxGuestsModel;
+	private JButton btnAddBooking;
+	private JComboBox<Integer> comBoxNumberOfGuests;
+	private JComboBox<Room> comBoxRoom;
+	private JComboBox<Guest> comBoxGuestId;
 
 	public GuesthouseSwingView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -213,18 +218,28 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		lblCheckOutDate.setName("checkOutDateLabel");
 
 		textCheckInDate = new JTextField();
+		KeyAdapter btnAddBookingEnabler = new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				btnAddBooking.setEnabled(!textCheckInDate.getText().isEmpty() && !textCheckOutDate.getText().isEmpty()
+						&& (comBoxNumberOfGuests.getSelectedIndex() != -1)
+						&& (comBoxRoom.getSelectedIndex() != -1 && comBoxGuestId.getSelectedIndex() != -1));
+			}
+		};
+		textCheckInDate.addKeyListener(btnAddBookingEnabler);
 		textCheckInDate.setName("checkInDateTextBox");
 		textCheckInDate.setColumns(10);
 
 		textCheckOutDate = new JTextField();
 		textCheckOutDate.setName("checkOutDateTextBox");
 		textCheckOutDate.setColumns(10);
+		textCheckOutDate.addKeyListener(btnAddBookingEnabler);
 
-		JComboBox<Integer> comBoxNumberOfGuests = new JComboBox<>();
+		comBoxNumberOfGuests = new JComboBox<>();
 		comBoxNumberOfGuests.setModel(new DefaultComboBoxModel<>(new Integer[] { 1, 2, 3, 4 }));
 		comBoxNumberOfGuests.setName("numberOfGuestsComBox");
 
-		JComboBox<Room> comBoxRoom = new JComboBox<>();
+		comBoxRoom = new JComboBox<>();
 		comBoxRoom.setModel(new DefaultComboBoxModel<>(Room.values()));
 		comBoxRoom.setName("roomComBox");
 
@@ -234,13 +249,14 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		JLabel lblRoom = new JLabel("Room");
 		lblRoom.setName("roomLabel");
 
-		JComboBox<Guest> comBoxGuestId = new JComboBox<>();
+		comboBoxGuestsModel = new DefaultComboBoxModel<>();
+		comBoxGuestId = new JComboBox<>(comboBoxGuestsModel);
 		comBoxGuestId.setName("guestIdComBox");
 
 		JLabel lblGuestId = new JLabel("Guest ID");
 		lblGuestId.setName("guestIdLabel");
 
-		JButton btnAddBooking = new JButton("Add Booking");
+		btnAddBooking = new JButton("Add Booking");
 		btnAddBooking.setEnabled(false);
 		btnAddBooking.setName("addBookingButton");
 
@@ -375,9 +391,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		lblErrorLogMessage.setText(message);
 	}
 
-	public DefaultListModel<Guest> getComboBoxGuestsModel() {
-		// TODO Auto-generated method stub
-		return null;
+	public DefaultComboBoxModel<Guest> getComboBoxGuestsModel() {
+		return comboBoxGuestsModel;
 	}
 
 }

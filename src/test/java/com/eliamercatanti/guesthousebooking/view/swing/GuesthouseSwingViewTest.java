@@ -237,7 +237,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button("deleteGuestButton").click();
 		verify(guestController).deleteGuest(guestToDelete);
 	}
-	
+
 	@Test
 	public void testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled() {
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
