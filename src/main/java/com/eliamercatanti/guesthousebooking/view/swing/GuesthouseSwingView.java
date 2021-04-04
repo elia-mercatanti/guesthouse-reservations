@@ -221,9 +221,10 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		KeyAdapter btnAddBookingEnabler = new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				btnAddBooking.setEnabled(!textCheckInDate.getText().isEmpty() && !textCheckOutDate.getText().isEmpty()
-						&& (comBoxNumberOfGuests.getSelectedIndex() != -1)
-						&& (comBoxRoom.getSelectedIndex() != -1 && comBoxGuestId.getSelectedIndex() != -1));
+				btnAddBooking.setEnabled(
+						!textCheckInDate.getText().trim().isEmpty() && !textCheckOutDate.getText().trim().isEmpty()
+								&& (comBoxNumberOfGuests.getSelectedIndex() != -1)
+								&& (comBoxRoom.getSelectedIndex() != -1 && comBoxGuestId.getSelectedIndex() != -1));
 			}
 		};
 		textCheckInDate.addKeyListener(btnAddBookingEnabler);

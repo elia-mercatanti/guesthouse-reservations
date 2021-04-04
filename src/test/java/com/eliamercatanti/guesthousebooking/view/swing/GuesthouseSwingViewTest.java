@@ -10,6 +10,7 @@ import javax.swing.DefaultListModel;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
+import org.assertj.swing.fixture.JComboBoxFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
@@ -243,12 +244,44 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
-		window.textBox("checkInDateTextBox").enterText("04-04-2021");
-		window.textBox("checkOutDateTextBox").enterText("07-04-2021");
-		window.comboBox("numberOfGuestsComBox").selectItem("3");
-		window.comboBox("roomComBox").selectItem("TRIPLE");
+		window.textBox("checkInDateTextBox").enterText("00-00-0000");
+		window.textBox("checkOutDateTextBox").enterText("00-00-0000");
+		window.comboBox("numberOfGuestsComBox").selectItem(0);
+		window.comboBox("roomComBox").selectItem(0);
 		window.comboBox("guestIdComBox").selectItem(0);
 		window.button("addBookingButton").requireEnabled();
+	}
+
+	@Test
+	public void testWhenSomeBookingInfoAreNotSetThenAddBookingButtonShouldBeDisabled() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
+		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+		JTextComponentFixture checkInDateTextBox = window.textBox("checkInDateTextBox");
+		JTextComponentFixture checkOutDateTextBox = window.textBox("checkOutDateTextBox");
+		JComboBoxFixture numberOfGuestComboBox = window.comboBox("numberOfGuestsComBox");
+		JComboBoxFixture roomComBox = window.comboBox("roomComBox");
+		JComboBoxFixture guestIdComBox = window.comboBox("guestIdComBox");
+		JButtonFixture addBookingButton = window.button("addBookingButton");
+
+		checkInDateTextBox.setText("00-00-0000");
+		checkOutDateTextBox.setText(" ");
+		numberOfGuestComboBox.selectItem(0);
+		roomComBox.selectItem(0);
+		guestIdComBox.selectItem(0);
+		addBookingButton.requireDisabled();
+		
+		checkInDateTextBox.setText(" ");
+		checkOutDateTextBox.setText("00-00-0000");
+		numberOfGuestComboBox.selectItem(0);
+		roomComBox.selectItem(0);
+		guestIdComBox.selectItem(0);
+		addBookingButton.requireDisabled();
+		
+		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().removeElement(guest));
+		checkInDateTextBox.setText("00-00-0000");
+		checkOutDateTextBox.setText("00-00-0000");
+		addBookingButton.requireDisabled();
 	}
 
 }
