@@ -237,5 +237,18 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button("deleteGuestButton").click();
 		verify(guestController).deleteGuest(guestToDelete);
 	}
+	
+	@Test
+	public void testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled() {
+		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
+		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.textBox("checkInDateTextBox").enterText("04-04-2021");
+		window.textBox("checkOutDateTextBox").enterText("07-04-2021");
+		window.comboBox("numberOfGuestsComBox").selectItem("3");
+		window.comboBox("roomComBox").selectItem("TRIPLE");
+		window.comboBox("guestIdComBox").selectItem(0);
+		window.button("addBookingButton").requireEnabled();
+	}
 
 }

@@ -375,4 +375,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		lblErrorLogMessage.setText(message);
 	}
 
+	public DefaultListModel<Guest> getComboBoxGuestsModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
