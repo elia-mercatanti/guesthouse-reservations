@@ -51,6 +51,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JComboBox<Integer> comBoxNumberOfGuests;
 	private JComboBox<Room> comBoxRoom;
 	private JComboBox<Guest> comBoxGuestId;
+	private DefaultListModel<Booking> listBookingsModel;
 
 	public GuesthouseSwingView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -338,8 +339,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
 								.addComponent(btnDeleteBooking).addComponent(btnAllBookings))
 						.addContainerGap()));
-
-		JList<Booking> listBookings = new JList<>();
+		listBookingsModel = new DefaultListModel<>();
+		JList<Booking> listBookings = new JList<>(listBookingsModel);
+		listBookings.addListSelectionListener(e -> btnDeleteBooking.setEnabled(listBookings.getSelectedIndex() != -1));
 		listBookings.setName("bookingsList");
 		bookingsScrollPane.setViewportView(listBookings);
 		bookingsPanel.setLayout(layoutBookingsPanel);
@@ -394,6 +396,10 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 	public DefaultComboBoxModel<Guest> getComboBoxGuestsModel() {
 		return comboBoxGuestsModel;
+	}
+
+	public DefaultListModel<Booking> getListBookingsModel() {
+		return listBookingsModel;
 	}
 
 }

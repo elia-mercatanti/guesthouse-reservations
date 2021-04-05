@@ -3,6 +3,7 @@ package com.eliamercatanti.guesthousebooking.view.swing;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import javax.swing.DefaultListModel;
@@ -11,6 +12,7 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JComboBoxFixture;
+import org.assertj.swing.fixture.JListFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
@@ -19,7 +21,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
+import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
+import com.eliamercatanti.guesthousebooking.model.Room;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
@@ -143,10 +147,12 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guest));
-		window.list("guestsList").selectItem(0);
-		window.button("deleteGuestButton").requireEnabled();
-		window.list("guestsList").clearSelection();
-		window.button("deleteGuestButton").requireDisabled();
+		JListFixture guestsList = window.list("guestsList");
+		JButtonFixture deleteGuestButton = window.button("deleteGuestButton");
+		guestsList.selectItem(0);
+		deleteGuestButton.requireEnabled();
+		guestsList.clearSelection();
+		deleteGuestButton.requireDisabled();
 	}
 
 	@Test
@@ -270,18 +276,31 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		roomComBox.selectItem(0);
 		guestIdComBox.selectItem(0);
 		addBookingButton.requireDisabled();
-		
+
 		checkInDateTextBox.setText(" ");
 		checkOutDateTextBox.setText("00-00-0000");
 		numberOfGuestComboBox.selectItem(0);
 		roomComBox.selectItem(0);
 		guestIdComBox.selectItem(0);
 		addBookingButton.requireDisabled();
-		
+
 		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().removeElement(guest));
 		checkInDateTextBox.setText("00-00-0000");
 		checkOutDateTextBox.setText("00-00-0000");
 		addBookingButton.requireDisabled();
+	}
+
+	@Test
+	public void testDeleteButtonShouldBeEnabledOnlyWhenABookingIsSelected() {
+		Booking booking = new Booking("1", "1", LocalDate.of(2021, 5, 1), LocalDate.of(2021, 5, 5), 1, Room.SINGLE);
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> guesthouseSwingView.getListBookingsModel().addElement(booking));
+		JListFixture bookingsList = window.list("bookingsList");
+		JButtonFixture deleteBookingButton = window.button("deleteBookingButton");
+		bookingsList.selectItem(0);
+		deleteBookingButton.requireEnabled();
+		bookingsList.clearSelection();
+		deleteBookingButton.requireDisabled();
 	}
 
 }
