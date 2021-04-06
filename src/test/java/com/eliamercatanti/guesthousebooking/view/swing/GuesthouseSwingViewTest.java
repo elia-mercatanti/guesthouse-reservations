@@ -83,10 +83,12 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.comboBox("roomComBox").requireVisible().requireEnabled();
 		comboBoxContents = window.comboBox("roomComBox").contents();
 		assertThat(comboBoxContents).containsExactly("SINGLE", "DOUBLE", "TRIPLE", "QUADRUPLE");
-		window.label("guestIdLabel").requireVisible().requireEnabled().requireText("Guest ID");
+		window.label("guestIdLabel").requireVisible().requireEnabled().requireText("Guest Id");
 		window.comboBox("guestIdComBox").requireVisible().requireEnabled();
 		window.button("addBookingButton").requireVisible().requireDisabled().requireText("Add Booking");
-		window.button("searchBookingsButton").requireVisible().requireDisabled().requireText("Search Bookings");
+		window.button("searchByDatesButton").requireVisible().requireDisabled().requireText("Search by Dates");
+		window.button("searchByRoomButton").requireVisible().requireDisabled().requireText("Search by Room");
+		window.button("searchByGuestIdButton").requireVisible().requireDisabled().requireText("Search by Guest Id");
 		window.list("bookingsList").requireVisible().requireEnabled();
 		window.button("deleteBookingButton").requireVisible().requireDisabled().requireText("Delete Booking");
 		window.button("allBookingsButton").requireVisible().requireDisabled().requireText("All Bookings");
@@ -97,7 +99,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("test");
 		window.textBox("lastNameTextBox").enterText("test");
-		window.textBox("emailTextBox").setText("test@email.com");
+		window.textBox("emailTextBox").enterText("test@email.com");
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 		window.button("addGuestButton").requireEnabled();
 	}
@@ -111,34 +113,43 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		JTextComponentFixture telephoneNumberTextBox = window.textBox("telephoneNumberTextBox");
 		JButtonFixture addGuestButton = window.button("addGuestButton");
 
-		firstNameTextBox.setText(" ");
-		lastNameTextBox.setText(" ");
-		emailTextBox.setText(" ");
-		telephoneNumberTextBox.setText(" ");
+		firstNameTextBox.enterText(" ");
+		lastNameTextBox.enterText("test");
+		emailTextBox.enterText("test@email.com");
+		telephoneNumberTextBox.enterText("0000000000");
 		addGuestButton.requireDisabled();
 
-		firstNameTextBox.setText("test");
-		lastNameTextBox.setText(" ");
-		emailTextBox.setText(" ");
-		telephoneNumberTextBox.setText(" ");
+		firstNameTextBox.setText("");
+		lastNameTextBox.setText("");
+		emailTextBox.setText("");
+		telephoneNumberTextBox.setText("");
+
+		firstNameTextBox.enterText("test");
+		lastNameTextBox.enterText(" ");
+		emailTextBox.enterText("test@email.com");
+		telephoneNumberTextBox.enterText("0000000000");
 		addGuestButton.requireDisabled();
 
-		firstNameTextBox.setText(" ");
-		lastNameTextBox.setText("test");
-		emailTextBox.setText(" ");
-		telephoneNumberTextBox.setText(" ");
+		firstNameTextBox.setText("");
+		lastNameTextBox.setText("");
+		emailTextBox.setText("");
+		telephoneNumberTextBox.setText("");
+
+		firstNameTextBox.enterText("test");
+		lastNameTextBox.enterText("test");
+		emailTextBox.enterText(" ");
+		telephoneNumberTextBox.enterText("0000000000");
 		addGuestButton.requireDisabled();
 
-		firstNameTextBox.setText(" ");
-		lastNameTextBox.setText(" ");
-		emailTextBox.setText("test@email.com");
-		telephoneNumberTextBox.setText(" ");
-		addGuestButton.requireDisabled();
+		firstNameTextBox.setText("");
+		lastNameTextBox.setText("");
+		emailTextBox.setText("");
+		telephoneNumberTextBox.setText("");
 
-		firstNameTextBox.setText(" ");
-		lastNameTextBox.setText(" ");
-		emailTextBox.setText(" ");
-		telephoneNumberTextBox.setText("0000000000");
+		firstNameTextBox.enterText("test");
+		lastNameTextBox.enterText("test");
+		emailTextBox.enterText("test@email.com");
+		telephoneNumberTextBox.enterText(" ");
 		addGuestButton.requireDisabled();
 	}
 
@@ -224,7 +235,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("testFirstName");
 		window.textBox("lastNameTextBox").enterText("testLastName");
-		window.textBox("emailTextBox").setText("test@email.com");
+		window.textBox("emailTextBox").enterText("test@email.com");
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 		window.button("addGuestButton").click();
 		verify(guestController).newGuest(new Guest("testFirstName", "testLastName", "test@email.com", "0000000000"));
@@ -270,23 +281,60 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		JComboBoxFixture guestIdComBox = window.comboBox("guestIdComBox");
 		JButtonFixture addBookingButton = window.button("addBookingButton");
 
-		checkInDateTextBox.setText("00-00-0000");
-		checkOutDateTextBox.setText(" ");
+		checkInDateTextBox.enterText(" ");
+		checkOutDateTextBox.enterText("00-00-0000");
 		numberOfGuestComboBox.selectItem(0);
 		roomComBox.selectItem(0);
 		guestIdComBox.selectItem(0);
 		addBookingButton.requireDisabled();
 
-		checkInDateTextBox.setText(" ");
-		checkOutDateTextBox.setText("00-00-0000");
+		checkInDateTextBox.setText("");
+		checkOutDateTextBox.setText("");
+		numberOfGuestComboBox.clearSelection();
+		roomComBox.clearSelection();
+		guestIdComBox.clearSelection();
+
+		checkInDateTextBox.enterText("00-00-0000");
+		checkOutDateTextBox.enterText(" ");
 		numberOfGuestComboBox.selectItem(0);
 		roomComBox.selectItem(0);
 		guestIdComBox.selectItem(0);
 		addBookingButton.requireDisabled();
 
-		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().removeElement(guest));
-		checkInDateTextBox.setText("00-00-0000");
-		checkOutDateTextBox.setText("00-00-0000");
+		checkInDateTextBox.setText("");
+		checkOutDateTextBox.setText("");
+		numberOfGuestComboBox.clearSelection();
+		roomComBox.clearSelection();
+		guestIdComBox.clearSelection();
+
+		checkInDateTextBox.enterText("00-00-0000");
+		checkOutDateTextBox.enterText("00-00-0000");
+		roomComBox.clearSelection();
+		guestIdComBox.clearSelection();
+		addBookingButton.requireDisabled();
+
+		checkInDateTextBox.setText("");
+		checkOutDateTextBox.setText("");
+		numberOfGuestComboBox.clearSelection();
+		roomComBox.clearSelection();
+		guestIdComBox.clearSelection();
+
+		checkInDateTextBox.enterText("00-00-0000");
+		checkOutDateTextBox.enterText("00-00-0000");
+		numberOfGuestComboBox.selectItem(0);
+		guestIdComBox.selectItem(0);
+		addBookingButton.requireDisabled();
+
+		checkInDateTextBox.setText("");
+		checkOutDateTextBox.setText("");
+		numberOfGuestComboBox.clearSelection();
+		roomComBox.clearSelection();
+		guestIdComBox.clearSelection();
+
+		checkInDateTextBox.enterText("00-00-0000");
+		checkOutDateTextBox.enterText("00-00-0000");
+		numberOfGuestComboBox.selectItem(0);
+		roomComBox.selectItem(0);
 		addBookingButton.requireDisabled();
 	}
 
@@ -301,6 +349,14 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		deleteBookingButton.requireEnabled();
 		bookingsList.clearSelection();
 		deleteBookingButton.requireDisabled();
+	}
+	
+	@Test
+	public void testWhenBookingDatesAreNotBlankThenSearchByDatesButtonShouldBeEnabled() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.textBox("checkInDateTextBox").enterText("00-00-0000");
+		window.textBox("checkOutDateTextBox").enterText("00-00-0000");
+		window.button("searchByDatesButton").requireEnabled();
 	}
 
 }
