@@ -350,13 +350,32 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		bookingsList.clearSelection();
 		deleteBookingButton.requireDisabled();
 	}
-	
+
 	@Test
 	public void testWhenBookingDatesAreNotBlankThenSearchByDatesButtonShouldBeEnabled() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("00-00-0000");
 		window.textBox("checkOutDateTextBox").enterText("00-00-0000");
 		window.button("searchByDatesButton").requireEnabled();
+	}
+
+	@Test
+	public void testWhenEitherCheckInOrCheckOutAreBlankThenSearchByDatesButtonShouldBeDisabled() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		JTextComponentFixture checkInDateTextBox = window.textBox("checkInDateTextBox");
+		JTextComponentFixture checkOutDateTextBox = window.textBox("checkOutDateTextBox");
+		JButtonFixture searchByDatesButton = window.button("searchByDatesButton");
+		
+		checkInDateTextBox.enterText("00-00-0000");
+		checkOutDateTextBox.enterText(" ");
+		searchByDatesButton.requireDisabled();
+		
+		checkInDateTextBox.setText("");
+		checkOutDateTextBox.setText("");
+		
+		checkInDateTextBox.enterText(" ");
+		checkOutDateTextBox.enterText("00-00-0000");
+		searchByDatesButton.requireDisabled();
 	}
 
 }
