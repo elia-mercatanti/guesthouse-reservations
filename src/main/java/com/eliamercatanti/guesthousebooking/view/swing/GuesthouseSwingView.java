@@ -54,6 +54,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JComboBox<Guest> comBoxGuestId;
 	private DefaultListModel<Booking> listBookingsModel;
 	private JButton btnSearchByDates;
+	private JButton btnSearchByRoom;
+	private JButton btnSerchByGuestId;
 
 	public GuesthouseSwingView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -250,9 +252,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 		comBoxRoom = new JComboBox<>();
 		comBoxRoom.setModel(new DefaultComboBoxModel<>(Room.values()));
-		comBoxRoom.setName("roomComBox");
 		comBoxRoom.setSelectedIndex(-1);
-		comBoxRoom.addActionListener(btnAddBookingEnabler);
+		comBoxRoom.addActionListener(e -> btnSearchByRoom.setEnabled(comBoxRoom.getSelectedIndex() != -1));
+		comBoxRoom.setName("roomComBox");
 
 		JLabel lblNumberOfGuests = new JLabel("N. of Guests");
 		lblNumberOfGuests.setName("numberOfGuestsLabel");
@@ -262,8 +264,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 		comboBoxGuestsModel = new DefaultComboBoxModel<>();
 		comBoxGuestId = new JComboBox<>(comboBoxGuestsModel);
-		comBoxGuestId.setName("guestIdComBox");
 		comBoxGuestId.setSelectedIndex(-1);
+		comBoxGuestId.addActionListener(e -> btnSerchByGuestId.setEnabled(comBoxGuestId.getSelectedIndex() != -1));
+		comBoxGuestId.setName("guestIdComBox");
 		comBoxGuestId.addActionListener(btnAddBookingEnabler);
 
 		JLabel lblGuestId = new JLabel("Guest Id");
@@ -288,11 +291,11 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		JScrollPane bookingsScrollPane = new JScrollPane();
 		bookingsScrollPane.setName("bookingsScrollPane");
 
-		JButton btnSearchByRoom = new JButton("Search by Room");
+		btnSearchByRoom = new JButton("Search by Room");
 		btnSearchByRoom.setEnabled(false);
 		btnSearchByRoom.setName("searchByRoomButton");
 
-		JButton btnSerchByGuestId = new JButton("Search by Guest Id");
+		btnSerchByGuestId = new JButton("Search by Guest Id");
 		btnSerchByGuestId.setEnabled(false);
 		btnSerchByGuestId.setName("searchByGuestIdButton");
 		GroupLayout layoutBookingsPanel = new GroupLayout(bookingsPanel);

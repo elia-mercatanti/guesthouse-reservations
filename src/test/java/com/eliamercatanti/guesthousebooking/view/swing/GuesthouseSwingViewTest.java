@@ -309,8 +309,8 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		checkInDateTextBox.enterText("00-00-0000");
 		checkOutDateTextBox.enterText("00-00-0000");
-		roomComBox.clearSelection();
-		guestIdComBox.clearSelection();
+		roomComBox.selectItem(0);
+		guestIdComBox.selectItem(0);
 		addBookingButton.requireDisabled();
 
 		checkInDateTextBox.setText("");
@@ -340,7 +340,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testDeleteButtonShouldBeEnabledOnlyWhenABookingIsSelected() {
-		Booking booking = new Booking("1", "1", LocalDate.of(2021, 5, 1), LocalDate.of(2021, 5, 5), 1, Room.SINGLE);
+		Booking booking = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getListBookingsModel().addElement(booking));
 		JListFixture bookingsList = window.list("bookingsList");
@@ -365,17 +365,47 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		JTextComponentFixture checkInDateTextBox = window.textBox("checkInDateTextBox");
 		JTextComponentFixture checkOutDateTextBox = window.textBox("checkOutDateTextBox");
 		JButtonFixture searchByDatesButton = window.button("searchByDatesButton");
-		
+
 		checkInDateTextBox.enterText("00-00-0000");
 		checkOutDateTextBox.enterText(" ");
 		searchByDatesButton.requireDisabled();
-		
+
 		checkInDateTextBox.setText("");
 		checkOutDateTextBox.setText("");
-		
+
 		checkInDateTextBox.enterText(" ");
 		checkOutDateTextBox.enterText("00-00-0000");
 		searchByDatesButton.requireDisabled();
 	}
 
+	@Test
+	public void testWhenRoomIsSelectedThenSearchByRoomButtonShouldBeEnabled() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.comboBox("roomComBox").selectItem(0);
+		window.button("searchByRoomButton").requireEnabled();
+	}
+
+	@Test
+	public void testWhenRoomIsNotSelectedThenSearchByRoomButtonShouldBeDisabled() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.comboBox("roomComBox").clearSelection();
+		window.button("searchByRoomButton").requireDisabled();
+	}
+
+	@Test
+	public void testWhenGuestIdIsSelectedThenSearchByGuestIdButtonShouldBeEnabled() {
+		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+		window.comboBox("guestIdComBox").selectItem(0);
+		window.button("searchByGuestIdButton").requireEnabled();
+	}
+	
+	@Test
+	public void testWhenGuestIdIsNotSelectedThenSearchByGuestIdButtonShouldBeDisabled() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.comboBox("guestIdComBox").clearSelection();
+		window.button("searchByGuestIdButton").requireDisabled();
+	}
+	
 }
