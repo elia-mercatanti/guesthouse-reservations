@@ -19,4 +19,8 @@ public interface GuesthouseView {
 
 	public void showAllBookings(List<Booking> bookings);
 
+	void bookingAdded(Booking booking);
+
+	void bookingRemoved(Booking booking);
+
 }

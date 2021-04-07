@@ -226,7 +226,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		textCheckInDate = new JTextField();
 		ActionListener btnAddBookingEnabler = e -> btnAddBooking.setEnabled(!textCheckInDate.getText().trim().isEmpty()
 				&& !textCheckOutDate.getText().trim().isEmpty() && (comBoxNumberOfGuests.getSelectedIndex() != -1)
-				&& (comBoxRoom.getSelectedIndex() != -1 && comBoxGuestId.getSelectedIndex() != -1));
+				&& (comBoxRoom.getSelectedIndex() != -1) && (comBoxGuestId.getSelectedIndex() != -1));
 		KeyAdapter btnSearchByDatesEnabler = new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -254,6 +254,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		comBoxRoom = new JComboBox<>();
 		comBoxRoom.setModel(new DefaultComboBoxModel<>(Room.values()));
 		comBoxRoom.setSelectedIndex(-1);
+		comBoxRoom.addActionListener(btnAddBookingEnabler);
 		comBoxRoom.addActionListener(e -> btnSearchByRoom.setEnabled(comBoxRoom.getSelectedIndex() != -1));
 		comBoxRoom.setName("roomComBox");
 
@@ -450,6 +451,25 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 	public void showAllBookings(List<Booking> bookings) {
 		bookings.stream().forEach(listBookingsModel::addElement);
+	}
+
+	public void showErrorBookingNotFound(String message, Booking booking) {
+		lblErrorLogMessage.setText(message + ": id=" + booking.getId() + ", guestId=" + booking.getGuestId()
+				+ ", checkIn=" + booking.getCheckInDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+				+ ", checkOut=" + booking.getCheckOutDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		listBookingsModel.removeElement(booking);
+	}
+
+	@Override
+	public void bookingAdded(Booking booking) {
+		listBookingsModel.addElement(booking);
+		clearErrorLog();
+	}
+
+	@Override
+	public void bookingRemoved(Booking booking) {
+		listBookingsModel.removeElement(booking);
+		clearErrorLog();
 	}
 
 }

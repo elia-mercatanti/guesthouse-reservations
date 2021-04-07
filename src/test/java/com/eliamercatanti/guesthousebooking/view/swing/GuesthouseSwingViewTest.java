@@ -167,7 +167,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testsShowAllGuestShouldAddGuestInfosToTheList() {
+	public void testShowAllGuestShouldAddGuestInfosToTheList() {
 		Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
@@ -259,8 +259,8 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	public void testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled() {
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 		window.textBox("checkInDateTextBox").enterText("00-00-0000");
 		window.textBox("checkOutDateTextBox").enterText("00-00-0000");
 		window.comboBox("numberOfGuestsComBox").selectItem(0);
@@ -418,6 +418,59 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(bookingsListContent).containsExactly(
 				"id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE",
 				"id=2, guestId=1, checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE");
+	}
+
+	@Test
+	public void testShowErrorBookingNotFound() {
+		Booking bookingNoLongerPresent = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+				Room.SINGLE);
+		Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
+				Room.DOUBLE);
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> {
+			DefaultListModel<Booking> listBookingsModel = guesthouseSwingView.getListBookingsModel();
+			listBookingsModel.addElement(bookingNoLongerPresent);
+			listBookingsModel.addElement(anotherBooking);
+		});
+		GuiActionRunner.execute(
+				() -> guesthouseSwingView.showErrorBookingNotFound("Error message test", bookingNoLongerPresent));
+		window.label("errorLogMessageLabel")
+				.requireText("Error message test: id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021");
+		String[] bookingsListContent = window.list("bookingsList").contents();
+		assertThat(bookingsListContent)
+				.containsExactly("id=2, guestId=1, checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE");
+	}
+
+	@Test
+	public void testBookingAddedShouldAddTheBookingToTheListAndClearTheErrorLabel() {
+		Booking bookingToAdd = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+				Room.SINGLE);
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> guesthouseSwingView.bookingAdded(bookingToAdd));
+		String[] bookingsListContent = window.list("bookingsList").contents();
+		assertThat(bookingsListContent)
+				.containsExactly("id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE");
+		window.label("errorLogMessageLabel").requireText(" ");
+	}
+
+	@Test
+	public void testBookingRemovedShouldRemoveTheBookingFromTheListAndResetTheErrorLabel() {
+		Booking bookingToRemove = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+				Room.SINGLE);
+		Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
+				Room.DOUBLE);
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> {
+			DefaultListModel<Booking> listBookingsModel = guesthouseSwingView.getListBookingsModel();
+			listBookingsModel.addElement(bookingToRemove);
+			listBookingsModel.addElement(anotherBooking);
+		});
+		GuiActionRunner.execute(() -> guesthouseSwingView.bookingRemoved(
+				new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE)));
+		String[] bookingsListContent = window.list("bookingsList").contents();
+		assertThat(bookingsListContent)
+				.containsExactly("id=2, guestId=1, checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE");
+		window.label("errorLogMessageLabel").requireText(" ");
 	}
 
 }
