@@ -2,6 +2,7 @@ package com.eliamercatanti.guesthousebooking.view;
 
 import java.util.List;
 
+import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
 
 public interface GuesthouseView {
@@ -15,5 +16,7 @@ public interface GuesthouseView {
 	public void showErrorGuestNotFound(String message, Guest guest);
 
 	void showError(String message);
+
+	public void showAllBookings(List<Booking> bookings);
 
 }

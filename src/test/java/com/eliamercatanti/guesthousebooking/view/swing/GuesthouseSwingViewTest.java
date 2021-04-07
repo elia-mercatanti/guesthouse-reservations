@@ -91,7 +91,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button("searchByGuestIdButton").requireVisible().requireDisabled().requireText("Search by Guest Id");
 		window.list("bookingsList").requireVisible().requireEnabled();
 		window.button("deleteBookingButton").requireVisible().requireDisabled().requireText("Delete Booking");
-		window.button("allBookingsButton").requireVisible().requireDisabled().requireText("All Bookings");
+		window.button("allBookingsButton").requireVisible().requireEnabled().requireText("All Bookings");
 	}
 
 	@Test
@@ -339,7 +339,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testDeleteButtonShouldBeEnabledOnlyWhenABookingIsSelected() {
+	public void testDeleteBookingButtonShouldBeEnabledOnlyWhenABookingIsSelected() {
 		Booking booking = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getListBookingsModel().addElement(booking));
@@ -400,12 +400,24 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.comboBox("guestIdComBox").selectItem(0);
 		window.button("searchByGuestIdButton").requireEnabled();
 	}
-	
+
 	@Test
 	public void testWhenGuestIdIsNotSelectedThenSearchByGuestIdButtonShouldBeDisabled() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		window.comboBox("guestIdComBox").clearSelection();
 		window.button("searchByGuestIdButton").requireDisabled();
 	}
-	
+
+	@Test
+	public void testsShowAllBookingsShouldAddBookingDescriptionsToTheList() {
+		Booking booking1 = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+		Booking booking2 = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> guesthouseSwingView.showAllBookings(Arrays.asList(booking1, booking2)));
+		String[] bookingsListContent = window.list("bookingsList").contents();
+		assertThat(bookingsListContent).containsExactly(
+				"id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE",
+				"id=2, guestId=1, checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE");
+	}
+
 }
