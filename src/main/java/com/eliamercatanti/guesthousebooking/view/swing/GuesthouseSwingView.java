@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -286,7 +287,6 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 		JButton btnAllBookings = new JButton("All Bookings");
 		btnAllBookings.setName("allBookingsButton");
-		btnAllBookings.setEnabled(false);
 
 		JScrollPane bookingsScrollPane = new JScrollPane();
 		bookingsScrollPane.setName("bookingsScrollPane");
@@ -369,9 +369,29 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		JList<Booking> listBookings = new JList<>(listBookingsModel);
 		listBookings.addListSelectionListener(e -> btnDeleteBooking.setEnabled(listBookings.getSelectedIndex() != -1));
 		listBookings.setName("bookingsList");
+		listBookings.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listBookings.setCellRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				Booking booking = (Booking) value;
+				return super.getListCellRendererComponent(list, getBookingDisplayString(booking), index, isSelected,
+						cellHasFocus);
+			}
+
+		});
 		bookingsScrollPane.setViewportView(listBookings);
 		bookingsPanel.setLayout(layoutBookingsPanel);
 		getContentPane().setLayout(groupLayout);
+	}
+
+	private String getBookingDisplayString(Booking booking) {
+		return "id=" + booking.getId() + ", guestId=" + booking.getGuestId() + ", checkIn="
+				+ booking.getCheckInDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ", checkOut="
+				+ booking.getCheckOutDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ", numGuests="
+				+ booking.getNumberOfGuests() + ", room=" + booking.getRoom();
 	}
 
 	private String getGuestDisplayString(Guest guest) {
@@ -427,4 +447,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	public DefaultListModel<Booking> getListBookingsModel() {
 		return listBookingsModel;
 	}
+
+	public void showAllBookings(List<Booking> bookings) {
+		bookings.stream().forEach(listBookingsModel::addElement);
+	}
+
 }
