@@ -23,4 +23,6 @@ public interface GuesthouseView {
 
 	void bookingRemoved(Booking booking);
 
+	void showErrorBookingNotFound(String message, Booking booking);
+
 }

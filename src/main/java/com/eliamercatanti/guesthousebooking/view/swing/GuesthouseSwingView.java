@@ -206,7 +206,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
 				Guest guest = (Guest) value;
-				return super.getListCellRendererComponent(list, getGuestDisplayString(guest), index, isSelected,
+				return super.getListCellRendererComponent(list, getGuestListDisplayString(guest), index, isSelected,
 						cellHasFocus);
 			}
 		});
@@ -270,6 +270,21 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		comBoxGuestId.addActionListener(e -> btnSerchByGuestId.setEnabled(comBoxGuestId.getSelectedIndex() != -1));
 		comBoxGuestId.setName("guestIdComBox");
 		comBoxGuestId.addActionListener(btnAddBookingEnabler);
+		comBoxGuestId.setRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(final JList<?> list, Object value, final int index,
+					final boolean isSelected, final boolean cellHasFocus) {
+				if (value != null) {
+					Guest guest = (Guest) (value);
+					return super.getListCellRendererComponent(list, getGuestComboBoxDisplayString(guest), index,
+							isSelected, cellHasFocus);
+				}
+				return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+			}
+		});
 
 		JLabel lblGuestId = new JLabel("Guest Id");
 		lblGuestId.setName("guestIdLabel");
@@ -378,7 +393,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
 				Booking booking = (Booking) value;
-				return super.getListCellRendererComponent(list, getBookingDisplayString(booking), index, isSelected,
+				return super.getListCellRendererComponent(list, getBookingListDisplayString(booking), index, isSelected,
 						cellHasFocus);
 			}
 
@@ -388,32 +403,40 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		getContentPane().setLayout(groupLayout);
 	}
 
-	private String getBookingDisplayString(Booking booking) {
+	private String getGuestComboBoxDisplayString(Guest guest) {
+		return guest.getId() + " - " + guest.getFirstName() + " - " + guest.getLastName();
+	}
+
+	private String getBookingListDisplayString(Booking booking) {
+		String pattern = "dd/MM/yyyy";
 		return "id=" + booking.getId() + ", guestId=" + booking.getGuestId() + ", checkIn="
-				+ booking.getCheckInDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ", checkOut="
-				+ booking.getCheckOutDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ", numGuests="
+				+ booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
+				+ booking.getCheckOutDate().format(DateTimeFormatter.ofPattern(pattern)) + ", numGuests="
 				+ booking.getNumberOfGuests() + ", room=" + booking.getRoom();
 	}
 
-	private String getGuestDisplayString(Guest guest) {
+	private String getGuestListDisplayString(Guest guest) {
 		return guest.getId() + " - " + guest.getFirstName() + " - " + guest.getLastName() + " - " + guest.getEmail()
 				+ " - " + guest.getTelephoneNumber();
 	}
 
 	@Override
 	public void showAllGuests(List<Guest> guests) {
+		listGuestsModel.removeAllElements();
 		guests.stream().forEach(listGuestsModel::addElement);
 	}
 
 	@Override
 	public void guestAdded(Guest guest) {
 		listGuestsModel.addElement(guest);
+		comboBoxGuestsModel.addElement(guest);
 		clearErrorLog();
 	}
 
 	@Override
 	public void guestRemoved(Guest guest) {
 		listGuestsModel.removeElement(guest);
+		comboBoxGuestsModel.removeElement(guest);
 		clearErrorLog();
 	}
 
@@ -450,13 +473,16 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	}
 
 	public void showAllBookings(List<Booking> bookings) {
+		listBookingsModel.removeAllElements();
 		bookings.stream().forEach(listBookingsModel::addElement);
 	}
 
+	@Override
 	public void showErrorBookingNotFound(String message, Booking booking) {
+		String pattern = "dd/MM/yyyy";
 		lblErrorLogMessage.setText(message + ": id=" + booking.getId() + ", guestId=" + booking.getGuestId()
-				+ ", checkIn=" + booking.getCheckInDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-				+ ", checkOut=" + booking.getCheckOutDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+				+ ", checkIn=" + booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
+				+ booking.getCheckOutDate().format(DateTimeFormatter.ofPattern(pattern)));
 		listBookingsModel.removeElement(booking);
 	}
 
