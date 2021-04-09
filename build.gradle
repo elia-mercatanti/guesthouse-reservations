@@ -38,7 +38,7 @@ mainClassName = 'com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingA
 java {
 	// Set Java version for building the project. Setup all compile and test tasks to use the defined toolchain.
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
