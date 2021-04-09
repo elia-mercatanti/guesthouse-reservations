@@ -45,6 +45,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> {
 			guesthouseSwingView = new GuesthouseSwingView();
 			guesthouseSwingView.setGuestController(guestController);
+			guesthouseSwingView.setBookingController(bookingController);
 			return guesthouseSwingView;
 		});
 		window = new FrameFixture(robot(), guesthouseSwingView);
@@ -93,7 +94,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button("addBookingButton").requireVisible().requireDisabled().requireText("Add Booking");
 		window.button("searchByDatesButton").requireVisible().requireDisabled().requireText("Search by Dates");
 		window.button("searchByRoomButton").requireVisible().requireDisabled().requireText("Search by Room");
-		window.button("searchByGuestIdButton").requireVisible().requireDisabled().requireText("Search by Guest Id");
+		window.button("searchByGuestButton").requireVisible().requireDisabled().requireText("Search by Guest");
 		window.list("bookingsList").requireVisible().requireEnabled();
 		window.button("deleteBookingButton").requireVisible().requireDisabled().requireText("Delete Booking");
 		window.button("allBookingsButton").requireVisible().requireEnabled().requireText("All Bookings");
@@ -162,14 +163,14 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testDeleteGuestButtonShouldBeEnabledOnlyWhenAGuestIsSelected() {
-		// Setup
+		// Setup.
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guest));
 
-		// Verify
+		// Verify.
 		JListFixture guestsList = window.list("guestsList");
 		JButtonFixture deleteGuestButton = window.button("deleteGuestButton");
 		guestsList.selectItem(0);
@@ -180,7 +181,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testShowAllGuestShouldResetAndFillGuestInfosToTheList() {
-		// Setup
+		// Setup.
 		Guest previusGuest1 = new Guest("3", "testFirstName3", "testLastName3", "test3@email.com", "2222222222");
 		Guest previusGuest2 = new Guest("4", "testFirstName4", "testLastName4", "test4@email.com", "4444444444");
 		Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
@@ -192,37 +193,36 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 			listGuestsModel.addElement(previusGuest2);
 		});
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(() -> guesthouseSwingView.showAllGuests(Arrays.asList(guest1, guest2)));
 
-		// Verify
+		// Verify.
 		String[] guestsListContent = window.list("guestsList").contents();
-		assertThat(guestsListContent).containsExactly(
-				"1 - testFirstName1 - testLastName1 - test1@email.com - 0000000000",
-				"2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
+		assertThat(guestsListContent).containsExactly("1, testFirstName1, testLastName1, test1@email.com, 0000000000",
+				"2, testFirstName2, testLastName2, test2@email.com, 1111111111");
 	}
 
 	@Test
 	public void testGuestAddedShouldBeAddedToTheGuestListAndComboBoxThenClearTheErrorLogLabel() {
-		// Setup
+		// Setup.
 		Guest guestToAdd = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guestToAdd));
 
-		// Verify
+		// Verify.
 		String[] guestsListContent = window.list("guestsList").contents();
-		assertThat(guestsListContent).containsExactly("1 - testFirstName - testLastName - test@email.com - 0000000000");
+		assertThat(guestsListContent).containsExactly("1, testFirstName, testLastName, test@email.com, 0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		String[] guestIdComBoxContent = window.comboBox("guestIdComBox").contents();
-		assertThat(guestIdComBoxContent).containsExactly("1 - testFirstName - testLastName");
+		assertThat(guestIdComBoxContent).containsExactly("1, testFirstName, testLastName");
 		window.label("errorLogMessageLabel").requireText(" ");
 	}
 
 	@Test
 	public void testGuestRemovedShouldRemoveTheGuestFromTheListAndComboBoxThenClearTheErrorLogLabel() {
-		// Setup
+		// Setup.
 		Guest guestToRemove = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
@@ -235,17 +235,16 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 			comboBoxGuestsModel.addElement(anotherGuest);
 		});
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(() -> guesthouseSwingView
 				.guestRemoved(new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000")));
 
-		// Verify
+		// Verify.
 		String[] guestsListContent = window.list("guestsList").contents();
-		assertThat(guestsListContent)
-				.containsExactly("2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
+		assertThat(guestsListContent).containsExactly("2, testFirstName2, testLastName2, test2@email.com, 1111111111");
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		String[] guestIdComBoxContent = window.comboBox("guestIdComBox").contents();
-		assertThat(guestIdComBoxContent).containsExactly("2 - testFirstName2 - testLastName2");
+		assertThat(guestIdComBoxContent).containsExactly("2, testFirstName2, testLastName2");
 		window.label("errorLogMessageLabel").requireText(" ");
 	}
 
@@ -267,36 +266,35 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 			listGuestsModel.addElement(anotherGuest);
 		});
 
-		// Execute
+		// Execute.
 		GuiActionRunner
 				.execute(() -> guesthouseSwingView.showErrorGuestNotFound("Error message test", guestNoLongerPresent));
 
-		// Verify
-		window.label("errorLogMessageLabel").requireText("Error message test: 1 - testFirstName1 - testLastName1");
+		// Verify.
+		window.label("errorLogMessageLabel").requireText("Error message test: 1, testFirstName1, testLastName1");
 		String[] guestsListContent = window.list("guestsList").contents();
-		assertThat(guestsListContent)
-				.containsExactly("2 - testFirstName2 - testLastName2 - test2@email.com - 1111111111");
+		assertThat(guestsListContent).containsExactly("2, testFirstName2, testLastName2, test2@email.com, 1111111111");
 	}
 
 	@Test
 	public void testAddGuestButtonShouldDelegateToGuestControllerNewGuest() {
-		// Setup
+		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Guests");
-		window.textBox("firstNameTextBox").enterText("testFirstName");
-		window.textBox("lastNameTextBox").enterText("testLastName");
+		window.textBox("firstNameTextBox").enterText("test");
+		window.textBox("lastNameTextBox").enterText("test");
 		window.textBox("emailTextBox").enterText("test@email.com");
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 
-		// Execute
+		// Execute.
 		window.button("addGuestButton").click();
 
-		// Verify
-		verify(guestController).newGuest(new Guest("testFirstName", "testLastName", "test@email.com", "0000000000"));
+		// Verify.
+		verify(guestController).newGuest(new Guest("test", "test", "test@email.com", "0000000000"));
 	}
 
 	@Test
 	public void testDeleteGuestButtonShouldDelegateToGuestControllerDeleteGuest() {
-		// Setup
+		// Setup.
 		Guest guestToDelete = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
@@ -307,21 +305,21 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		});
 		window.list("guestsList").selectItem(0);
 
-		// Execute
+		// Execute.
 		window.button("deleteGuestButton").click();
 
-		// Verify
+		// Verify.
 		verify(guestController).deleteGuest(guestToDelete);
 	}
 
 	@Test
 	public void testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled() {
-		// Setup
+		// Setup.
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 
-		// Verify
+		// Verify.
 		window.textBox("checkInDateTextBox").enterText("00-00-0000");
 		window.textBox("checkOutDateTextBox").enterText("00-00-0000");
 		window.comboBox("numberOfGuestsComBox").selectItem(0);
@@ -332,7 +330,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testWhenSomeBookingInfoAreNotSetThenAddBookingButtonShouldBeDisabled() {
-		// Setup
+		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
@@ -343,7 +341,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		JComboBoxFixture guestIdComBox = window.comboBox("guestIdComBox");
 		JButtonFixture addBookingButton = window.button("addBookingButton");
 
-		// Verify
+		// Verify.
 		checkInDateTextBox.enterText(" ");
 		checkOutDateTextBox.enterText("00-00-0000");
 		numberOfGuestComboBox.selectItem(0);
@@ -403,14 +401,14 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testDeleteBookingButtonShouldBeEnabledOnlyWhenABookingIsSelected() {
-		// Setup
+		// Setup.
 		Booking booking = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getListBookingsModel().addElement(booking));
 		JListFixture bookingsList = window.list("bookingsList");
 		JButtonFixture deleteBookingButton = window.button("deleteBookingButton");
 
-		// Verify
+		// Verify.
 		bookingsList.selectItem(0);
 		deleteBookingButton.requireEnabled();
 		bookingsList.clearSelection();
@@ -458,21 +456,21 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testSearchByIdGuestButtonShouldBeEnabledOnlyWhenAGuestIdIsSelected() {
-		// Setup
+		// Setup.
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 
-		// Verify
+		// Verify.
 		window.comboBox("guestIdComBox").selectItem(0);
-		window.button("searchByGuestIdButton").requireEnabled();
+		window.button("searchByGuestButton").requireEnabled();
 		window.comboBox("guestIdComBox").clearSelection();
-		window.button("searchByGuestIdButton").requireDisabled();
+		window.button("searchByGuestButton").requireDisabled();
 	}
 
 	@Test
 	public void testsShowAllBookingsShouldResetAndFillBookingDescriptionsToTheList() {
-		// Setup
+		// Setup.
 		Booking previusBooking1 = new Booking("3", "1", LocalDate.of(2021, 3, 1), LocalDate.of(2021, 3, 10), 3,
 				Room.TRIPLE);
 		Booking previusBooking2 = new Booking("4", "2", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 4,
@@ -486,10 +484,10 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 			listBookingsModel.addElement(previusBooking2);
 		});
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(() -> guesthouseSwingView.showAllBookings(Arrays.asList(booking1, booking2)));
 
-		// Verify
+		// Verify.
 		String[] bookingsListContent = window.list("bookingsList").contents();
 		assertThat(bookingsListContent).containsExactly(
 				"id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE",
@@ -498,7 +496,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testShowErrorBookingNotFound() {
-		// Setup
+		// Setup.
 		Booking bookingNoLongerPresent = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
 		Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
@@ -510,11 +508,11 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 			listBookingsModel.addElement(anotherBooking);
 		});
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(
 				() -> guesthouseSwingView.showErrorBookingNotFound("Error message test", bookingNoLongerPresent));
 
-		// Verify
+		// Verify.
 		window.label("errorLogMessageLabel")
 				.requireText("Error message test: id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021");
 		String[] bookingsListContent = window.list("bookingsList").contents();
@@ -524,15 +522,15 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testBookingAddedShouldAddTheBookingToTheListAndClearTheErrorLabel() {
-		// Setup
+		// Setup.
 		Booking bookingToAdd = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(() -> guesthouseSwingView.bookingAdded(bookingToAdd));
 
-		// Verify
+		// Verify.
 		String[] bookingsListContent = window.list("bookingsList").contents();
 		assertThat(bookingsListContent)
 				.containsExactly("id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE");
@@ -541,7 +539,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testBookingRemovedShouldRemoveTheBookingFromTheListAndResetTheErrorLabel() {
-		// Setup
+		// Setup.
 		Booking bookingToRemove = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
 		Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
@@ -553,11 +551,11 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 			listBookingsModel.addElement(anotherBooking);
 		});
 
-		// Execute
+		// Execute.
 		GuiActionRunner.execute(() -> guesthouseSwingView.bookingRemoved(
 				new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE)));
 
-		// Verify
+		// Verify.
 		String[] bookingsListContent = window.list("bookingsList").contents();
 		assertThat(bookingsListContent)
 				.containsExactly("id=2, guestId=1, checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE");
@@ -566,7 +564,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testAddBookingButtonShouldDelegateToBookingControllerNewBooking() {
-		// Setup
+		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		GuiActionRunner.execute(() -> {
@@ -577,14 +575,80 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.textBox("checkOutDateTextBox").enterText("1-10-2021");
 		window.comboBox("numberOfGuestsComBox").selectItem("1");
 		window.comboBox("roomComBox").selectItem("SINGLE");
-		
 		window.comboBox("guestIdComBox").selectItem(0);
 
-		// Execute
+		// Execute.
 		window.button("addBookingButton").click();
 
-		// Verify
-		verify(bookingController).newBooking();
+		// Verify.
+		verify(bookingController).newBooking("1-1-2021", "1-10-2021", 1, Room.SINGLE, guest);
+	}
+
+	@Test
+	public void testSearchByDatesButtonShouldDelegateToBookingControllerSearchBookingsByDates() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+		window.textBox("checkInDateTextBox").enterText("1-1-2021");
+		window.textBox("checkOutDateTextBox").enterText("1-10-2021");
+		window.button("searchByDatesButton").click();
+		verify(bookingController).searchBookingsByDates("1-1-2021", "1-10-2021");
+	}
+
+	@Test
+	public void testSearchByRoomButtonShouldDelegateToBookingControllerSearchBookingsByRoom() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+		window.comboBox("roomComBox").selectItem("SINGLE");
+		window.button("searchByRoomButton").click();
+		verify(bookingController).searchBookingsByRoom(Room.SINGLE);
+	}
+
+	@Test
+	public void testSearchByGuestButtonShouldDelegateToBookingControllerSearchBookingsByGuestId() {
+		// Setup.
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
+		GuiActionRunner.execute(() -> {
+			DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
+			comboBoxGuestsModel.addElement(guest);
+		});
+		window.comboBox("guestIdComBox").selectItem(0);
+
+		// Execute.
+		window.button("searchByGuestButton").click();
+
+		// Verify.
+		verify(bookingController).searchBookingsByGuest(guest);
+	}
+
+	@Test
+	public void testDeleteBookingButtonShouldDelegateToBookingControllerDeleteBooking() {
+		// Setup.
+		Booking bookingToDelete = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+				Room.SINGLE);
+		Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
+				Room.DOUBLE);
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		GuiActionRunner.execute(() -> {
+			DefaultListModel<Booking> listBookingsModel = guesthouseSwingView.getListBookingsModel();
+			listBookingsModel.addElement(bookingToDelete);
+			listBookingsModel.addElement(anotherBooking);
+		});
+		window.list("bookingsList").selectItem(0);
+
+		// Execute.
+		window.button("deleteBookingButton").click();
+
+		// Verify.
+		verify(bookingController).deleteBooking(bookingToDelete);
+	}
+
+	@Test
+	public void testAllBookingsButtonShouldDelegateToBookingControllerAllBookings() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+		window.button("allBookingsButton").click();
+		verify(bookingController).allBookings();
 	}
 
 }

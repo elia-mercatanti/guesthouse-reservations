@@ -28,6 +28,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import com.eliamercatanti.guesthousebooking.controller.BookingController;
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
 import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
@@ -56,7 +57,10 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private DefaultListModel<Booking> listBookingsModel;
 	private JButton btnSearchByDates;
 	private JButton btnSearchByRoom;
-	private JButton btnSerchByGuestId;
+	private JButton btnSerchByGuest;
+
+	transient BookingController bookingController;
+	private JList<Booking> listBookings;
 
 	public GuesthouseSwingView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -267,7 +271,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		comboBoxGuestsModel = new DefaultComboBoxModel<>();
 		comBoxGuestId = new JComboBox<>(comboBoxGuestsModel);
 		comBoxGuestId.setSelectedIndex(-1);
-		comBoxGuestId.addActionListener(e -> btnSerchByGuestId.setEnabled(comBoxGuestId.getSelectedIndex() != -1));
+		comBoxGuestId.addActionListener(e -> btnSerchByGuest.setEnabled(comBoxGuestId.getSelectedIndex() != -1));
 		comBoxGuestId.setName("guestIdComBox");
 		comBoxGuestId.addActionListener(btnAddBookingEnabler);
 		comBoxGuestId.setRenderer(new DefaultListCellRenderer() {
@@ -292,28 +296,39 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		btnAddBooking = new JButton("Add Booking");
 		btnAddBooking.setEnabled(false);
 		btnAddBooking.setName("addBookingButton");
+		btnAddBooking.addActionListener(e -> bookingController.newBooking(textCheckInDate.getText(),
+				textCheckOutDate.getText(), (int) comBoxNumberOfGuests.getSelectedItem(),
+				(Room) comBoxRoom.getSelectedItem(), (Guest) comBoxGuestId.getSelectedItem()));
 
 		JButton btnDeleteBooking = new JButton("Delete Booking");
+		btnDeleteBooking.addActionListener(e -> bookingController.deleteBooking(listBookings.getSelectedValue()));
 		btnDeleteBooking.setName("deleteBookingButton");
 		btnDeleteBooking.setEnabled(false);
 
 		btnSearchByDates = new JButton("Search by Dates");
 		btnSearchByDates.setName("searchByDatesButton");
 		btnSearchByDates.setEnabled(false);
+		btnSearchByDates.addActionListener(
+				e -> bookingController.searchBookingsByDates(textCheckInDate.getText(), textCheckOutDate.getText()));
 
 		JButton btnAllBookings = new JButton("All Bookings");
+		btnAllBookings.addActionListener(e -> bookingController.allBookings());
 		btnAllBookings.setName("allBookingsButton");
 
 		JScrollPane bookingsScrollPane = new JScrollPane();
 		bookingsScrollPane.setName("bookingsScrollPane");
 
 		btnSearchByRoom = new JButton("Search by Room");
+		btnSearchByRoom
+				.addActionListener(e -> bookingController.searchBookingsByRoom((Room) comBoxRoom.getSelectedItem()));
 		btnSearchByRoom.setEnabled(false);
 		btnSearchByRoom.setName("searchByRoomButton");
 
-		btnSerchByGuestId = new JButton("Search by Guest Id");
-		btnSerchByGuestId.setEnabled(false);
-		btnSerchByGuestId.setName("searchByGuestIdButton");
+		btnSerchByGuest = new JButton("Search by Guest");
+		btnSerchByGuest.addActionListener(
+				e -> bookingController.searchBookingsByGuest(((Guest) comBoxGuestId.getSelectedItem())));
+		btnSerchByGuest.setEnabled(false);
+		btnSerchByGuest.setName("searchByGuestButton");
 		GroupLayout layoutBookingsPanel = new GroupLayout(bookingsPanel);
 		layoutBookingsPanel.setHorizontalGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(layoutBookingsPanel.createSequentialGroup().addContainerGap()
@@ -351,7 +366,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 										.addPreferredGap(ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
 										.addComponent(btnSearchByDates).addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(btnSearchByRoom).addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(btnSerchByGuestId)))
+										.addComponent(btnSerchByGuest)))
 						.addContainerGap()));
 		layoutBookingsPanel.setVerticalGroup(layoutBookingsPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(layoutBookingsPanel.createSequentialGroup().addContainerGap()
@@ -374,15 +389,15 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 										GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(btnAddBooking).addComponent(btnSerchByGuestId)
-								.addComponent(btnSearchByRoom).addComponent(btnSearchByDates))
+								.addComponent(btnAddBooking).addComponent(btnSerchByGuest).addComponent(btnSearchByRoom)
+								.addComponent(btnSearchByDates))
 						.addGap(8).addComponent(bookingsScrollPane, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(layoutBookingsPanel.createParallelGroup(Alignment.BASELINE)
 								.addComponent(btnDeleteBooking).addComponent(btnAllBookings))
 						.addContainerGap()));
 		listBookingsModel = new DefaultListModel<>();
-		JList<Booking> listBookings = new JList<>(listBookingsModel);
+		listBookings = new JList<>(listBookingsModel);
 		listBookings.addListSelectionListener(e -> btnDeleteBooking.setEnabled(listBookings.getSelectedIndex() != -1));
 		listBookings.setName("bookingsList");
 		listBookings.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -404,7 +419,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	}
 
 	private String getGuestComboBoxDisplayString(Guest guest) {
-		return guest.getId() + " - " + guest.getFirstName() + " - " + guest.getLastName();
+		return guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName();
 	}
 
 	private String getBookingListDisplayString(Booking booking) {
@@ -416,8 +431,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	}
 
 	private String getGuestListDisplayString(Guest guest) {
-		return guest.getId() + " - " + guest.getFirstName() + " - " + guest.getLastName() + " - " + guest.getEmail()
-				+ " - " + guest.getTelephoneNumber();
+		return guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName() + ", " + guest.getEmail() + ", "
+				+ guest.getTelephoneNumber();
 	}
 
 	@Override
@@ -447,7 +462,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	@Override
 	public void showErrorGuestNotFound(String message, Guest guest) {
 		lblErrorLogMessage
-				.setText(message + ": " + guest.getId() + " - " + guest.getFirstName() + " - " + guest.getLastName());
+				.setText(message + ": " + guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName());
 		listGuestsModel.removeElement(guest);
 	}
 
@@ -496,6 +511,10 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	public void bookingRemoved(Booking booking) {
 		listBookingsModel.removeElement(booking);
 		clearErrorLog();
+	}
+
+	public void setBookingController(BookingController bookingController) {
+		this.bookingController = bookingController;
 	}
 
 }
