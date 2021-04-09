@@ -44,8 +44,4 @@ jobs:
          with:
             name: guesthouse-reservations-packages-${{ matrix.os }}
             path: '**/build/libs'
-      -  name: Cleanup Gradle Cache
-         run: |
-           rm -Force ~/.gradle/caches/modules-2/modules-2.lock
-           rm -Force ~/.gradle/caches/modules-2/gc.properties
          
