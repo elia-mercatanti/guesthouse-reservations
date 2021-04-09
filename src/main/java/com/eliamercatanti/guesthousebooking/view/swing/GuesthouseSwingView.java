@@ -418,6 +418,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		bookingsScrollPane.setViewportView(listBookings);
 		bookingsPanel.setLayout(layoutBookingsPanel);
 		getContentPane().setLayout(groupLayout);
+		pack();
 	}
 
 	private String getGuestComboBoxDisplayString(Guest guest) {
