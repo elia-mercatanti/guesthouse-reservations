@@ -2,6 +2,7 @@ package com.eliamercatanti.guesthousebooking.view.swing;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -63,6 +64,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JList<Booking> listBookings;
 
 	public GuesthouseSwingView() {
+		setPreferredSize(new Dimension(800, 600));
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Guesthouse Reservations");
 

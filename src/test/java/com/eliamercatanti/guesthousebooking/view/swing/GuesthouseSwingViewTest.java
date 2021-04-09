@@ -3,6 +3,7 @@ package com.eliamercatanti.guesthousebooking.view.swing;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
+import java.awt.Dimension;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -50,6 +51,12 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		});
 		window = new FrameFixture(robot(), guesthouseSwingView);
 		window.show();
+	}
+
+	@Test
+	public void testFrameInitialState() {
+		window.requireSize(new Dimension(800, 600));
+		window.requireTitle("Guesthouse Reservations");
 	}
 
 	@Test
