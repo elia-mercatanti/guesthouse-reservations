@@ -24,6 +24,9 @@ plugins {
     
     // Plugin for generating fatjars, add shadowJar task to manage that.
     id 'com.github.johnrengelman.shadow' version "${fatjarPluginVersion}"
+    
+    // Plugin that provides a task to determine which dependencies have updates.
+    id "com.github.ben-manes.versions" version "${gradleVersionsPluginVersion}"
 }
 
 // Group, version, description and main class of the project.
@@ -49,12 +52,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
-    // Use Mockito with JUnit 5 for mocking during tests.
-    testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion
-    
     // Use JUnit 4 for GUI tests.
     testImplementation 'junit:junit:' + junit4Version
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
+    
+    // Use Mockito with JUnit 5 for mocking during tests.
+    testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion  
     
     // Use AssertJ and Swing for for fluent style testing and GUI tests.
     testImplementation 'org.assertj:assertj-swing-junit:' + assertJSwingVersion
@@ -78,7 +81,7 @@ test {
 pitest {
     junit5PluginVersion = '0.12'
     mutators = ['STRONGER']
-    mutationThreshold = 0
+    mutationThreshold = 80
     excludedClasses = ['**.app.**', '**.model.**', '**.swing.**']
     excludedTestClasses = ['**.swing.**']
 }
