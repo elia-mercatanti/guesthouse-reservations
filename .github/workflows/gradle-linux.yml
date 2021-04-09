@@ -16,9 +16,10 @@ jobs:
          with:
             fetch-depth: 0
       -  name: Set up JDK 11
-         uses: actions/setup-java@v1
+         uses: actions/setup-java@v2
          with:
             java-version: 11
+            distribution: 'adopt'
       -  name: Cache Gradle and SonarQube packages
          uses: actions/cache@v2
          with:
@@ -35,7 +36,7 @@ jobs:
          env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         run: ./gradlew build pitest jacocoTestReport coverallsJacoco sonarqube -i
+         run: xvfb-run ./gradlew build jacocoTestReport coverallsJacoco pitest sonarqube -i
       -  name: Archive JUnit Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}

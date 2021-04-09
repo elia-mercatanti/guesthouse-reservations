@@ -1,9 +1,13 @@
 package com.eliamercatanti.guesthousebooking.controller;
 
+import static org.mockito.Mockito.ignoreStubs;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,7 +40,7 @@ class GuestControllerTest {
 	class HappyCases {
 
 		@Test
-		@DisplayName("testAllGuests - Guest list request")
+		@DisplayName("testAllGuests - Guests list request")
 		void testAllGuests() {
 			List<Guest> guestsList = Arrays.asList(new Guest());
 			when(guestRepository.findAll()).thenReturn(guestsList);
@@ -47,7 +51,7 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testNewGuest - New guest request")
 		void testNewGuest() {
-			Guest newGuest = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			Guest newGuest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			guestController.newGuest(newGuest);
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
@@ -57,7 +61,7 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testDeleteGuestWhenGuestExist - Delete guest request when exist")
 		void testDeleteGuestWhenGuestExist() {
-			Guest guestToDelete = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			Guest guestToDelete = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestToDelete.getId())).thenReturn(guestToDelete);
 			guestController.deleteGuest(guestToDelete);
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
@@ -73,10 +77,11 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testDeleteGuestWhenGuestNotExist - Delete guest request when not exist")
 		void testDeleteGuestWhenGuestNotExist() {
-			Guest guestNotPresent = new Guest("1", "testName", "testSurname", "test@email.com", "0000000000");
+			Guest guestNotPresent = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestNotPresent.getId())).thenReturn(null);
 			guestController.deleteGuest(guestNotPresent);
-			verify(guesthouseView).errorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".", guestNotPresent);
+			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".",
+					guestNotPresent);
 			verifyNoMoreInteractions(ignoreStubs(guestRepository));
 		}
 

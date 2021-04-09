@@ -24,18 +24,21 @@ plugins {
     
     // Plugin for generating fatjars, add shadowJar task to manage that.
     id 'com.github.johnrengelman.shadow' version "${fatjarPluginVersion}"
+    
+    // Plugin that provides a task to determine which dependencies have updates.
+    id "com.github.ben-manes.versions" version "${gradleVersionsPluginVersion}"
 }
 
 // Group, version, description and main class of the project.
-group = "com.eliamercatanti"
+group = 'com.eliamercatanti'
 version = '0.0.1-SNAPSHOT'
 description = 'Project for ATTSD Course - Simple app to manage reservations of a guesthouse'
-mainClassName = 'com.eliamercatanti.guesthousebooking.app.App'
+mainClassName = 'com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingApp'
 
 java {
 	// Set Java version for building the project. Setup all compile and test tasks to use the defined toolchain.
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
@@ -45,17 +48,19 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit Jupiter API for testing.
+    // Use JUnit 5 Jupiter API and Engine for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
-
-    // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
-    // Use AssertJ for fluent style testing.
-    testCompile "org.assertj:assertj-core:" + assertJVersion
+    // Use JUnit 4 for GUI tests.
+    testImplementation 'junit:junit:' + junit4Version
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
     
     // Use Mockito with JUnit 5 for mocking during tests.
-    testCompile "org.mockito:mockito-junit-jupiter:" + mockitoVersion
+    testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion  
+    
+    // Use AssertJ and Swing for for fluent style testing and GUI tests.
+    testImplementation 'org.assertj:assertj-swing-junit:' + assertJSwingVersion
 }
 
 // Jar task configurations.
@@ -75,9 +80,10 @@ test {
 // PIT mutation testing plugin configurations.
 pitest {
     junit5PluginVersion = '0.12'
-    mutators = ["STRONGER"]
-    mutationThreshold = 0
-    excludedClasses = ['**.app.**', '**.model.**', '**.repository.**']
+    mutators = ['STRONGER']
+    mutationThreshold = 80
+    excludedClasses = ['**.app.**', '**.model.**', '**.swing.**']
+    excludedTestClasses = ['**.swing.**']
 }
 
 // Jacoco plugin configurations.
@@ -99,18 +105,26 @@ jacocoTestReport {
 // SonarQube plugin configurations.
 sonarqube {
 	properties {
-		//Properties for project configuration.
-		property "sonar.projectKey", "elia-mercatanti_guesthouse-reservations"
-	    property "sonar.organization", "elia-mercatanti"
-	    property "sonar.host.url", "https://sonarcloud.io"
+		// Properties for project configuration.
+		property 'sonar.projectKey', 'elia-mercatanti_guesthouse-reservations'
+	    property 'sonar.organization', 'elia-mercatanti'
+	    property 'sonar.host.url', 'https://sonarcloud.io'
 	    
-	    //Property for excluding some classes from code coverage.
+	    // Property for excluding some classes from code coverage.
 	    property 'sonar.coverage.exclusions', ['**/model/**', '**/app/**']
+	    
+	    // Properties for ignoring some code issues.
+	    property 'sonar.issue.ignore.multicriteria', 'e11'
+	    property 'sonar.issue.ignore.multicriteria.e11.ruleKey', 'java:S110'
+	    property 'sonar.issue.ignore.multicriteria.e11.resourceKey', '**/GuesthouseSwingView.java'
+	    property 'sonar.issue.ignore.multicriteria', 'e12'
+	    property 'sonar.issue.ignore.multicriteria.e12.ruleKey', 'java:S2699'
+	    property 'sonar.issue.ignore.multicriteria.e12.resourceKey', '**/GuesthouseSwingViewTest.java'
 	}
 }
 
 // Application plugin configurations.
 application {
     // Define the main class for the application, for run task.
-    mainClass = mainClassName
+    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
 }

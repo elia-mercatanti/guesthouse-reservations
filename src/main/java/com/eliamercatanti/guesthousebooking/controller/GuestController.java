@@ -20,7 +20,7 @@ public class GuestController {
 
 	public void deleteGuest(Guest guest) {
 		if (guestRepository.findById(guest.getId()) == null) {
-			guesthouseView.errorGuestNotFound("There is no guest with id " + guest.getId() + ".", guest);
+			guesthouseView.showErrorGuestNotFound("There is no guest with id " + guest.getId() + ".", guest);
 		} else {
 			guestRepository.delete(guest.getId());
 			guesthouseView.guestRemoved(guest);
