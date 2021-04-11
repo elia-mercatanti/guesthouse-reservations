@@ -64,7 +64,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	private JList<Booking> listBookings;
 
 	public GuesthouseSwingView() {
-		setPreferredSize(new Dimension(800, 600));
+		setPreferredSize(new Dimension(900, 600));
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Guesthouse Reservations");
 

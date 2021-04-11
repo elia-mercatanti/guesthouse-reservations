@@ -55,7 +55,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testFrameInitialState() {
-		window.requireSize(new Dimension(800, 600));
+		window.requireSize(new Dimension(900, 600));
 		window.requireTitle("Guesthouse Reservations");
 	}
 

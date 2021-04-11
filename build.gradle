@@ -53,7 +53,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
     // Use JUnit 4 for GUI tests.
-    testImplementation 'junit:junit:' + junit4Version
+    testCompileOnly 'junit:junit:' + junit4Version
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
     
     // Use Mockito with JUnit 5 for mocking during tests.
@@ -73,7 +73,7 @@ jar {
 
 // Test task configurationsm.
 test {
-    // Use junit platform for unit tests.
+    // Use Junit 5 for tests.
     useJUnitPlatform()
 }
 
@@ -126,5 +126,5 @@ sonarqube {
 // Application plugin configurations.
 application {
     // Define the main class for the application, for run task.
-    mainClass = 'com.eliamercatanti.guesthousebooking.app.App'
+    mainClass = 'com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingApp'
 }
