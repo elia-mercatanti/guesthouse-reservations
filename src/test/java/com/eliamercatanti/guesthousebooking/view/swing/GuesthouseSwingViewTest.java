@@ -3,7 +3,6 @@ package com.eliamercatanti.guesthousebooking.view.swing;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
-import java.awt.Dimension;
 import java.time.LocalDate;
 import java.util.Arrays;
 
