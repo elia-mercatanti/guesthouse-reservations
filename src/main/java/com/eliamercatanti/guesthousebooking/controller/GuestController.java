@@ -28,8 +28,9 @@ public class GuestController {
 	}
 
 	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {
-		// TODO Auto-generated method stub
-		
+		Guest guest = new Guest(firstName, lastName, email, telephoneNumber);
+		guestRepository.save(guest);
+		guesthouseView.guestAdded(guest);
 	}
 
 }
