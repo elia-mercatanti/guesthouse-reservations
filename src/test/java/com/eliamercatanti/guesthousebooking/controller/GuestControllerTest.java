@@ -46,7 +46,9 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testAllGuests - Guests list request")
 		void testAllGuests() {
-			List<Guest> guestsList = Arrays.asList(new Guest());
+			Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "1111111111");
+			Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "2222222222");
+			List<Guest> guestsList = Arrays.asList(guest1, guest2);
 			when(guestRepository.findAll()).thenReturn(guestsList);
 			guestController.allGuests();
 			verify(guesthouseView).showAllGuests(guestsList);

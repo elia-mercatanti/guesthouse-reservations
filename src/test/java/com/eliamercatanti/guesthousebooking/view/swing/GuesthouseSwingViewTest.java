@@ -287,14 +287,14 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("test");
 		window.textBox("lastNameTextBox").enterText("test");
-		window.textBox("emailTextBox").enterText("test@email.com");
+		window.textBox("emailTextBox").setText("test@email.com");
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 
 		// Execute.
 		window.button("addGuestButton").click();
 
 		// Verify.
-		verify(guestController).newGuest(new Guest("test", "test", "test@email.com", "0000000000"));
+		verify(guestController).newGuest("test", "test", "test@email.com", "0000000000");
 	}
 
 	@Test

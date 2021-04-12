@@ -15,20 +15,6 @@ public class GuestController {
 		guesthouseView.showAllGuests(guestRepository.findAll());
 	}
 
-	public void newGuest(Guest guest) {
-		guestRepository.save(guest);
-		guesthouseView.guestAdded(guest);
-	}
-
-	public void deleteGuest(Guest guest) {
-		if (guestRepository.findById(guest.getId()) == null) {
-			guesthouseView.showErrorGuestNotFound("There is no guest with id " + guest.getId() + ".", guest);
-		} else {
-			guestRepository.delete(guest.getId());
-			guesthouseView.guestRemoved(guest);
-		}
-	}
-
 	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {
 		if ((!inputValidation.validateEmail(email))) {
 			guesthouseView.showError("Guest Email is not valid: " + email + ". Format must be like prefix@domain.");
@@ -42,6 +28,15 @@ public class GuestController {
 			guesthouseView.guestAdded(guest);
 		}
 
+	}
+
+	public void deleteGuest(Guest guest) {
+		if (guestRepository.findById(guest.getId()) == null) {
+			guesthouseView.showErrorGuestNotFound("There is no guest with id " + guest.getId() + ".", guest);
+		} else {
+			guestRepository.delete(guest.getId());
+			guesthouseView.guestRemoved(guest);
+		}
 	}
 
 }
