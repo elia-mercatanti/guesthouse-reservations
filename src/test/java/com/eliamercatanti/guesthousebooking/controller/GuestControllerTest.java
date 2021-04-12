@@ -1,8 +1,8 @@
 package com.eliamercatanti.guesthousebooking.controller;
 
-import static org.mockito.Mockito.ignoreStubs;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.repository.GuestRepository;
+import com.eliamercatanti.guesthousebooking.validation.InputValidation;
 import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +33,9 @@ class GuestControllerTest {
 	@Mock
 	private GuesthouseView guesthouseView;
 
+	@Mock
+	private InputValidation inputValidation;
+
 	@InjectMocks
 	private GuestController guestController;
 
@@ -42,17 +46,21 @@ class GuestControllerTest {
 		@Test
 		@DisplayName("testAllGuests - Guests list request")
 		void testAllGuests() {
-			List<Guest> guestsList = Arrays.asList(new Guest());
+			Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "1111111111");
+			Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "2222222222");
+			List<Guest> guestsList = Arrays.asList(guest1, guest2);
 			when(guestRepository.findAll()).thenReturn(guestsList);
 			guestController.allGuests();
 			verify(guesthouseView).showAllGuests(guestsList);
 		}
 
 		@Test
-		@DisplayName("testNewGuest - New guest request")
-		void testNewGuest() {
-			Guest newGuest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-			guestController.newGuest(newGuest);
+		@DisplayName("testNewGuestWhenGuestInfosAreValid - New guest request when guest infos are valid")
+		void testNewGuestWhenGuestInfosAreValid() {
+			Guest newGuest = new Guest("testFirstName", "testLastName", "test@email.com", "1234567890");
+			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
+			when(inputValidation.validateTelephoneNumber("1234567890")).thenReturn(true);
+			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890");
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
 			inOrder.verify(guesthouseView).guestAdded(newGuest);
@@ -75,6 +83,26 @@ class GuestControllerTest {
 	class ExceptionalCases {
 
 		@Test
+		@DisplayName("testNewGuestWhenEmailIsNotValid - New guest request when email is not valid")
+		void testNewGuestWhenEmailIsNotValid() {
+			when(inputValidation.validateEmail("testEmail")).thenReturn(false);
+			guestController.newGuest("testFirstName", "testLastName", "testEmail", "1234567890");
+			verify(guesthouseView).showError("Guest Email is not valid: testEmail. Format must be like prefix@domain.");
+			verifyNoInteractions(guestRepository);
+		}
+
+		@Test
+		@DisplayName("testNewGuestWhenTelephoneNumberIsNotValid - New guest request when telephone number is not valid")
+		void testNewGuestWhenTelephoneNumberIsNotValid() {
+			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
+			when(inputValidation.validateTelephoneNumber("telephoneNumber")).thenReturn(false);
+			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "telephoneNumber");
+			verify(guesthouseView)
+					.showError("Guest Telephone N. is not valid: telephoneNumber. Format must be like +10000000000.");
+			verifyNoInteractions(guestRepository);
+		}
+
+		@Test
 		@DisplayName("testDeleteGuestWhenGuestNotExist - Delete guest request when not exist")
 		void testDeleteGuestWhenGuestNotExist() {
 			Guest guestNotPresent = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
@@ -82,7 +110,7 @@ class GuestControllerTest {
 			guestController.deleteGuest(guestNotPresent);
 			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".",
 					guestNotPresent);
-			verifyNoMoreInteractions(ignoreStubs(guestRepository));
+			verifyNoMoreInteractions(guestRepository);
 		}
 
 	}

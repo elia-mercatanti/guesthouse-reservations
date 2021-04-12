@@ -139,8 +139,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		textTelephoneNumber.addKeyListener(btnAddGuestEnabler);
 
 		btnAddGuest = new JButton("Add Guest");
-		btnAddGuest.addActionListener(e -> guestController.newGuest(new Guest(textFirstName.getText(),
-				textLastName.getText(), textEmail.getText(), textTelephoneNumber.getText())));
+		btnAddGuest.addActionListener(e -> guestController.newGuest(textFirstName.getText(), textLastName.getText(),
+				textEmail.getText(), textTelephoneNumber.getText()));
 		btnAddGuest.setEnabled(false);
 		btnAddGuest.setName("addGuestButton");
 
