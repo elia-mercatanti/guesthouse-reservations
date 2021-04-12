@@ -2,12 +2,14 @@ package com.eliamercatanti.guesthousebooking.controller;
 
 import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.repository.GuestRepository;
+import com.eliamercatanti.guesthousebooking.validation.InputValidation;
 import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
 
 public class GuestController {
 
 	private GuesthouseView guesthouseView;
 	private GuestRepository guestRepository;
+	private InputValidation inputValidation;
 
 	public void allGuests() {
 		guesthouseView.showAllGuests(guestRepository.findAll());
@@ -28,9 +30,15 @@ public class GuestController {
 	}
 
 	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {
-		Guest guest = new Guest(firstName, lastName, email, telephoneNumber);
-		guestRepository.save(guest);
-		guesthouseView.guestAdded(guest);
+		if ((!inputValidation.validateEmail(email))) {
+			guesthouseView
+					.showError("Guest Email is not valid: " + email + ". Format must be like prefix@domain.");
+		} else {
+			Guest guest = new Guest(firstName, lastName, email, telephoneNumber);
+			guestRepository.save(guest);
+			guesthouseView.guestAdded(guest);
+		}
+
 	}
 
 }

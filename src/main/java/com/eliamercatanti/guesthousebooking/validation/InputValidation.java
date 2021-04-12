@@ -4,4 +4,6 @@ public interface InputValidation {
 
 	boolean validateEmail(String email);
 
+	boolean validateTelephoneNumber(String telephoneNumber);
+
 }

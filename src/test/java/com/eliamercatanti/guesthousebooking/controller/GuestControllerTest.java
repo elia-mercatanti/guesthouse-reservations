@@ -2,8 +2,8 @@ package com.eliamercatanti.guesthousebooking.controller;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ class GuestControllerTest {
 
 	@Mock
 	private GuesthouseView guesthouseView;
-	
+
 	@Mock
 	private InputValidation inputValidation;
 
@@ -56,6 +56,7 @@ class GuestControllerTest {
 		@DisplayName("testNewGuestWhenGuestInfosAreValid - New guest request when guest infos are valid")
 		void testNewGuestWhenGuestInfosAreValid() {
 			Guest newGuest = new Guest("testFirstName", "testLastName", "test@email.com", "1234567890");
+			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
 			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890");
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
@@ -79,11 +80,11 @@ class GuestControllerTest {
 	class ExceptionalCases {
 
 		@Test
-		@DisplayName("testNewGuestWhenEmailIsNotValid - New guest request when guest email is not valid")
+		@DisplayName("testNewGuestWhenEmailIsNotValid - New guest request when email is not valid")
 		void testNewGuestWhenEmailIsNotValid() {
 			when(inputValidation.validateEmail("testEmail")).thenReturn(false);
 			guestController.newGuest("testFirstName", "testLastName", "testEmail", "1234567890");
-			verify(guesthouseView).showError("Guest Email is not valid: testEmail. The email format must be like prefix@domain." );
+			verify(guesthouseView).showError("Guest Email is not valid: testEmail. Format must be like prefix@domain.");
 			verifyNoInteractions(guestRepository);
 		}
 
