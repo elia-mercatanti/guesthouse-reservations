@@ -57,6 +57,7 @@ class GuestControllerTest {
 		void testNewGuestWhenGuestInfosAreValid() {
 			Guest newGuest = new Guest("testFirstName", "testLastName", "test@email.com", "1234567890");
 			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
+			when(inputValidation.validateTelephoneNumber("1234567890")).thenReturn(true);
 			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890");
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
@@ -85,6 +86,17 @@ class GuestControllerTest {
 			when(inputValidation.validateEmail("testEmail")).thenReturn(false);
 			guestController.newGuest("testFirstName", "testLastName", "testEmail", "1234567890");
 			verify(guesthouseView).showError("Guest Email is not valid: testEmail. Format must be like prefix@domain.");
+			verifyNoInteractions(guestRepository);
+		}
+
+		@Test
+		@DisplayName("testNewGuestWhenTelephoneNumberIsNotValid - New guest request when telephone number is not valid")
+		void testNewGuestWhenTelephoneNumberIsNotValid() {
+			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
+			when(inputValidation.validateTelephoneNumber("telephoneNumber")).thenReturn(false);
+			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "telephoneNumber");
+			verify(guesthouseView)
+					.showError("Guest Telephone N. is not valid: telephoneNumber. Format must be like +10000000000.");
 			verifyNoInteractions(guestRepository);
 		}
 
