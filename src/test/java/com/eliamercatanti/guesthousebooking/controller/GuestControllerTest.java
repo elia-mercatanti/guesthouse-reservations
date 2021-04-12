@@ -49,10 +49,10 @@ class GuestControllerTest {
 		}
 
 		@Test
-		@DisplayName("testNewGuest - New guest request")
-		void testNewGuest() {
-			Guest newGuest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-			guestController.newGuest(newGuest);
+		@DisplayName("testNewGuestWhenGuestInfosAreValid - New guest request when guest infos are valid")
+		void testNewGuestWhenGuestInfosAreValid() {
+			Guest newGuest = new Guest("testFirstName", "testLastName", "test@email.com", "1234567890");
+			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890");
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
 			inOrder.verify(guesthouseView).guestAdded(newGuest);

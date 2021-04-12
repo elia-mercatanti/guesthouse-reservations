@@ -27,4 +27,9 @@ public class GuestController {
 		}
 	}
 
+	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
