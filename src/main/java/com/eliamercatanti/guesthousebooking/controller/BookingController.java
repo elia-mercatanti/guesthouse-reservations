@@ -19,6 +19,11 @@ public class BookingController {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void deleteBooking(Booking booking) {
+		// TODO Auto-generated method stub
+
+	}
 
 	public void searchBookingsByDates(String checkInDate, String checkOutDate) {
 		// TODO Auto-generated method stub
@@ -31,11 +36,6 @@ public class BookingController {
 	}
 
 	public void searchBookingsByGuest(Guest guest) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void deleteBooking(Booking booking) {
 		// TODO Auto-generated method stub
 
 	}

@@ -18,6 +18,7 @@ public class GuestController {
 	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {
 		if ((!inputValidation.validateEmail(email))) {
 			guesthouseView.showError("Guest Email is not valid: " + email + ". Format must be like prefix@domain.");
+			return;
 		}
 		if (!inputValidation.validateTelephoneNumber(telephoneNumber)) {
 			guesthouseView.showError(

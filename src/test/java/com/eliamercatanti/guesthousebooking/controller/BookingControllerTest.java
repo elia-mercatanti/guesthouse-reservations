@@ -1,6 +1,8 @@
 package com.eliamercatanti.guesthousebooking.controller;
 
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -11,11 +13,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eliamercatanti.guesthousebooking.model.Booking;
+import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
 import com.eliamercatanti.guesthousebooking.repository.BookingRepository;
 import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
@@ -36,6 +40,7 @@ class BookingControllerTest {
 	@Nested
 	@DisplayName("Happy Cases")
 	class HappyCases {
+
 		@Test
 		@DisplayName("testAllBookings - Bookings list request")
 		void testAllBookings() {
@@ -47,7 +52,24 @@ class BookingControllerTest {
 			when(bookingRepository.findAll()).thenReturn(bookingsList);
 			bookingController.allBookings();
 			verify(guesthouseView).showAllBookings(bookingsList);
+			verifyNoMoreInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
+
+		@Test
+		@DisplayName("testNewBookingWhenBookingInfosAreValid - New booking request when infos are valid")
+		void testNewBookingWhenBookingInfosAreValid() {
+			Booking newBooking = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Guest guest = new Guest("1", "firstNameTest", "lastNameTest", "test@email.com", "0000000000");
+			bookingController.newBooking("1/1/2021", "1/2/2021", 1, Room.SINGLE, guest);
+			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
+			inOrder.verify(bookingRepository).save(newBooking);
+			inOrder.verify(guesthouseView).bookingAdded(newBooking);
+			verifyNoMoreInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
+
 	}
 
 	@Nested

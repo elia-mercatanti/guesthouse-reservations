@@ -8,4 +8,6 @@ public interface BookingRepository {
 
 	List<Booking> findAll();
 
+	void save(Booking newBooking);
+
 }

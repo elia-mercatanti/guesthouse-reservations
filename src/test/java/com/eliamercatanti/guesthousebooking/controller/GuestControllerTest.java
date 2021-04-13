@@ -52,10 +52,12 @@ class GuestControllerTest {
 			when(guestRepository.findAll()).thenReturn(guestsList);
 			guestController.allGuests();
 			verify(guesthouseView).showAllGuests(guestsList);
+			verifyNoMoreInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 
 		@Test
-		@DisplayName("testNewGuestWhenGuestInfosAreValid - New guest request when guest infos are valid")
+		@DisplayName("testNewGuestWhenGuestInfosAreValid - New guest request when infos are valid")
 		void testNewGuestWhenGuestInfosAreValid() {
 			Guest newGuest = new Guest("testFirstName", "testLastName", "test@email.com", "1234567890");
 			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
@@ -64,6 +66,8 @@ class GuestControllerTest {
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
 			inOrder.verify(guesthouseView).guestAdded(newGuest);
+			verifyNoMoreInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 
 		@Test
@@ -75,6 +79,8 @@ class GuestControllerTest {
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).delete(guestToDelete.getId());
 			inOrder.verify(guesthouseView).guestRemoved(guestToDelete);
+			verifyNoMoreInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 	}
 
@@ -89,6 +95,7 @@ class GuestControllerTest {
 			guestController.newGuest("testFirstName", "testLastName", "testEmail", "1234567890");
 			verify(guesthouseView).showError("Guest Email is not valid: testEmail. Format must be like prefix@domain.");
 			verifyNoInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 
 		@Test
@@ -100,6 +107,7 @@ class GuestControllerTest {
 			verify(guesthouseView)
 					.showError("Guest Telephone N. is not valid: telephoneNumber. Format must be like +10000000000.");
 			verifyNoInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 
 		@Test
@@ -111,6 +119,7 @@ class GuestControllerTest {
 			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".",
 					guestNotPresent);
 			verifyNoMoreInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 
 	}
