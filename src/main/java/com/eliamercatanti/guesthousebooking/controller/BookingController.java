@@ -3,12 +3,16 @@ package com.eliamercatanti.guesthousebooking.controller;
 import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
+import com.eliamercatanti.guesthousebooking.repository.BookingRepository;
+import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
 
 public class BookingController {
 
-	public void allBookings() {
-		// TODO Auto-generated method stub
+	private GuesthouseView guesthouseView;
+	private BookingRepository bookingRepository;
 
+	public void allBookings() {
+		guesthouseView.showAllBookings(bookingRepository.findAll());
 	}
 
 	public void newBooking(String checkInDate, String checkOutDate, int numberOfGuests, Room room, Guest guest) {
