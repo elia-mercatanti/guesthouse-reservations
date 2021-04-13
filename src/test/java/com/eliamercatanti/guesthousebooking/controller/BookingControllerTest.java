@@ -2,6 +2,7 @@ package com.eliamercatanti.guesthousebooking.controller;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +46,7 @@ class BookingControllerTest {
 	class HappyCases {
 
 		@Test
-		@DisplayName("testAllBookings - Bookings list request")
+		@DisplayName("Bookings list request - testAllBookings()")
 		void testAllBookings() {
 			Booking booking1 = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 					Room.SINGLE);
@@ -60,7 +61,7 @@ class BookingControllerTest {
 		}
 
 		@Test
-		@DisplayName("testNewBookingWhenBookingInfosAreValid - New booking request when infos are valid")
+		@DisplayName("New booking request when infos are valid - testNewBookingWhenBookingInfosAreValid()")
 		void testNewBookingWhenBookingInfosAreValid() {
 			Booking newBooking = new Booking("1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
@@ -72,9 +73,9 @@ class BookingControllerTest {
 			verifyNoMoreInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
-		
+
 		@Test
-		@DisplayName("testdeleteBookingWhenBookingExist - Delete booking request when exist")
+		@DisplayName("Delete booking request when exist - testdeleteBookingWhenBookingExist()")
 		void testdeleteBookingWhenBookingExist() {
 			Booking bookingToDelete = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 					Room.SINGLE);
@@ -92,6 +93,18 @@ class BookingControllerTest {
 	@Nested
 	@DisplayName("Exceptional Cases")
 	class ExceptionalCases {
+
+		@Test
+		@DisplayName("New booking request when check in date is not valid - testAddBookingWhenCheckInDateIsNotValid()")
+		void testAddBookingWhenCheckInDateIsNotValid() {
+			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
+			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
+			bookingController.newBooking("1", "dateNotValid", "10/01/2021", 1, Room.SINGLE);
+			verify(guesthouseView).showError(
+					"Booking Check In Date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
 
 	}
 
