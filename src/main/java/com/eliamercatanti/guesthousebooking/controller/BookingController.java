@@ -31,8 +31,10 @@ public class BookingController {
 	}
 
 	public void deleteBooking(Booking booking) {
-		// TODO Auto-generated method stub
-
+		if(bookingRepository.findById(booking.getId()) != null) {
+			bookingRepository.delete(booking.getId());
+			guesthouseView.bookingRemoved(booking);
+		}
 	}
 
 	public void searchBookingsByDates(String checkInDate, String checkOutDate) {
