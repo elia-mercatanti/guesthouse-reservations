@@ -10,9 +10,6 @@ public class Guest {
 	private String email;
 	private String telephoneNumber;
 
-	public Guest() {
-	}
-
 	public Guest(String id, String firstName, String lastName, String email, String telephoneNumber) {
 		this.id = id;
 		this.firstName = firstName;

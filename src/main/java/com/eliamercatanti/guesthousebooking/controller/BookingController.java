@@ -6,6 +6,11 @@ import com.eliamercatanti.guesthousebooking.model.Room;
 
 public class BookingController {
 
+	public void allBookings() {
+		// TODO Auto-generated method stub
+
+	}
+
 	public void newBooking(String checkInDate, String checkOutDate, int numberOfGuests, Room room, Guest guest) {
 		// TODO Auto-generated method stub
 
@@ -27,11 +32,6 @@ public class BookingController {
 	}
 
 	public void deleteBooking(Booking booking) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void allBookings() {
 		// TODO Auto-generated method stub
 
 	}
