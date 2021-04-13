@@ -27,6 +27,9 @@ public class BookingController {
 		if (checkInDate == null) {
 			guesthouseView.showError("Booking Check In Date is not valid: " + checkInDateString
 					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+		} else if (checkOutDate == null) {
+			guesthouseView.showError("Booking Check Out Date is not valid: " + checkOutDateString
+					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		} else {
 			Booking newBooking = new Booking(guestId, checkInDate, checkOutDate, numberOfGuests, room);
 			bookingRepository.save(newBooking);

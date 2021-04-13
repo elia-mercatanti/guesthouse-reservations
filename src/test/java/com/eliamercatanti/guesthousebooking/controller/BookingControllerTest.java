@@ -98,10 +98,22 @@ class BookingControllerTest {
 		@DisplayName("New booking request when check in date is not valid - testAddBookingWhenCheckInDateIsNotValid()")
 		void testAddBookingWhenCheckInDateIsNotValid() {
 			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
-			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
+			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 10));
 			bookingController.newBooking("1", "dateNotValid", "10/01/2021", 1, Room.SINGLE);
 			verify(guesthouseView).showError(
 					"Booking Check In Date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
+
+		@Test
+		@DisplayName("New booking request when check out date is not valid - testAddBookingWhenCheckOutDateIsNotValid()")
+		void testAddBookingWhenCheckOutDateIsNotValid() {
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
+			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
+			bookingController.newBooking("1", "01/01/2021", "dateNotValid", 1, Room.SINGLE);
+			verify(guesthouseView).showError(
+					"Booking Check Out Date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
