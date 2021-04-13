@@ -586,7 +586,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button("addBookingButton").click();
 
 		// Verify.
-		verify(bookingController).newBooking("1-1-2021", "1-10-2021", 1, Room.SINGLE, guest);
+		verify(bookingController).newBooking(guest.getId(), "1-1-2021", "1-10-2021", 1, Room.SINGLE);
 	}
 
 	@Test

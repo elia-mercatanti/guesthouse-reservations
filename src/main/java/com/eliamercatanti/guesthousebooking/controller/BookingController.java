@@ -1,5 +1,7 @@
 package com.eliamercatanti.guesthousebooking.controller;
 
+import java.time.LocalDate;
+
 import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
@@ -15,11 +17,14 @@ public class BookingController {
 		guesthouseView.showAllBookings(bookingRepository.findAll());
 	}
 
-	public void newBooking(String checkInDate, String checkOutDate, int numberOfGuests, Room room, Guest guest) {
-		// TODO Auto-generated method stub
-
+	public void newBooking(String guestId, String checkInDateString, String checkOutDateString, int i, Room room) {
+		LocalDate checkInDate = LocalDate.parse(checkInDateString);
+		LocalDate checkOutDate = LocalDate.parse(checkOutDateString);
+		Booking newBooking = new Booking(guestId, checkInDate, checkOutDate, i, room);
+		bookingRepository.save(newBooking);
+		guesthouseView.bookingAdded(newBooking);
 	}
-	
+
 	public void deleteBooking(Booking booking) {
 		// TODO Auto-generated method stub
 

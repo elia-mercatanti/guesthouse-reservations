@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eliamercatanti.guesthousebooking.model.Booking;
-import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
 import com.eliamercatanti.guesthousebooking.repository.BookingRepository;
 import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
@@ -59,10 +58,8 @@ class BookingControllerTest {
 		@Test
 		@DisplayName("testNewBookingWhenBookingInfosAreValid - New booking request when infos are valid")
 		void testNewBookingWhenBookingInfosAreValid() {
-			Booking newBooking = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
-					Room.SINGLE);
-			Guest guest = new Guest("1", "firstNameTest", "lastNameTest", "test@email.com", "0000000000");
-			bookingController.newBooking("1/1/2021", "1/2/2021", 1, Room.SINGLE, guest);
+			Booking newBooking = new Booking("1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			bookingController.newBooking("1", "2021-01-01", "2021-01-10", 1, Room.SINGLE);
 			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
 			inOrder.verify(bookingRepository).save(newBooking);
 			inOrder.verify(guesthouseView).bookingAdded(newBooking);

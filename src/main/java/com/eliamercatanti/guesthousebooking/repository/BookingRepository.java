@@ -6,8 +6,8 @@ import com.eliamercatanti.guesthousebooking.model.Booking;
 
 public interface BookingRepository {
 
-	List<Booking> findAll();
+	public List<Booking> findAll();
 
-	void save(Booking newBooking);
+	public void save(Booking booking);
 
 }
