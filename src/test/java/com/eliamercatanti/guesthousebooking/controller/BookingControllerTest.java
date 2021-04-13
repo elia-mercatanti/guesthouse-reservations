@@ -72,6 +72,20 @@ class BookingControllerTest {
 			verifyNoMoreInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
+		
+		@Test
+		@DisplayName("testdeleteBookingWhenBookingExist - Delete booking request when exist")
+		void testdeleteBookingWhenBookingExist() {
+			Booking bookingToDelete = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			when(bookingRepository.findById(bookingToDelete.getId())).thenReturn(bookingToDelete);
+			bookingController.deleteBooking(bookingToDelete);
+			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
+			inOrder.verify(bookingRepository).delete(bookingToDelete.getId());
+			inOrder.verify(guesthouseView).bookingRemoved(bookingToDelete);
+			verifyNoMoreInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
 
 	}
 

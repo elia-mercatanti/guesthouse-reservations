@@ -10,4 +10,8 @@ public interface BookingRepository {
 
 	public void save(Booking booking);
 
+	public Booking findById(String id);
+
+	public void delete(String id);
+
 }
