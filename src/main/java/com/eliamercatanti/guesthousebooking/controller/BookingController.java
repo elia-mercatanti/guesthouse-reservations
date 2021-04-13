@@ -19,11 +19,15 @@ public class BookingController {
 		guesthouseView.showAllBookings(bookingRepository.findAll());
 	}
 
-	public void newBooking(String guestId, String checkInDateString, String checkOutDateString, int numberOfGuests, Room room) {
+	public void newBooking(String guestId, String checkInDateString, String checkOutDateString, int numberOfGuests,
+			Room room) {
 		LocalDate checkInDate = inputValidation.validateDate(checkInDateString);
 		LocalDate checkOutDate = inputValidation.validateDate(checkOutDateString);
 
-		if (checkInDate != null && checkOutDate != null) {
+		if (checkInDate == null) {
+			guesthouseView.showError("Booking Check In Date is not valid: " + checkInDateString
+					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+		} else {
 			Booking newBooking = new Booking(guestId, checkInDate, checkOutDate, numberOfGuests, room);
 			bookingRepository.save(newBooking);
 			guesthouseView.bookingAdded(newBooking);
@@ -31,7 +35,7 @@ public class BookingController {
 	}
 
 	public void deleteBooking(Booking booking) {
-		if(bookingRepository.findById(booking.getId()) != null) {
+		if (bookingRepository.findById(booking.getId()) != null) {
 			bookingRepository.delete(booking.getId());
 			guesthouseView.bookingRemoved(booking);
 		}
