@@ -129,10 +129,12 @@ class BookingControllerTest {
 		@Test
 		@DisplayName("Delete booking request when booking not exist  - testDeleteBookingWhenBookingNotExist()")
 		void testDeleteBookingWhenBookingNotExist() {
-			Booking bookingNotPresent = new Booking("1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking bookingNotPresent = new Booking("1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
 			when(bookingRepository.findById(bookingNotPresent.getId())).thenReturn(null);
 			bookingController.deleteBooking(bookingNotPresent);
-			verify(guesthouseView).showErrorBookingNotFound("There is no booking with id ", bookingNotPresent);
+			verify(guesthouseView).showErrorBookingNotFound(
+					"There is no booking with id " + bookingNotPresent.getId() + ".", bookingNotPresent);
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 

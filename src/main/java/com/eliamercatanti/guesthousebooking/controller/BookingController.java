@@ -40,7 +40,9 @@ public class BookingController {
 	}
 
 	public void deleteBooking(Booking booking) {
-		if (bookingRepository.findById(booking.getId()) != null) {
+		if (bookingRepository.findById(booking.getId()) == null) {
+			guesthouseView.showErrorBookingNotFound("There is no booking with id " + booking.getId() + ".", booking);
+		} else {
 			bookingRepository.delete(booking.getId());
 			guesthouseView.bookingRemoved(booking);
 		}
