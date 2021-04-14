@@ -56,8 +56,7 @@ class BookingControllerTest {
 			when(bookingRepository.findAll()).thenReturn(bookingsList);
 			bookingController.allBookings();
 			verify(guesthouseView).showAllBookings(bookingsList);
-			verifyNoMoreInteractions(bookingRepository);
-			verifyNoMoreInteractions(guesthouseView);
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 
 		@Test
@@ -70,12 +69,11 @@ class BookingControllerTest {
 			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
 			inOrder.verify(bookingRepository).save(newBooking);
 			inOrder.verify(guesthouseView).bookingAdded(newBooking);
-			verifyNoMoreInteractions(bookingRepository);
-			verifyNoMoreInteractions(guesthouseView);
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 
 		@Test
-		@DisplayName("Delete booking request when exist - testdeleteBookingWhenBookingExist()")
+		@DisplayName("Delete booking request when booking exist - testdeleteBookingWhenBookingExist()")
 		void testdeleteBookingWhenBookingExist() {
 			Booking bookingToDelete = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 					Room.SINGLE);
@@ -84,8 +82,7 @@ class BookingControllerTest {
 			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
 			inOrder.verify(bookingRepository).delete(bookingToDelete.getId());
 			inOrder.verify(guesthouseView).bookingRemoved(bookingToDelete);
-			verifyNoMoreInteractions(bookingRepository);
-			verifyNoMoreInteractions(guesthouseView);
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 
 	}
@@ -127,6 +124,16 @@ class BookingControllerTest {
 			verify(guesthouseView).showError("Number of Guests must be suitable for the type of the room.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
+		}
+
+		@Test
+		@DisplayName("Delete booking request when booking not exist  - testDeleteBookingWhenBookingNotExist()")
+		void testDeleteBookingWhenBookingNotExist() {
+			Booking bookingNotPresent = new Booking("1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			when(bookingRepository.findById(bookingNotPresent.getId())).thenReturn(null);
+			bookingController.deleteBooking(bookingNotPresent);
+			verify(guesthouseView).showErrorBookingNotFound("There is no booking with id ", bookingNotPresent);
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 
 	}

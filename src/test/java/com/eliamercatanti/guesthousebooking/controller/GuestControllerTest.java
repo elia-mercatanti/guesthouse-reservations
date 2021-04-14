@@ -52,8 +52,7 @@ class GuestControllerTest {
 			when(guestRepository.findAll()).thenReturn(guestsList);
 			guestController.allGuests();
 			verify(guesthouseView).showAllGuests(guestsList);
-			verifyNoMoreInteractions(guestRepository);
-			verifyNoMoreInteractions(guesthouseView);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 
 		@Test
@@ -66,12 +65,11 @@ class GuestControllerTest {
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
 			inOrder.verify(guesthouseView).guestAdded(newGuest);
-			verifyNoMoreInteractions(guestRepository);
-			verifyNoMoreInteractions(guesthouseView);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 
 		@Test
-		@DisplayName("Delete guest request when exist - testDeleteGuestWhenGuestExist()")
+		@DisplayName("Delete guest request when guest exist - testDeleteGuestWhenGuestExist()")
 		void testDeleteGuestWhenGuestExist() {
 			Guest guestToDelete = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestToDelete.getId())).thenReturn(guestToDelete);
@@ -79,8 +77,7 @@ class GuestControllerTest {
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).delete(guestToDelete.getId());
 			inOrder.verify(guesthouseView).guestRemoved(guestToDelete);
-			verifyNoMoreInteractions(guestRepository);
-			verifyNoMoreInteractions(guesthouseView);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 	}
 
@@ -112,15 +109,14 @@ class GuestControllerTest {
 		}
 
 		@Test
-		@DisplayName("Delete guest request when not exist - testDeleteGuestWhenGuestNotExist()")
+		@DisplayName("Delete guest request when guest not exist - testDeleteGuestWhenGuestNotExist()")
 		void testDeleteGuestWhenGuestNotExist() {
 			Guest guestNotPresent = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestNotPresent.getId())).thenReturn(null);
 			guestController.deleteGuest(guestNotPresent);
 			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".",
 					guestNotPresent);
-			verifyNoMoreInteractions(guestRepository);
-			verifyNoMoreInteractions(guesthouseView);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 
 	}
