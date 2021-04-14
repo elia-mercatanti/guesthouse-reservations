@@ -149,6 +149,18 @@ class BookingControllerTest {
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
+		
+		@Test
+		@DisplayName("New booking request when check in and check out dates are the same - testNewBookingWhenCheckInAndCheckOutDatesAreTheSame()")
+		void testNewBookingWhenCheckInAndCheckOutDatesAreTheSame() {
+			LocalDate sameDate = LocalDate.of(2021, 1, 1);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
+			bookingController.newBooking("1", "01/01/2021", "01/01/2021", 1, Room.SINGLE);
+			verify(guesthouseView).showError("Check out date must be after check in date.");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
 
 		@Test
 		@DisplayName("New booking request when number of guests is greater than room type  - testNewBookingWhenNumberOfGuestsIsGreaterThanRoomType()")
