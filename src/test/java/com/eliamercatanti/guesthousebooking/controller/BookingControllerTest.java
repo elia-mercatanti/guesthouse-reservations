@@ -118,6 +118,17 @@ class BookingControllerTest {
 			verifyNoMoreInteractions(guesthouseView);
 		}
 
+		@Test
+		@DisplayName("New booking request when number of guests is greater than room type  - testAddBookingWhenNumberOfGuestsIsGreaterThanRoomType()")
+		void testAddBookingWhenNumberOfGuestsIsGreaterThanRoomType() {
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
+			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 10));
+			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 2, Room.SINGLE);
+			verify(guesthouseView).showError("Number of Guests must be suitable for the type of the room.	");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
+
 	}
 
 }
