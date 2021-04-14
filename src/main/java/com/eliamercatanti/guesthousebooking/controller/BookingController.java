@@ -30,6 +30,8 @@ public class BookingController {
 		} else if (checkOutDate == null) {
 			guesthouseView.showError("Booking Check Out Date is not valid: " + checkOutDateString
 					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+		} else if (numberOfGuests > room.getNumberOfBeds()) {
+			guesthouseView.showError("Number of Guests must be suitable for the type of the room.");
 		} else {
 			Booking newBooking = new Booking(guestId, checkInDate, checkOutDate, numberOfGuests, room);
 			bookingRepository.save(newBooking);
