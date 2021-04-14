@@ -18,4 +18,6 @@ public interface BookingRepository {
 
 	public boolean checkRoomAvailabilityInDateRange(Room room, LocalDate firstDate, LocalDate secondDate);
 
+	public List<Booking> findByDates(LocalDate firstDate, LocalDate secondDate);
+
 }

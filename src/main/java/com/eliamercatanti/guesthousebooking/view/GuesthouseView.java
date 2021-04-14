@@ -7,7 +7,7 @@ import com.eliamercatanti.guesthousebooking.model.Guest;
 
 public interface GuesthouseView {
 
-	public void showAllGuests(List<Guest> guests);
+	public void showGuests(List<Guest> guests);
 
 	public void guestAdded(Guest guest);
 
@@ -17,7 +17,7 @@ public interface GuesthouseView {
 
 	void showError(String message);
 
-	public void showAllBookings(List<Booking> bookings);
+	public void showBookings(List<Booking> bookings);
 
 	void bookingAdded(Booking booking);
 

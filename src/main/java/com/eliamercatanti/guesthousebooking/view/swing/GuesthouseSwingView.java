@@ -440,7 +440,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	}
 
 	@Override
-	public void showAllGuests(List<Guest> guests) {
+	public void showGuests(List<Guest> guests) {
 		listGuestsModel.removeAllElements();
 		guests.stream().forEach(listGuestsModel::addElement);
 	}
@@ -491,7 +491,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		return listBookingsModel;
 	}
 
-	public void showAllBookings(List<Booking> bookings) {
+	public void showBookings(List<Booking> bookings) {
 		listBookingsModel.removeAllElements();
 		bookings.stream().forEach(listBookingsModel::addElement);
 	}

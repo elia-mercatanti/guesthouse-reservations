@@ -199,7 +199,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		});
 
 		// Execute.
-		GuiActionRunner.execute(() -> guesthouseSwingView.showAllGuests(Arrays.asList(guest1, guest2)));
+		GuiActionRunner.execute(() -> guesthouseSwingView.showGuests(Arrays.asList(guest1, guest2)));
 
 		// Verify.
 		String[] guestsListContent = window.list("guestsList").contents();
@@ -490,7 +490,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 		});
 
 		// Execute.
-		GuiActionRunner.execute(() -> guesthouseSwingView.showAllBookings(Arrays.asList(booking1, booking2)));
+		GuiActionRunner.execute(() -> guesthouseSwingView.showBookings(Arrays.asList(booking1, booking2)));
 
 		// Verify.
 		String[] bookingsListContent = window.list("bookingsList").contents();

@@ -53,9 +53,10 @@ public class BookingController {
 		}
 	}
 
-	public void searchBookingsByDates(String firstDate, String secondDate) {
-		// TODO Auto-generated method stub
-
+	public void searchBookingsByDates(String firstDateString, String secondDateString) {
+		LocalDate firstDate = inputValidation.validateDate(firstDateString);
+		LocalDate secondDate = inputValidation.validateDate(secondDateString);
+		guesthouseView.showBookings(bookingRepository.findByDates(firstDate, secondDate));
 	}
 
 	public void searchBookingsByRoom(Room room) {

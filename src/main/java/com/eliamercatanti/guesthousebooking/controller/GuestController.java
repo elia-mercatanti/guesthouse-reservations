@@ -12,7 +12,7 @@ public class GuestController {
 	private InputValidation inputValidation;
 
 	public void allGuests() {
-		guesthouseView.showAllGuests(guestRepository.findAll());
+		guesthouseView.showGuests(guestRepository.findAll());
 	}
 
 	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {

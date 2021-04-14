@@ -88,6 +88,24 @@ class BookingControllerTest {
 			inOrder.verify(guesthouseView).bookingRemoved(bookingToDelete);
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
+		
+		@Test
+		@DisplayName("Search bookings by dates request when dates are valid - testSearchBookingsByDatesWhenDatesAreValid()")
+		void testSearchBookingsByDatesWhenDatesAreValid() {
+			LocalDate firstDate = LocalDate.of(2021, 1, 1);
+			LocalDate secondDate = LocalDate.of(2021, 3, 1);
+			Booking booking1 = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Booking booking2 = new Booking("2", "2", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
+					Room.DOUBLE);
+			List<Booking> bookingsList = Arrays.asList(booking1, booking2);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(firstDate);
+			when(inputValidation.validateDate("01/03/2021")).thenReturn(secondDate);
+			when(bookingRepository.findByDates(firstDate, secondDate)).thenReturn(bookingsList);
+			bookingController.searchBookingsByDates("01/01/2021", "01/03/2021");
+			verify(guesthouseView).showBookings(bookingsList);
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
+		}
 
 	}
 
