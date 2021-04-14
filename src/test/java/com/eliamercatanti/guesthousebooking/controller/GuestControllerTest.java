@@ -40,7 +40,7 @@ class GuestControllerTest {
 	private GuestController guestController;
 
 	@Nested
-	@DisplayName("Happy Cases")
+	@DisplayName("Guest Controller Happy Cases")
 	class HappyCases {
 
 		@Test
@@ -51,7 +51,7 @@ class GuestControllerTest {
 			List<Guest> guestsList = Arrays.asList(guest1, guest2);
 			when(guestRepository.findAll()).thenReturn(guestsList);
 			guestController.allGuests();
-			verify(guesthouseView).showAllGuests(guestsList);
+			verify(guesthouseView).showGuests(guestsList);
 			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 
@@ -82,7 +82,7 @@ class GuestControllerTest {
 	}
 
 	@Nested
-	@DisplayName("Exceptional Cases")
+	@DisplayName("Guest Controller Exceptional Cases")
 	class ExceptionalCases {
 
 		@Test

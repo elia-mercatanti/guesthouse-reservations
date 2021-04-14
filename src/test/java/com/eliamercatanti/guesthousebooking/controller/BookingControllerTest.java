@@ -42,7 +42,7 @@ class BookingControllerTest {
 	public InputValidation inputValidation;
 
 	@Nested
-	@DisplayName("Happy Cases")
+	@DisplayName("Booking Controller Happy Cases")
 	class HappyCases {
 
 		@Test
@@ -55,7 +55,7 @@ class BookingControllerTest {
 			List<Booking> bookingsList = Arrays.asList(booking1, booking2);
 			when(bookingRepository.findAll()).thenReturn(bookingsList);
 			bookingController.allBookings();
-			verify(guesthouseView).showAllBookings(bookingsList);
+			verify(guesthouseView).showBookings(bookingsList);
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 
@@ -67,7 +67,8 @@ class BookingControllerTest {
 			Booking newBooking = new Booking("1", checkInDate, checkOutDate, 1, Room.SINGLE);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkInDate);
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkOutDate);
-			when(bookingRepository.checkRoomAvailabilityInDateRange(Room.SINGLE, checkInDate, checkOutDate)).thenReturn(true);
+			when(bookingRepository.checkRoomAvailabilityInDateRange(Room.SINGLE, checkInDate, checkOutDate))
+					.thenReturn(true);
 			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 1, Room.SINGLE);
 			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
 			inOrder.verify(bookingRepository).save(newBooking);
@@ -91,7 +92,7 @@ class BookingControllerTest {
 	}
 
 	@Nested
-	@DisplayName("Exceptional Cases")
+	@DisplayName("Booking Controller Exceptional Cases")
 	class ExceptionalCases {
 
 		@Test
@@ -114,6 +115,19 @@ class BookingControllerTest {
 			bookingController.newBooking("1", "01/01/2021", "dateNotValid", 1, Room.SINGLE);
 			verify(guesthouseView).showError(
 					"Booking Check Out Date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
+
+		@Test
+		@DisplayName("New booking request when check in date is after check out date - testNewBookingWhenCheckInDateIsAfterCheckOutDate()")
+		void testNewBookingWhenCheckInDateIsAfterCheckOutDate() {
+			LocalDate checkInDate = LocalDate.of(2021, 1, 10);
+			LocalDate checkOutDate = LocalDate.of(2021, 1, 1);
+			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkInDate);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkOutDate);
+			bookingController.newBooking("1", "10/01/2021", "01/01/2021", 1, Room.SINGLE);
+			verify(guesthouseView).showError("Check out date must be after check in date.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
