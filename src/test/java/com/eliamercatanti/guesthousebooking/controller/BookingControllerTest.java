@@ -62,9 +62,12 @@ class BookingControllerTest {
 		@Test
 		@DisplayName("New booking request when infos are valid - testNewBookingWhenBookingInfosAreValid()")
 		void testNewBookingWhenBookingInfosAreValid() {
-			Booking newBooking = new Booking("1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
-			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
-			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 10));
+			LocalDate checkInDate = LocalDate.of(2021, 1, 1);
+			LocalDate checkOutDate = LocalDate.of(2021, 1, 10);
+			Booking newBooking = new Booking("1", checkInDate, checkOutDate, 1, Room.SINGLE);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkInDate);
+			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkOutDate);
+			when(bookingRepository.checkRoomAvailabilityInDateRange(Room.SINGLE, checkInDate, checkOutDate)).thenReturn(true);
 			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 1, Room.SINGLE);
 			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
 			inOrder.verify(bookingRepository).save(newBooking);
@@ -73,8 +76,8 @@ class BookingControllerTest {
 		}
 
 		@Test
-		@DisplayName("Delete booking request when booking exist - testdeleteBookingWhenBookingExist()")
-		void testdeleteBookingWhenBookingExist() {
+		@DisplayName("Delete booking request when booking exist - testDeleteBookingWhenBookingExist()")
+		void testDeleteBookingWhenBookingExist() {
 			Booking bookingToDelete = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 					Room.SINGLE);
 			when(bookingRepository.findById(bookingToDelete.getId())).thenReturn(bookingToDelete);
@@ -92,8 +95,8 @@ class BookingControllerTest {
 	class ExceptionalCases {
 
 		@Test
-		@DisplayName("New booking request when check in date is not valid - testAddBookingWhenCheckInDateIsNotValid()")
-		void testAddBookingWhenCheckInDateIsNotValid() {
+		@DisplayName("New booking request when check in date is not valid - testNewBookingWhenCheckInDateIsNotValid()")
+		void testNewBookingWhenCheckInDateIsNotValid() {
 			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 10));
 			bookingController.newBooking("1", "dateNotValid", "10/01/2021", 1, Room.SINGLE);
@@ -104,8 +107,8 @@ class BookingControllerTest {
 		}
 
 		@Test
-		@DisplayName("New booking request when check out date is not valid - testAddBookingWhenCheckOutDateIsNotValid()")
-		void testAddBookingWhenCheckOutDateIsNotValid() {
+		@DisplayName("New booking request when check out date is not valid - testNewBookingWhenCheckOutDateIsNotValid()")
+		void testNewBookingWhenCheckOutDateIsNotValid() {
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
 			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
 			bookingController.newBooking("1", "01/01/2021", "dateNotValid", 1, Room.SINGLE);
@@ -116,14 +119,29 @@ class BookingControllerTest {
 		}
 
 		@Test
-		@DisplayName("New booking request when number of guests is greater than room type  - testAddBookingWhenNumberOfGuestsIsGreaterThanRoomType()")
-		void testAddBookingWhenNumberOfGuestsIsGreaterThanRoomType() {
+		@DisplayName("New booking request when number of guests is greater than room type  - testNewBookingWhenNumberOfGuestsIsGreaterThanRoomType()")
+		void testNewBookingWhenNumberOfGuestsIsGreaterThanRoomType() {
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 10));
 			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 2, Room.SINGLE);
 			verify(guesthouseView).showError("Number of Guests must be suitable for the type of the room.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
+		}
+
+		@Test
+		@DisplayName("New booking request when room is already booked on the requested dates - testNewBookingWhenRoomIsAlreadyBookedOnTheRequestedDates()")
+		void testNewBookingWhenRoomIsAlreadyBookedOnTheRequestedDates() {
+			LocalDate checkInDate = LocalDate.of(2021, 1, 1);
+			LocalDate checkOutDate = LocalDate.of(2021, 1, 10);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkInDate);
+			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkOutDate);
+			when(bookingRepository.checkRoomAvailabilityInDateRange(Room.SINGLE, checkInDate, checkOutDate))
+					.thenReturn(false);
+			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 1, Room.SINGLE);
+			verify(guesthouseView).showError(
+					"The selected room is already booked on the requested dates: SINGLE on (01/01/2021 - 10/01/2021).");
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 
 		@Test

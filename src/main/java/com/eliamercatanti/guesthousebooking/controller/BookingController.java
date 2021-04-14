@@ -32,6 +32,9 @@ public class BookingController {
 					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		} else if (numberOfGuests > room.getNumberOfBeds()) {
 			guesthouseView.showError("Number of Guests must be suitable for the type of the room.");
+		} else if (!bookingRepository.checkRoomAvailabilityInDateRange(room, checkInDate, checkOutDate)) {
+			guesthouseView.showError("The selected room is already booked on the requested dates: " + room + " on ("
+					+ checkInDateString + " - " + checkOutDateString + ").");
 		} else {
 			Booking newBooking = new Booking(guestId, checkInDate, checkOutDate, numberOfGuests, room);
 			bookingRepository.save(newBooking);
