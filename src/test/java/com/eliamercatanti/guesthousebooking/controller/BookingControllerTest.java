@@ -151,8 +151,8 @@ class BookingControllerTest {
 		}
 
 		@Test
-		@DisplayName("New booking request when check in and check out dates are the same - testNewBookingWhenCheckInAndCheckOutDatesAreTheSame()")
-		void testNewBookingWhenCheckInAndCheckOutDatesAreTheSame() {
+		@DisplayName("New booking request when check in and check out date are the same - testNewBookingWhenCheckInAndCheckOutDateAreTheSame()")
+		void testNewBookingWhenCheckInAndCheckOutDateAreTheSame() {
 			LocalDate sameDate = LocalDate.of(2021, 1, 1);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
@@ -211,7 +211,7 @@ class BookingControllerTest {
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
-		
+
 		@Test
 		@DisplayName("Search bookings by dates request when second date is not valid - testSearchBookingsByDatesWhenSecondDateIsNotValid()")
 		void testSearchBookingsByDatesWhenSecondDateIsNotValid() {
@@ -220,6 +220,31 @@ class BookingControllerTest {
 			bookingController.searchBookingsByDates("01/01/2021", "dateNotValid");
 			verify(guesthouseView).showError(
 					"Second date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
+
+		@Test
+		@DisplayName("Search bookings by dates request when first date is after second date - testSearchBookingsByDatesWhenFirstDateIsAfterSecondDate()")
+		void testSearchBookingsByDatesWhenFirstDateIsAfterSecondDate() {
+			LocalDate firstDate = LocalDate.of(2021, 1, 10);
+			LocalDate secondDate = LocalDate.of(2021, 1, 1);
+			when(inputValidation.validateDate("10/01/2021")).thenReturn(firstDate);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(secondDate);
+			bookingController.searchBookingsByDates("10/01/2021", "01/01/2021");
+			verify(guesthouseView).showError("First date must be after second date.");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
+
+		@Test
+		@DisplayName("Search bookings by dates request when first and second date are the same - testNewBookingWhenFirstAndSecondDateAreTheSame()")
+		void testNewBookingWhenFirstAndSecondDateAreTheSame() {
+			LocalDate sameDate = LocalDate.of(2021, 1, 1);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
+			bookingController.searchBookingsByDates("01/01/2021", "01/01/2021");
+			verify(guesthouseView).showError("First date must be after second date.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
