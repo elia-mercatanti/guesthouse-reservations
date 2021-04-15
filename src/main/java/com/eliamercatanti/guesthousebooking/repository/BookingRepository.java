@@ -22,4 +22,6 @@ public interface BookingRepository {
 
 	public List<Booking> findByRoom(Room room);
 
+	public List<Booking> findByGuestId(String guestId);
+
 }

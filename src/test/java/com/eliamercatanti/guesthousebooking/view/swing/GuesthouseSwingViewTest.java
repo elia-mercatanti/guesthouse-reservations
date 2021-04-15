@@ -609,7 +609,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testSearchByGuestButtonShouldDelegateToBookingControllerSearchBookingsByGuestId() {
+	public void testSearchByGuestButtonShouldDelegateToBookingControllerSearchBookingsByGuest() {
 		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");

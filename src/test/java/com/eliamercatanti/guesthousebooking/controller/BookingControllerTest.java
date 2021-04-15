@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eliamercatanti.guesthousebooking.model.Booking;
+import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
 import com.eliamercatanti.guesthousebooking.repository.BookingRepository;
 import com.eliamercatanti.guesthousebooking.validation.InputValidation;
@@ -106,7 +107,7 @@ class BookingControllerTest {
 			verify(guesthouseView).showBookings(bookingsList);
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
-		
+
 		@Test
 		@DisplayName("Search bookings by room request - testSearchBookingsByRoom()")
 		void testSearchBookingsByRoom() {
@@ -117,6 +118,21 @@ class BookingControllerTest {
 			List<Booking> bookingsList = Arrays.asList(booking1, booking2);
 			when(bookingRepository.findByRoom(Room.SINGLE)).thenReturn(bookingsList);
 			bookingController.searchBookingsByRoom(Room.SINGLE);
+			verify(guesthouseView).showBookings(bookingsList);
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
+		}
+
+		@Test
+		@DisplayName("Search bookings by guest request - testSearchBookingsByGuest()")
+		void testSearchBookingsByGuest() {
+			Booking booking1 = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Booking booking2 = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 1,
+					Room.SINGLE);
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
+			List<Booking> bookingsList = Arrays.asList(booking1, booking2);
+			when(bookingRepository.findByGuestId(guest.getId())).thenReturn(bookingsList);
+			bookingController.searchBookingsByGuest(guest);
 			verify(guesthouseView).showBookings(bookingsList);
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
