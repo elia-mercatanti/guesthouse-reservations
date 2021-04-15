@@ -11,6 +11,7 @@ import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
 
 public class BookingController {
 
+	private static final String DATE_FORMAT_ERROR_MESSAGE = "Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.";
 	private GuesthouseView guesthouseView;
 	private BookingRepository bookingRepository;
 	private InputValidation inputValidation;
@@ -25,11 +26,11 @@ public class BookingController {
 		LocalDate checkOutDate = inputValidation.validateDate(checkOutDateString);
 
 		if (checkInDate == null) {
-			guesthouseView.showError("Booking Check In date is not valid: " + checkInDateString
-					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			guesthouseView.showError(
+					"Booking Check In date is not valid: " + checkInDateString + ". " + DATE_FORMAT_ERROR_MESSAGE);
 		} else if (checkOutDate == null) {
-			guesthouseView.showError("Booking Check Out date is not valid: " + checkOutDateString
-					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			guesthouseView.showError(
+					"Booking Check Out date is not valid: " + checkOutDateString + ". " + DATE_FORMAT_ERROR_MESSAGE);
 		} else if (checkInDate.compareTo(checkOutDate) >= 0) {
 			guesthouseView.showError("Check out date must be after check in date.");
 		} else if (numberOfGuests > room.getNumberOfBeds()) {
@@ -58,11 +59,10 @@ public class BookingController {
 		LocalDate secondDate = inputValidation.validateDate(secondDateString);
 
 		if (firstDate == null) {
-			guesthouseView.showError("First date is not valid: " + firstDateString
-					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			guesthouseView.showError("First date is not valid: " + firstDateString + ". " + DATE_FORMAT_ERROR_MESSAGE);
 		} else if (secondDate == null) {
-			guesthouseView.showError("Second date is not valid: " + secondDateString
-					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			guesthouseView
+					.showError("Second date is not valid: " + secondDateString + ". " + DATE_FORMAT_ERROR_MESSAGE);
 		} else if (firstDate.compareTo(secondDate) >= 0) {
 			guesthouseView.showError("First date must be after second date.");
 		} else {
