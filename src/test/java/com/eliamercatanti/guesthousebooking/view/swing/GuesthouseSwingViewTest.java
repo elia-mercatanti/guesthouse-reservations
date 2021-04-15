@@ -185,7 +185,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testShowAllGuestShouldResetAndFillGuestInfosToTheList() {
+	public void testShowGuestShouldResetAndFillGuestInfosToTheList() {
 		// Setup.
 		Guest previusGuest1 = new Guest("3", "testFirstName3", "testLastName3", "test3@email.com", "2222222222");
 		Guest previusGuest2 = new Guest("4", "testFirstName4", "testLastName4", "test4@email.com", "4444444444");
@@ -260,7 +260,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testShowErrorGuestNotFound() {
+	public void testShowErrorGuestNotFoundShouldShowAnErrorMessage() {
 		// Setup
 		Guest guestNoLongerPresent = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
@@ -474,7 +474,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testsShowAllBookingsShouldResetAndFillBookingDescriptionsToTheList() {
+	public void testsShowBookingsShouldResetAndFillBookingDescriptionsToTheList() {
 		// Setup.
 		Booking previusBooking1 = new Booking("3", "1", LocalDate.of(2021, 3, 1), LocalDate.of(2021, 3, 10), 3,
 				Room.TRIPLE);
@@ -500,7 +500,7 @@ public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testShowErrorBookingNotFound() {
+	public void testShowErrorBookingNotFoundShouldShowAnErrorMessage() {
 		// Setup.
 		Booking bookingNoLongerPresent = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);

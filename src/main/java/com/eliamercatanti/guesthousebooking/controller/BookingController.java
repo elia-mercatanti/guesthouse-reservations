@@ -25,10 +25,10 @@ public class BookingController {
 		LocalDate checkOutDate = inputValidation.validateDate(checkOutDateString);
 
 		if (checkInDate == null) {
-			guesthouseView.showError("Booking Check In Date is not valid: " + checkInDateString
+			guesthouseView.showError("Booking Check In date is not valid: " + checkInDateString
 					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		} else if (checkOutDate == null) {
-			guesthouseView.showError("Booking Check Out Date is not valid: " + checkOutDateString
+			guesthouseView.showError("Booking Check Out date is not valid: " + checkOutDateString
 					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		} else if (checkInDate.compareTo(checkOutDate) >= 0) {
 			guesthouseView.showError("Check out date must be after check in date.");
@@ -56,7 +56,13 @@ public class BookingController {
 	public void searchBookingsByDates(String firstDateString, String secondDateString) {
 		LocalDate firstDate = inputValidation.validateDate(firstDateString);
 		LocalDate secondDate = inputValidation.validateDate(secondDateString);
-		guesthouseView.showBookings(bookingRepository.findByDates(firstDate, secondDate));
+
+		if (firstDate == null) {
+			guesthouseView.showError("First date is not valid: " + firstDateString
+					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+		} else {
+			guesthouseView.showBookings(bookingRepository.findByDates(firstDate, secondDate));
+		}
 	}
 
 	public void searchBookingsByRoom(Room room) {
