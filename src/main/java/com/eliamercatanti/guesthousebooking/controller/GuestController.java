@@ -12,14 +12,14 @@ public class GuestController {
 	private InputValidation inputValidation;
 
 	public void allGuests() {
-		guesthouseView.showAllGuests(guestRepository.findAll());
+		guesthouseView.showGuests(guestRepository.findAll());
 	}
 
 	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {
 		if ((!inputValidation.validateEmail(email))) {
 			guesthouseView.showError("Guest Email is not valid: " + email + ". Format must be like prefix@domain.");
 		}
-		if (!inputValidation.validateTelephoneNumber(telephoneNumber)) {
+		else if (!inputValidation.validateTelephoneNumber(telephoneNumber)) {
 			guesthouseView.showError(
 					"Guest Telephone N. is not valid: " + telephoneNumber + ". Format must be like +10000000000.");
 		} else {

@@ -22,6 +22,14 @@ public class Booking {
 		this.room = room;
 	}
 
+	public Booking(String guestId, LocalDate checkInDate, LocalDate checkOutDate, int numberOfGuests, Room room) {
+		this.guestId = guestId;
+		this.checkInDate = checkInDate;
+		this.checkOutDate = checkOutDate;
+		this.numberOfGuests = numberOfGuests;
+		this.room = room;
+	}
+
 	public String getId() {
 		return id;
 	}

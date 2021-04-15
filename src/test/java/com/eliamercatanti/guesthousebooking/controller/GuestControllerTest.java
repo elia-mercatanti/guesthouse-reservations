@@ -40,22 +40,23 @@ class GuestControllerTest {
 	private GuestController guestController;
 
 	@Nested
-	@DisplayName("Happy Cases")
+	@DisplayName("Guest Controller Happy Cases")
 	class HappyCases {
 
 		@Test
-		@DisplayName("testAllGuests - Guests list request")
+		@DisplayName("All Guests list request - testAllGuests()")
 		void testAllGuests() {
 			Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "1111111111");
 			Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "2222222222");
 			List<Guest> guestsList = Arrays.asList(guest1, guest2);
 			when(guestRepository.findAll()).thenReturn(guestsList);
 			guestController.allGuests();
-			verify(guesthouseView).showAllGuests(guestsList);
+			verify(guesthouseView).showGuests(guestsList);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 
 		@Test
-		@DisplayName("testNewGuestWhenGuestInfosAreValid - New guest request when guest infos are valid")
+		@DisplayName("New guest request when infos are valid - testNewGuestWhenGuestInfosAreValid()")
 		void testNewGuestWhenGuestInfosAreValid() {
 			Guest newGuest = new Guest("testFirstName", "testLastName", "test@email.com", "1234567890");
 			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
@@ -64,10 +65,11 @@ class GuestControllerTest {
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).save(newGuest);
 			inOrder.verify(guesthouseView).guestAdded(newGuest);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 
 		@Test
-		@DisplayName("testDeleteGuestWhenGuestExist - Delete guest request when exist")
+		@DisplayName("Delete guest request when guest exist - testDeleteGuestWhenGuestExist()")
 		void testDeleteGuestWhenGuestExist() {
 			Guest guestToDelete = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestToDelete.getId())).thenReturn(guestToDelete);
@@ -75,42 +77,46 @@ class GuestControllerTest {
 			InOrder inOrder = inOrder(guestRepository, guesthouseView);
 			inOrder.verify(guestRepository).delete(guestToDelete.getId());
 			inOrder.verify(guesthouseView).guestRemoved(guestToDelete);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 	}
 
 	@Nested
-	@DisplayName("Exceptional Cases")
+	@DisplayName("Guest Controller Exceptional Cases")
 	class ExceptionalCases {
 
 		@Test
-		@DisplayName("testNewGuestWhenEmailIsNotValid - New guest request when email is not valid")
+		@DisplayName("New guest request when email is not valid - testNewGuestWhenEmailIsNotValid()")
 		void testNewGuestWhenEmailIsNotValid() {
-			when(inputValidation.validateEmail("testEmail")).thenReturn(false);
-			guestController.newGuest("testFirstName", "testLastName", "testEmail", "1234567890");
-			verify(guesthouseView).showError("Guest Email is not valid: testEmail. Format must be like prefix@domain.");
+			when(inputValidation.validateEmail("emailNotValid")).thenReturn(false);
+			guestController.newGuest("testFirstName", "testLastName", "emailNotValid", "1234567890");
+			verify(guesthouseView)
+					.showError("Guest Email is not valid: emailNotValid. Format must be like prefix@domain.");
 			verifyNoInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 
 		@Test
-		@DisplayName("testNewGuestWhenTelephoneNumberIsNotValid - New guest request when telephone number is not valid")
+		@DisplayName("New guest request when telephone number is not valid - testNewGuestWhenTelephoneNumberIsNotValid()")
 		void testNewGuestWhenTelephoneNumberIsNotValid() {
 			when(inputValidation.validateEmail("test@email.com")).thenReturn(true);
-			when(inputValidation.validateTelephoneNumber("telephoneNumber")).thenReturn(false);
-			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "telephoneNumber");
-			verify(guesthouseView)
-					.showError("Guest Telephone N. is not valid: telephoneNumber. Format must be like +10000000000.");
+			when(inputValidation.validateTelephoneNumber("telephoneNumNotValid")).thenReturn(false);
+			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "telephoneNumNotValid");
+			verify(guesthouseView).showError(
+					"Guest Telephone N. is not valid: telephoneNumNotValid. Format must be like +10000000000.");
 			verifyNoInteractions(guestRepository);
+			verifyNoMoreInteractions(guesthouseView);
 		}
 
 		@Test
-		@DisplayName("testDeleteGuestWhenGuestNotExist - Delete guest request when not exist")
+		@DisplayName("Delete guest request when guest not exist - testDeleteGuestWhenGuestNotExist()")
 		void testDeleteGuestWhenGuestNotExist() {
 			Guest guestNotPresent = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestNotPresent.getId())).thenReturn(null);
 			guestController.deleteGuest(guestNotPresent);
 			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".",
 					guestNotPresent);
-			verifyNoMoreInteractions(guestRepository);
+			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}
 
 	}
