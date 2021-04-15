@@ -20,4 +20,6 @@ public interface BookingRepository {
 
 	public List<Booking> findByDates(LocalDate firstDate, LocalDate secondDate);
 
+	public List<Booking> findByRoom(Room room);
+
 }

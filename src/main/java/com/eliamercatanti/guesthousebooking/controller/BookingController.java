@@ -71,8 +71,7 @@ public class BookingController {
 	}
 
 	public void searchBookingsByRoom(Room room) {
-		// TODO Auto-generated method stub
-
+		guesthouseView.showBookings(bookingRepository.findByRoom(room));
 	}
 
 	public void searchBookingsByGuest(Guest guest) {

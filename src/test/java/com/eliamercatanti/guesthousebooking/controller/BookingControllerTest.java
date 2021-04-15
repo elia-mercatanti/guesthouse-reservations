@@ -106,6 +106,20 @@ class BookingControllerTest {
 			verify(guesthouseView).showBookings(bookingsList);
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
+		
+		@Test
+		@DisplayName("Search bookings by room request - testSearchBookingsByRoom()")
+		void testSearchBookingsByRoom() {
+			Booking booking1 = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Booking booking2 = new Booking("2", "2", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 1,
+					Room.SINGLE);
+			List<Booking> bookingsList = Arrays.asList(booking1, booking2);
+			when(bookingRepository.findByRoom(Room.SINGLE)).thenReturn(bookingsList);
+			bookingController.searchBookingsByRoom(Room.SINGLE);
+			verify(guesthouseView).showBookings(bookingsList);
+			verifyNoMoreInteractions(bookingRepository, guesthouseView);
+		}
 
 	}
 
