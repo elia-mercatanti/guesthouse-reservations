@@ -60,6 +60,9 @@ public class BookingController {
 		if (firstDate == null) {
 			guesthouseView.showError("First date is not valid: " + firstDateString
 					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+		} else if (secondDate == null) {
+			guesthouseView.showError("Second date is not valid: " + secondDateString
+					+ ". Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		} else {
 			guesthouseView.showBookings(bookingRepository.findByDates(firstDate, secondDate));
 		}

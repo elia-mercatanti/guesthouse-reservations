@@ -211,6 +211,18 @@ class BookingControllerTest {
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
+		
+		@Test
+		@DisplayName("Search bookings by dates request when second date is not valid - testSearchBookingsByDatesWhenSecondDateIsNotValid()")
+		void testSearchBookingsByDatesWhenSecondDateIsNotValid() {
+			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
+			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
+			bookingController.searchBookingsByDates("01/01/2021", "dateNotValid");
+			verify(guesthouseView).showError(
+					"Second date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+			verifyNoInteractions(bookingRepository);
+			verifyNoMoreInteractions(guesthouseView);
+		}
 
 	}
 
