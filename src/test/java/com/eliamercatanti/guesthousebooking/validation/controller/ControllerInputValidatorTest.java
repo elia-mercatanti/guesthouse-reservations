@@ -46,6 +46,12 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateEmail("aa")).isFalse();
 			assertThat(controllerInputValidator.validateEmail("  ")).isFalse();
 		}
+		
+		@Test
+		@DisplayName("Email validation should return false when string is blank - testValidateEmailShouldReturnFalseWhenStringIsBlank()")
+		void testValidateEmailShouldReturnFalseWhenStringIsBlank() {
+			assertThat(controllerInputValidator.validateEmail("    ")).isFalse();
+		}
 
 	}
 

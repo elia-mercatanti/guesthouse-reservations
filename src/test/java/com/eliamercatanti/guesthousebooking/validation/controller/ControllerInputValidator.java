@@ -8,12 +8,18 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public boolean validateEmail(String email) {
-		if (email == null || email.isEmpty() || email.length() < 3) {
+		if (email == null) {
 			return false;
 		}
-		else {
-			return true;
+		
+		email = email.trim();
+		
+		if (email.isEmpty() || email.length() < 3) {
+			return false;
 		}
+
+		return true;
+
 	}
 
 	@Override
