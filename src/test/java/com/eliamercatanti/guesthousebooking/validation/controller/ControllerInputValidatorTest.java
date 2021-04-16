@@ -52,7 +52,20 @@ class ControllerInputValidatorTest {
 		void testValidateEmailShouldReturnFalseWhenStringIsBlank() {
 			assertThat(controllerInputValidator.validateEmail("    ")).isFalse();
 		}
-
+		
+		@Test
+		@DisplayName("Email validation should return false when string does not contain a single @ in the middle - testValidateEmailShouldReturnFalseWhenStringDoesNotContainASingleAtSignInTheMiddle()")
+		void testValidateEmailShouldReturnFalseWhenStringDoesNotContainASingleAtSignInTheMiddle() {
+			assertThat(controllerInputValidator.validateEmail("test..test")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("testtest")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("testTest")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("AAAA")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("%A!t&g1=?^")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("test@@test")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("@@@@")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("0000")).isFalse();
+		}
+		
 	}
 
 }

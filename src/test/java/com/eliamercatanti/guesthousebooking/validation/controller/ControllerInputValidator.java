@@ -1,6 +1,7 @@
 package com.eliamercatanti.guesthousebooking.validation.controller;
 
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 
 import com.eliamercatanti.guesthousebooking.validation.InputValidation;
 
@@ -11,15 +12,8 @@ public class ControllerInputValidator implements InputValidation {
 		if (email == null) {
 			return false;
 		}
-		
-		email = email.trim();
-		
-		if (email.isEmpty() || email.length() < 3) {
-			return false;
-		}
 
-		return true;
-
+		return Pattern.matches("[^@]+@[^@]+", email);
 	}
 
 	@Override
