@@ -21,6 +21,17 @@ class ControllerInputValidatorTest {
 	@DisplayName("Controller Input Validator Happy Cases")
 	class HappyCases {
 		
+		@Test
+		@DisplayName("Email validation should return true when string format is valid - testValidateEmailShouldReturnFalseWhenStringFormatIsValid()")
+		void testValidateEmailShouldReturnFalseWhenStringFormatIsValid() {
+			assertThat(controllerInputValidator.validateEmail("test@test.com")).isTrue();
+			assertThat(controllerInputValidator.validateEmail("test12@test12.com")).isTrue();
+			assertThat(controllerInputValidator.validateEmail("test12$@test12$.com")).isTrue();
+			assertThat(controllerInputValidator.validateEmail("1234@1234.com")).isTrue();
+			assertThat(controllerInputValidator.validateEmail("test@test")).isTrue();
+			assertThat(controllerInputValidator.validateEmail("1234@1234")).isTrue();
+		}
+		
 	}
 
 	@Nested
