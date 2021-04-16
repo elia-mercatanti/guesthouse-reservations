@@ -38,6 +38,14 @@ class ControllerInputValidatorTest {
 		void testValidateEmailShouldReturnFalseWhenStringIsEmpty() {
 			assertThat(controllerInputValidator.validateEmail("")).isFalse();
 		}
+		
+		@Test
+		@DisplayName("Email validation should return false when string length is less than 3 - testValidateEmailShouldReturnFalseWhenStringLengthIsLessThanThree()")
+		void testValidateEmailShouldReturnFalseWhenStringLengthIsLessThanThree() {
+			assertThat(controllerInputValidator.validateEmail("a")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("aa")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("  ")).isFalse();
+		}
 
 	}
 

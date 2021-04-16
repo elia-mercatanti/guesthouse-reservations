@@ -8,7 +8,7 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public boolean validateEmail(String email) {
-		if (email == null || email.isEmpty()) {
+		if (email == null || email.isEmpty() || email.length() < 3) {
 			return false;
 		}
 		else {
