@@ -102,6 +102,12 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateEmail("  a1$  @  a1%  ")).isFalse();
 		}
 		
+		@Test
+		@DisplayName("Telephone N. validation should return false when string is null - testValidateTelephoneNumberShouldReturnFalseWhenStringIsNull()")
+		void testValidateTelephoneNumberShouldReturnFalseWhenStringIsNull() {
+			assertThat(controllerInputValidator.validateTelephoneNumber(null)).isFalse();
+		}
+		
 	}
 
 }

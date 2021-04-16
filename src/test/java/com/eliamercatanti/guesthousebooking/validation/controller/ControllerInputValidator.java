@@ -18,8 +18,10 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public boolean validateTelephoneNumber(String telephoneNumber) {
-		// TODO Auto-generated method stub
-		return false;
+		if (telephoneNumber == null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
