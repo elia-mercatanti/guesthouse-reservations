@@ -66,6 +66,22 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateEmail("0000")).isFalse();
 		}
 		
+		@Test
+		@DisplayName("Email validation should return false when string does not contain prefix and suffix around @ - testValidateEmailShouldReturnFalseWhenStringDoesNotContainPrefixAndSuffixAroundAtSign()")
+		void testValidateEmailShouldReturnFalseWhenStringDoesNotContainPrefixAndSuffixAroundAtSign() {
+			assertThat(controllerInputValidator.validateEmail("@")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("test@")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("test£$%@")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("test123@")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("000@")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("test123!£$@")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("@test")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("@test£$%")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("@test123")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("@000")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("@test123!£$")).isFalse();
+		}
+		
 	}
 
 }
