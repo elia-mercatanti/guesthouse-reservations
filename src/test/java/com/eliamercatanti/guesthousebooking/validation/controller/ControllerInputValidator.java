@@ -13,7 +13,7 @@ public class ControllerInputValidator implements InputValidation {
 			return false;
 		}
 
-		return Pattern.matches("[^@]+@[^@]+", email);
+		return Pattern.matches("[^@\s]+@[^@\s]+", email);
 	}
 
 	@Override

@@ -81,6 +81,15 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateEmail("@000")).isFalse();
 			assertThat(controllerInputValidator.validateEmail("@test123!£$")).isFalse();
 		}
+
+		@Test
+		@DisplayName("Email validation should return false when string contains spaces - testValidateEmailShouldReturnFalseWhenStringContainsSpaces()")
+		void testValidateEmailShouldReturnFalseWhenStringContainsSpaces() {
+			assertThat(controllerInputValidator.validateEmail(" @ ")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("a1$ @ a1%")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("a1$  @  a1%")).isFalse();
+			assertThat(controllerInputValidator.validateEmail("  a1$  @  a1%  ")).isFalse();
+		}
 		
 	}
 
