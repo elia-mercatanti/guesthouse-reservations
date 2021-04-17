@@ -2,6 +2,8 @@ package com.eliamercatanti.guesthousebooking.validation.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -143,6 +145,7 @@ class ControllerInputValidatorTest {
 		void testValidateTelephoneNumberShouldReturnTrueWhenStringFormatIsValid() {
 			assertThat(controllerInputValidator.validateTelephoneNumber("1234567890")).isTrue();
 			assertThat(controllerInputValidator.validateTelephoneNumber("+1234567890")).isTrue();
+			assertThat(controllerInputValidator.validateTelephoneNumber("+00000000000000")).isTrue();
 		}
 
 	}
@@ -175,7 +178,7 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateDate("00-00-00000")).isNull();
 			assertThat(controllerInputValidator.validateDate("000-00-00")).isNull();
 		}
-		
+
 		@Test
 		@DisplayName("Date validation should return null when string date format is not valid =! dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd - testValidateDateShouldReturnNullWhenStringLengthIsNotValid()")
 		void testValidateDateShouldReturnNullWhenStringLengthIsNotValid() {
@@ -187,6 +190,18 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateDate("aaaa/aa/aa")).isNull();
 			assertThat(controllerInputValidator.validateDate("00/aa/0000")).isNull();
 			assertThat(controllerInputValidator.validateDate("01$01%2021")).isNull();
+		}
+
+		@Test
+		@DisplayName("Date validation should return correct local date when string date format is valid == dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd - testValidateDateShouldReturnCorrectLocalDateWhenStringLengthIsValid()")
+		void testValidateDateShouldReturnCorrectLocalDateWhenStringLengthIsValid() {
+			LocalDate dateToValidate = LocalDate.of(2021, 1, 1);
+			assertThat(controllerInputValidator.validateDate("01/01/2021")).isEqualTo(dateToValidate);
+			assertThat(controllerInputValidator.validateDate("01-01-2021")).isEqualTo(dateToValidate);
+			assertThat(controllerInputValidator.validateDate("01.01.2021")).isEqualTo(dateToValidate);
+			assertThat(controllerInputValidator.validateDate("2021/01/01")).isEqualTo(dateToValidate);
+			assertThat(controllerInputValidator.validateDate("2021-01-01")).isEqualTo(dateToValidate);
+			assertThat(controllerInputValidator.validateDate("2021.01.01")).isEqualTo(dateToValidate);
 		}
 
 	}

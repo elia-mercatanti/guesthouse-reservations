@@ -9,8 +9,6 @@ import com.eliamercatanti.guesthousebooking.validation.InputValidation;
 
 public class ControllerInputValidator implements InputValidation {
 
-	private static final int STRING_DATE_LENGTH = 10;
-
 	private static final int TELEPHONE_NUM_MAX_LENGTH = 15;
 
 	private static final String[] DATE_PATTERNS = { "dd/MM/yyyy", "dd-MM-yyyy", "dd.MM.yyyy", "yyyy/MM/dd",
@@ -22,7 +20,7 @@ public class ControllerInputValidator implements InputValidation {
 			return false;
 		}
 
-		return Pattern.matches("[^@\s]+@[^@\s]+", email);
+		return Pattern.matches("[^@\\s]+@[^@\\s]+", email);
 	}
 
 	@Override
@@ -36,7 +34,7 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public LocalDate validateDate(String dateString) {
-		if (dateString == null || dateString.trim().isEmpty() || dateString.length() != STRING_DATE_LENGTH) {
+		if (dateString == null) {
 			return null;
 		}
 
