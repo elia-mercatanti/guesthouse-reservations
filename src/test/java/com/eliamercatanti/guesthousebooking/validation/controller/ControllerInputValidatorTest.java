@@ -163,6 +163,12 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateDate("")).isNull();
 		}
 		
+		@Test
+		@DisplayName("Date validation should return null when string is blank - testValidateDateShouldReturnNullWhenStringIsBlank()")
+		void testValidateDateShouldReturnNullWhenStringIsBlank() {
+			assertThat(controllerInputValidator.validateDate("    ")).isNull();
+		}
+		
 	}
 
 }
