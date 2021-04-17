@@ -7,6 +7,8 @@ import com.eliamercatanti.guesthousebooking.validation.InputValidation;
 
 public class ControllerInputValidator implements InputValidation {
 
+	private static final int TELEPHONE_NUM_MAX_LENGTH = 15;
+
 	@Override
 	public boolean validateEmail(String email) {
 		if (email == null) {
@@ -18,7 +20,7 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public boolean validateTelephoneNumber(String telephoneNumber) {
-		if (telephoneNumber == null || telephoneNumber.length() > 15) {
+		if (telephoneNumber == null || telephoneNumber.length() > TELEPHONE_NUM_MAX_LENGTH) {
 			return false;
 		}
 
@@ -27,8 +29,11 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public LocalDate validateDate(String date) {
-		// TODO Auto-generated method stub
-		return null;
+		if (date == null) {
+			return null;
+		}
+		
+		return LocalDate.parse(date);
 	}
 
 }

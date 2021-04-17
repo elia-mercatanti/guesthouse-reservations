@@ -146,5 +146,17 @@ class ControllerInputValidatorTest {
 		}
 
 	}
+	
+	@Nested
+	@DisplayName("Date Validation")
+	class DateValidation {
+		
+		@Test
+		@DisplayName("Date validation should return null when string is null - testValidateDateShouldReturnNullWhenStringIsNull()")
+		void testValidateDateShouldReturnNullWhenStringIsNull() {
+			assertThat(controllerInputValidator.validateDate(null)).isNull();
+		}
+		
+	}
 
 }
