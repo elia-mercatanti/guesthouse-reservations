@@ -146,29 +146,36 @@ class ControllerInputValidatorTest {
 		}
 
 	}
-	
+
 	@Nested
 	@DisplayName("Date Validation")
 	class DateValidation {
-		
+
 		@Test
 		@DisplayName("Date validation should return null when string is null - testValidateDateShouldReturnNullWhenStringIsNull()")
 		void testValidateDateShouldReturnNullWhenStringIsNull() {
 			assertThat(controllerInputValidator.validateDate(null)).isNull();
 		}
-		
+
 		@Test
 		@DisplayName("Date validation should return null when string is empty - testValidateDateShouldReturnNullWhenStringIsEmpty()")
 		void testValidateDateShouldReturnNullWhenStringIsEmpty() {
 			assertThat(controllerInputValidator.validateDate("")).isNull();
 		}
-		
+
 		@Test
 		@DisplayName("Date validation should return null when string is blank - testValidateDateShouldReturnNullWhenStringIsBlank()")
 		void testValidateDateShouldReturnNullWhenStringIsBlank() {
 			assertThat(controllerInputValidator.validateDate("    ")).isNull();
 		}
-		
+
+		@Test
+		@DisplayName("Date validation should return null when string length is not 10 - testValidateDateShouldReturnNullWhenStringLengthIsNotTen()")
+		void testValidateDateShouldReturnNullWhenStringLengthIsNotTen() {
+			assertThat(controllerInputValidator.validateDate("00-00-00000")).isNull();
+			assertThat(controllerInputValidator.validateDate("000-00-00")).isNull();
+		}
+
 	}
 
 }
