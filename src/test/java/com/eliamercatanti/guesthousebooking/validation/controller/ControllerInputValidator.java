@@ -18,7 +18,7 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public boolean validateTelephoneNumber(String telephoneNumber) {
-		if (telephoneNumber == null) {
+		if (telephoneNumber == null || telephoneNumber.isEmpty()) {
 			return false;
 		}
 		return true;

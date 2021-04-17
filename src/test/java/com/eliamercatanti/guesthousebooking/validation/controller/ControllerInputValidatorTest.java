@@ -108,6 +108,12 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateTelephoneNumber(null)).isFalse();
 		}
 		
+		@Test
+		@DisplayName("Telephone N. validation should return false when string is empty - testValidateTelephoneNumberShouldReturnFalseWhenStringIsEmpty()")
+		void testValidateTelephoneNumberShouldReturnFalseWhenStringIsEmpty() {
+			assertThat(controllerInputValidator.validateTelephoneNumber("")).isFalse();
+		}
+		
 	}
 
 }
