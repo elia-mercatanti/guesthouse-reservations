@@ -181,7 +181,7 @@ class ControllerInputValidatorTest {
 
 		@Test
 		@DisplayName("Date validation should return null when string date format is not valid =! dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd - testValidateDateShouldReturnNullWhenStringLengthIsNotValid()")
-		void testValidateDateShouldReturnNullWhenStringLengthIsNotValid() {
+		void testValidateDateShouldReturnNullWhenStringFormatIsNotValid() {
 			assertThat(controllerInputValidator.validateDate("0123456789")).isNull();
 			assertThat(controllerInputValidator.validateDate("aaaaaaaaaa")).isNull();
 			assertThat(controllerInputValidator.validateDate("aaaaa12345")).isNull();
@@ -194,7 +194,7 @@ class ControllerInputValidatorTest {
 
 		@Test
 		@DisplayName("Date validation should return correct local date when string date format is valid == dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd - testValidateDateShouldReturnCorrectLocalDateWhenStringLengthIsValid()")
-		void testValidateDateShouldReturnCorrectLocalDateWhenStringLengthIsValid() {
+		void testValidateDateShouldReturnCorrectLocalDateWhenStringFormatIsValid() {
 			LocalDate dateToValidate = LocalDate.of(2021, 1, 1);
 			assertThat(controllerInputValidator.validateDate("01/01/2021")).isEqualTo(dateToValidate);
 			assertThat(controllerInputValidator.validateDate("01-01-2021")).isEqualTo(dateToValidate);
