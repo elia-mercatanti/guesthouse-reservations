@@ -175,6 +175,19 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateDate("00-00-00000")).isNull();
 			assertThat(controllerInputValidator.validateDate("000-00-00")).isNull();
 		}
+		
+		@Test
+		@DisplayName("Date validation should return null when string date format is not valid =! dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd - testValidateDateShouldReturnNullWhenStringLengthIsNotValid()")
+		void testValidateDateShouldReturnNullWhenStringLengthIsNotValid() {
+			assertThat(controllerInputValidator.validateDate("0123456789")).isNull();
+			assertThat(controllerInputValidator.validateDate("aaaaaaaaaa")).isNull();
+			assertThat(controllerInputValidator.validateDate("aaaaa12345")).isNull();
+			assertThat(controllerInputValidator.validateDate("00-00-0000")).isNull();
+			assertThat(controllerInputValidator.validateDate("0000/00/00")).isNull();
+			assertThat(controllerInputValidator.validateDate("aaaa/aa/aa")).isNull();
+			assertThat(controllerInputValidator.validateDate("00/aa/0000")).isNull();
+			assertThat(controllerInputValidator.validateDate("01$01%2021")).isNull();
+		}
 
 	}
 
