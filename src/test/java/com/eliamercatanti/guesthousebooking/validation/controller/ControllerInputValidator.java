@@ -18,10 +18,11 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public boolean validateTelephoneNumber(String telephoneNumber) {
-		if (telephoneNumber == null || telephoneNumber.trim().isEmpty() || telephoneNumber.length() > 15) {
+		if (telephoneNumber == null || telephoneNumber.length() > 15) {
 			return false;
 		}
-		return true;
+
+		return Pattern.matches("^[+]\\d+$|^\\d+$", telephoneNumber);
 	}
 
 	@Override

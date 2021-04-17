@@ -126,6 +126,18 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateTelephoneNumber("0000000000000000")).isFalse();
 		}
 		
+		@Test
+		@DisplayName("Telephone N. validation should return false when string does not contain only numbers or with a plus at the beginning - testValidateTelephoneNumberShouldReturnFalseWhenStringDoesNotContainOnlyNumbersOrWithAPlusAtTheBeginning()")
+		void testValidateTelephoneNumberShouldReturnFalseWhenStringDoesNotContainOnlyNumbersOrWithAPlusAtTheBeginning() {
+			assertThat(controllerInputValidator.validateTelephoneNumber("aaaaaaaaaa!$%")).isFalse();
+			assertThat(controllerInputValidator.validateTelephoneNumber("00000a$%A0")).isFalse();
+			assertThat(controllerInputValidator.validateTelephoneNumber("+aaaaaaaaaa")).isFalse();
+			assertThat(controllerInputValidator.validateTelephoneNumber("+00000a$%A0")).isFalse();
+			assertThat(controllerInputValidator.validateTelephoneNumber("+")).isFalse();
+			assertThat(controllerInputValidator.validateTelephoneNumber("++++")).isFalse();
+			assertThat(controllerInputValidator.validateTelephoneNumber("aaa000aaa")).isFalse();
+		}
+		
 	}
 
 }
