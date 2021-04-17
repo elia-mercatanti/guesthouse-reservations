@@ -29,7 +29,7 @@ public class ControllerInputValidator implements InputValidation {
 
 	@Override
 	public LocalDate validateDate(String date) {
-		if (date == null) {
+		if (date == null || date.isEmpty()) {
 			return null;
 		}
 		
