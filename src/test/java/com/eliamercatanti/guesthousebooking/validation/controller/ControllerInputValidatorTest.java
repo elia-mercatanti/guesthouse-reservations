@@ -120,6 +120,12 @@ class ControllerInputValidatorTest {
 			assertThat(controllerInputValidator.validateTelephoneNumber("    ")).isFalse();
 		}
 		
+		@Test
+		@DisplayName("Telephone N. validation should return false when string length is more than 15 - testValidateTelephoneNumberShouldReturnFalseWhenStringLengthIsMoreThanFifteen()")
+		void testValidateTelephoneNumberShouldReturnFalseWhenStringLengthIsMoreThanFifteen() {
+			assertThat(controllerInputValidator.validateTelephoneNumber("0000000000000000")).isFalse();
+		}
+		
 	}
 
 }
