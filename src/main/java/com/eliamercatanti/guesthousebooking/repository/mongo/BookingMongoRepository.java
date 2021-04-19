@@ -4,9 +4,9 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -32,10 +32,7 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public List<Booking> findAll() {
-		if (bookingCollection.countDocuments() == 0) {
-			return Collections.emptyList();
-		}
-		return new ArrayList<>();
+		return StreamSupport.stream(bookingCollection.find().spliterator(), false).collect(Collectors.toList());
 	}
 
 	@Override
