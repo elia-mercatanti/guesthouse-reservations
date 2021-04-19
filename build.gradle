@@ -52,15 +52,24 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
-    // Use JUnit 4 for GUI tests.
+    // Use JUnit 4 for some tests class.
     testCompileOnly 'junit:junit:' + junit4Version
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
     
     // Use Mockito with JUnit 5 for mocking during tests.
     testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion  
     
-    // Use AssertJ and Swing for for fluent style testing and GUI tests.
+    // Use AssertJ and Swing for fluent style testing and GUI tests.
     testImplementation 'org.assertj:assertj-swing-junit:' + assertJSwingVersion
+    
+    // Use MongoDB Java Server, fake implementation of the core MongoDB server, for unit tests.
+    testImplementation 'de.bwaldvogel:mongo-java-server:' + mongoDBJavaServerVersion
+    
+    // Use MongoDB Java Driver for managing a MongoDB database.
+    implementation 'org.mongodb:mongodb-driver-legacy:' + mongoDBJavaDriverVersion
+    
+    // Use Logback Classic Module to see Mongo Java Driver logs.
+    testImplementation 'ch.qos.logback:logback-classic:' + logbackClassicVersion
 }
 
 // Jar task configurations.
