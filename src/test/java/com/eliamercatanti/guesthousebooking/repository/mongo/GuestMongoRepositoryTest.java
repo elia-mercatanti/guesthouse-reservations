@@ -77,7 +77,7 @@ class GuestMongoRepositoryTest {
 			guestCollection.insertMany(Arrays.asList(guest1, guest2));
 			assertThat(guestMongoRepository.findAll()).containsExactly(guest1, guest2);
 		}
-		
+
 		@Test
 		@DisplayName("Save should save a guest in the database - testSaveShouldSaveAGuestInTheDatabase()")
 		void testSaveShouldSaveAGuestInTheDatabase() {
@@ -96,6 +96,12 @@ class GuestMongoRepositoryTest {
 		@DisplayName("Find all should return an empty list when database is empty - testFindAllShouldReturnAnEmptyListWhenDatabaseIsEmpty()")
 		void testFindAllShouldReturnAnEmptyListWhenDatabaseIsEmpty() {
 			assertThat(guestMongoRepository.findAll()).isEmpty();
+		}
+
+		@Test
+		@DisplayName("Find by id should return null when guest id is not found - testFindByIdShouldReturnNullWhenGuestIdIsNotFound()")
+		void testFindByIdShouldReturnNullWhenGuestIdIsNotFound() {
+			assertThat(guestMongoRepository.findById("1")).isNull();
 		}
 
 	}

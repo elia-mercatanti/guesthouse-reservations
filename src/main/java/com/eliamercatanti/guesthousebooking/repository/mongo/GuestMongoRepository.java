@@ -16,6 +16,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 
 public class GuestMongoRepository implements GuestRepository {
 
@@ -40,8 +41,12 @@ public class GuestMongoRepository implements GuestRepository {
 
 	@Override
 	public Guest findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		if (guestCollection.find(Filters.eq("_id", id)).first() == null) {
+			return null;
+		}
+		else {
+			return new Guest();
+		}
 	}
 
 	@Override
