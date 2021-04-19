@@ -35,8 +35,7 @@ public class GuestMongoRepository implements GuestRepository {
 
 	@Override
 	public void save(Guest guest) {
-		// TODO Auto-generated method stub
-
+		guestCollection.insertOne(guest);
 	}
 
 	@Override
