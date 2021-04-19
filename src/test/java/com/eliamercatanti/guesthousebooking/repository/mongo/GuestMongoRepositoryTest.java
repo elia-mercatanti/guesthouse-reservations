@@ -77,6 +77,14 @@ class GuestMongoRepositoryTest {
 			guestCollection.insertMany(Arrays.asList(guest1, guest2));
 			assertThat(guestMongoRepository.findAll()).containsExactly(guest1, guest2);
 		}
+		
+		@Test
+		@DisplayName("Save should save a guest in the database - testSaveShouldSaveAGuestInTheDatabase()")
+		void testSaveShouldSaveAGuestInTheDatabase() {
+			Guest guest = new Guest("testFirstName", "testLastName", "test@email.com", "1111111111");
+			guestMongoRepository.save(guest);
+			assertThat(guestCollection.find().first()).isEqualTo(guest);
+		}
 
 	}
 
