@@ -85,7 +85,7 @@ class GuestMongoRepositoryTest {
 			guestMongoRepository.save(guest);
 			assertThat(guestCollection.find().first()).isEqualTo(guest);
 		}
-		
+
 		@Test
 		@DisplayName("Find by id should return the guest when id is found - testFindByIdShouldReturnTheGuestWhenIdIsFound()")
 		void testFindByIdShouldReturnTheGuestWhenIdIsFound() {
@@ -93,6 +93,15 @@ class GuestMongoRepositoryTest {
 			Guest anotherGuest = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
 			guestCollection.insertMany(Arrays.asList(guestToFind, anotherGuest));
 			assertThat(guestMongoRepository.findById(guestToFind.getId())).isEqualTo(guestToFind);
+		}
+
+		@Test
+		@DisplayName("Delete should delete a guest from the database - testDeleteShouldDeleteAGuestFromTheDatabase()")
+		void testDeleteShouldDeleteAGuestFromTheDatabase() {
+			Guest guestToDelete = new Guest("testFirstName", "testLastName", "test@email.com", "1111111111");
+			guestCollection.insertOne(guestToDelete);
+			guestMongoRepository.delete(guestToDelete.getId());
+			assertThat(guestCollection.countDocuments()).isZero();
 		}
 
 	}
