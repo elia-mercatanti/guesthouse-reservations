@@ -85,6 +85,15 @@ class GuestMongoRepositoryTest {
 			guestMongoRepository.save(guest);
 			assertThat(guestCollection.find().first()).isEqualTo(guest);
 		}
+		
+		@Test
+		@DisplayName("Find by id should return the guest when id is found - testFindByIdShouldReturnTheGuestWhenIdIsFound()")
+		void testFindByIdShouldReturnTheGuestWhenIdIsFound() {
+			Guest guestToFind = new Guest("testFirstName", "testLastName", "test@email.com", "1111111111");
+			Guest anotherGuest = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
+			guestCollection.insertMany(Arrays.asList(guestToFind, anotherGuest));
+			assertThat(guestMongoRepository.findById(guestToFind.getId())).isEqualTo(guestToFind);
+		}
 
 	}
 
@@ -101,7 +110,7 @@ class GuestMongoRepositoryTest {
 		@Test
 		@DisplayName("Find by id should return null when guest id is not found - testFindByIdShouldReturnNullWhenGuestIdIsNotFound()")
 		void testFindByIdShouldReturnNullWhenGuestIdIsNotFound() {
-			assertThat(guestMongoRepository.findById("1")).isNull();
+			assertThat(guestMongoRepository.findById("607dc3867552cb5ba65e584d")).isNull();
 		}
 
 	}

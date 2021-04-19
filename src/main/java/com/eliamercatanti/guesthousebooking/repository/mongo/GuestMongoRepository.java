@@ -9,6 +9,7 @@ import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
 
 import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.repository.GuestRepository;
@@ -41,12 +42,13 @@ public class GuestMongoRepository implements GuestRepository {
 
 	@Override
 	public Guest findById(String id) {
-		if (guestCollection.find(Filters.eq("_id", id)).first() == null) {
+	    Guest guestFound = guestCollection.find(Filters.eq("_id", new ObjectId(id))).first();
+
+		if (guestFound == null) {
 			return null;
 		}
-		else {
-			return new Guest();
-		}
+		 
+		return guestFound;
 	}
 
 	@Override
