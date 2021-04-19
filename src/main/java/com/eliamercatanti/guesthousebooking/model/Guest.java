@@ -2,13 +2,23 @@ package com.eliamercatanti.guesthousebooking.model;
 
 import java.util.Objects;
 
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
+
 public class Guest {
 
+	@BsonId
+	@BsonRepresentation(BsonType.OBJECT_ID)
 	private String id;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String telephoneNumber;
+
+	public Guest() {
+
+	}
 
 	public Guest(String id, String firstName, String lastName, String email, String telephoneNumber) {
 		this.id = id;
@@ -43,6 +53,26 @@ public class Guest {
 
 	public String getTelephoneNumber() {
 		return telephoneNumber;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setTelephoneNumber(String telephoneNumber) {
+		this.telephoneNumber = telephoneNumber;
 	}
 
 	@Override

@@ -72,8 +72,8 @@ class GuestMongoRepositoryTest {
 		@Test
 		@DisplayName("Find all should return a list of all guests when database is not empty - testFindAllShouldReturnAListOfAllGuestWhenDatabaseIsNotEmpty()")
 		void testFindAllShouldReturnAListOfAllGuestWhenDatabaseIsNotEmpty() {
-			Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "1111111111");
-			Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "2222222222");
+			Guest guest1 = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
+			Guest guest2 = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
 			guestCollection.insertMany(Arrays.asList(guest1, guest2));
 			assertThat(guestMongoRepository.findAll()).containsExactly(guest1, guest2);
 		}
