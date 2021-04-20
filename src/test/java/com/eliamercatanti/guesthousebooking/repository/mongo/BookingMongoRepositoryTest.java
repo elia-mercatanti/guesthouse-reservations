@@ -104,12 +104,18 @@ class BookingMongoRepositoryTest {
 		}
 		
 		@Test
-		@DisplayName("Find by id should return null when guest id is not parsable into an object id - testFindByIdShouldReturnNullWhenBookingIdIsNotParsableIntoAnObjectId()")
-		void testFindByIdShouldReturnNullWhenBookingIdIsNotParsableIntoAnObjectId() {
+		@DisplayName("Find by id should return null when guest id is not parsable into an object id - testFindByIdShouldReturnNullWhenStringIdIsNotParsableIntoAnObjectId()")
+		void testFindByIdShouldReturnNullWhenStringIdIsNotParsableIntoAnObjectId() {
 			assertThat(bookingMongoRepository.findById("1")).isNull();
 			assertThat(bookingMongoRepository.findById("-")).isNull();
 			assertThat(bookingMongoRepository.findById("$")).isNull();
 			assertThat(bookingMongoRepository.findById("aaa")).isNull();
+		}
+		
+		@Test
+		@DisplayName("Find by id should return null when booking id is not found - testFindByIdShouldReturnNullWhenBookingIdIsNotFound()")
+		void testFindByIdShouldReturnNullWhenBookingIdIsNotFound() {
+			assertThat(bookingMongoRepository.findById(new ObjectId().toString())).isNull();
 		}
 
 	}
