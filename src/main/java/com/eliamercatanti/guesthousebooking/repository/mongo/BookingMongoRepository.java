@@ -45,11 +45,7 @@ public class BookingMongoRepository implements BookingRepository {
 	@Override
 	public Booking findById(String id) {
 		try {
-			Booking bookingFound = bookingCollection.find(Filters.eq("_id", new ObjectId(id))).first();
-			if (bookingFound == null) {
-				return null;
-			}
-			return new Booking();
+			return bookingCollection.find(Filters.eq("_id", new ObjectId(id))).first();
 		} catch (IllegalArgumentException e) {
 			return null;
 		}

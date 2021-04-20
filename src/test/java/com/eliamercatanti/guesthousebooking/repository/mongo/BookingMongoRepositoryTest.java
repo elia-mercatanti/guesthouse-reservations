@@ -91,6 +91,17 @@ class BookingMongoRepositoryTest {
 			assertThat(bookingCollection.find().first()).isEqualTo(booking);
 		}
 
+		@Test
+		@DisplayName("Find by id should return null when booking id is not found - testFindByIdShouldReturnTheBookingWhenIdIsFound()")
+		void testFindByIdShouldReturnTheBookingWhenIdIsFound() {
+			Booking bookingToFind = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking anotherBooking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
+			bookingCollection.insertMany(Arrays.asList(bookingToFind, anotherBooking));
+			assertThat(bookingMongoRepository.findById(bookingToFind.getId())).isEqualTo(bookingToFind);
+		}
+
 	}
 
 	@Nested
@@ -102,7 +113,7 @@ class BookingMongoRepositoryTest {
 		void testFindAllShouldReturnAnEmptyListWhenBookingCollectioneIsEmpty() {
 			assertThat(bookingMongoRepository.findAll()).isEmpty();
 		}
-		
+
 		@Test
 		@DisplayName("Find by id should return null when guest id is not parsable into an object id - testFindByIdShouldReturnNullWhenStringIdIsNotParsableIntoAnObjectId()")
 		void testFindByIdShouldReturnNullWhenStringIdIsNotParsableIntoAnObjectId() {
@@ -111,7 +122,7 @@ class BookingMongoRepositoryTest {
 			assertThat(bookingMongoRepository.findById("$")).isNull();
 			assertThat(bookingMongoRepository.findById("aaa")).isNull();
 		}
-		
+
 		@Test
 		@DisplayName("Find by id should return null when booking id is not found - testFindByIdShouldReturnNullWhenBookingIdIsNotFound()")
 		void testFindByIdShouldReturnNullWhenBookingIdIsNotFound() {
