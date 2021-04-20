@@ -10,6 +10,7 @@ import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
 
 import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Room;
@@ -18,6 +19,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 
 public class BookingMongoRepository implements BookingRepository {
 
@@ -42,8 +44,12 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public Booking findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			bookingCollection.find(Filters.eq("_id", new ObjectId(id))).first();
+			return new Booking();
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override

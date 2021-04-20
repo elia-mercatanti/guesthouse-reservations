@@ -102,6 +102,15 @@ class BookingMongoRepositoryTest {
 		void testFindAllShouldReturnAnEmptyListWhenBookingCollectioneIsEmpty() {
 			assertThat(bookingMongoRepository.findAll()).isEmpty();
 		}
+		
+		@Test
+		@DisplayName("Find by id should return null when guest id is not parsable into an object id - testFindByIdShouldReturnNullWhenBookingIdIsNotParsableIntoAnObjectId()")
+		void testFindByIdShouldReturnNullWhenBookingIdIsNotParsableIntoAnObjectId() {
+			assertThat(bookingMongoRepository.findById("1")).isNull();
+			assertThat(bookingMongoRepository.findById("-")).isNull();
+			assertThat(bookingMongoRepository.findById("$")).isNull();
+			assertThat(bookingMongoRepository.findById("aaa")).isNull();
+		}
 
 	}
 
