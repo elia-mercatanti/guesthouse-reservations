@@ -53,8 +53,7 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public void delete(String id) {
-		// TODO Auto-generated method stub
-
+		bookingCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
 	}
 
 	@Override

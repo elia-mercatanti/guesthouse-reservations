@@ -102,6 +102,16 @@ class BookingMongoRepositoryTest {
 			assertThat(bookingMongoRepository.findById(bookingToFind.getId())).isEqualTo(bookingToFind);
 		}
 
+		@Test
+		@DisplayName("Delete should delete a booking from the collection - testDeleteShouldDeleteABookingFromTheCollection()")
+		void testDeleteShouldDeleteABookingFromTheCollection() {
+			Booking bookingToDelete = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			bookingCollection.insertOne(bookingToDelete);
+			bookingMongoRepository.delete(bookingToDelete.getId());
+			assertThat(bookingCollection.countDocuments()).isZero();
+		}
+
 	}
 
 	@Nested
