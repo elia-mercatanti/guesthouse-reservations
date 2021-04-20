@@ -139,6 +139,30 @@ class BookingMongoRepositoryTest {
 			assertThat(bookingMongoRepository.findById(new ObjectId().toString())).isNull();
 		}
 
+		@Test
+		@DisplayName("Delete should do nothing when string id is not parsable into an object id - testDeleteShouldDoNothingWhenStringIdIsNotParsableIntoAnObjectId()")
+		void testDeleteShouldDoNothingWhenStringIdIsNotParsableIntoAnObjectId() {
+			Booking booking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			bookingCollection.insertOne(booking);
+			bookingMongoRepository.delete("1");
+			bookingMongoRepository.delete("-");
+			bookingMongoRepository.delete("$");
+			bookingMongoRepository.delete("aaa");
+			assertThat(bookingCollection.countDocuments()).isEqualTo(1);
+		}
+
+		@Test
+		@DisplayName("Check Room Availability In Date Range should return false when dates are within a booking - testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenDatesAreWithinABooking()")
+		void testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenDatesAreWithinABooking() {
+			Booking booking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			bookingCollection.insertOne(booking);
+			boolean availability = bookingMongoRepository.checkRoomAvailabilityInDateRange(Room.SINGLE,
+					LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 7));
+			assertThat(availability).isFalse();
+		}
+
 	}
 
 }

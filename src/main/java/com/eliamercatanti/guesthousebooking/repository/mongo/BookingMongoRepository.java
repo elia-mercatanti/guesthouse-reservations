@@ -10,6 +10,7 @@ import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.eliamercatanti.guesthousebooking.model.Booking;
@@ -44,22 +45,20 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public Booking findById(String id) {
-		try {
-			return bookingCollection.find(Filters.eq("_id", new ObjectId(id))).first();
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+		return bookingCollection.find(Filters.eq("_id", stringToObjectId(id))).first();
 	}
 
 	@Override
 	public void delete(String id) {
-		bookingCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
+		bookingCollection.deleteOne(Filters.eq("_id", stringToObjectId(id)));
 	}
 
 	@Override
 	public boolean checkRoomAvailabilityInDateRange(Room room, LocalDate firstDate, LocalDate secondDate) {
-		// TODO Auto-generated method stub
-		return false;
+		Bson filterQuery = Filters.and(Filters.eq("room", room.name()),
+				Filters.or(Filters.and(Filters.lt("checkInDate", firstDate), Filters.gt("checkOutDate", secondDate))));
+
+		return bookingCollection.find(filterQuery).first() == null;
 	}
 
 	@Override
@@ -78,6 +77,14 @@ public class BookingMongoRepository implements BookingRepository {
 	public List<Booking> findByGuestId(String guestId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	private ObjectId stringToObjectId(String id) {
+		try {
+			return new ObjectId(id);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 }
