@@ -37,8 +37,7 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public void save(Booking booking) {
-		// TODO Auto-generated method stub
-
+		bookingCollection.insertOne(booking);
 	}
 
 	@Override

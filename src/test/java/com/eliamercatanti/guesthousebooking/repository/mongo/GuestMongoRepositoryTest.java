@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -70,8 +71,8 @@ class GuestMongoRepositoryTest {
 	class HappyCases {
 
 		@Test
-		@DisplayName("Find all should return a list of all guests when database is not empty - testFindAllShouldReturnAListOfAllGuestsWhenDatabaseIsNotEmpty()")
-		void testFindAllShouldReturnAListOfAllGuestsWhenDatabaseIsNotEmpty() {
+		@DisplayName("Find all should return a list of all guests when collection is not empty - testFindAllShouldReturnAListOfAllGuestsWhenCollectionIsNotEmpty()")
+		void testFindAllShouldReturnAListOfAllGuestsWhenCollectionIsNotEmpty() {
 			Guest guest1 = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
 			Guest guest2 = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
 			guestCollection.insertMany(Arrays.asList(guest1, guest2));
@@ -79,8 +80,8 @@ class GuestMongoRepositoryTest {
 		}
 
 		@Test
-		@DisplayName("Save should save a guest in the database - testSaveShouldSaveAGuestInTheDatabase()")
-		void testSaveShouldSaveAGuestInTheDatabase() {
+		@DisplayName("Save should save a guest in the collection - testSaveShouldSaveAGuestInTheCollection()")
+		void testSaveShouldSaveAGuestInTheCollection() {
 			Guest guest = new Guest("testFirstName", "testLastName", "test@email.com", "1111111111");
 			guestMongoRepository.save(guest);
 			assertThat(guestCollection.find().first()).isEqualTo(guest);
@@ -96,8 +97,8 @@ class GuestMongoRepositoryTest {
 		}
 
 		@Test
-		@DisplayName("Delete should delete a guest from the database - testDeleteShouldDeleteAGuestFromTheDatabase()")
-		void testDeleteShouldDeleteAGuestFromTheDatabase() {
+		@DisplayName("Delete should delete a guest from the collection - testDeleteShouldDeleteAGuestFromTheCollection()")
+		void testDeleteShouldDeleteAGuestFromTheCollection() {
 			Guest guestToDelete = new Guest("testFirstName", "testLastName", "test@email.com", "1111111111");
 			guestCollection.insertOne(guestToDelete);
 			guestMongoRepository.delete(guestToDelete.getId());
@@ -111,15 +112,15 @@ class GuestMongoRepositoryTest {
 	class ExceptionalCases {
 
 		@Test
-		@DisplayName("Find all should return an empty list when database is empty - testFindAllShouldReturnAnEmptyListWhenDatabaseIsEmpty()")
-		void testFindAllShouldReturnAnEmptyListWhenDatabaseIsEmpty() {
+		@DisplayName("Find all should return an empty list when guest collection is empty - testFindAllShouldReturnAnEmptyListWhenGuestCollectionIsEmpty()")
+		void testFindAllShouldReturnAnEmptyListWhenGuestCollectionIsEmpty() {
 			assertThat(guestMongoRepository.findAll()).isEmpty();
 		}
 
 		@Test
 		@DisplayName("Find by id should return null when guest id is not found - testFindByIdShouldReturnNullWhenGuestIdIsNotFound()")
 		void testFindByIdShouldReturnNullWhenGuestIdIsNotFound() {
-			assertThat(guestMongoRepository.findById("607dc3867552cb5ba65e584d")).isNull();
+			assertThat(guestMongoRepository.findById(new ObjectId().toString())).isNull();
 		}
 
 	}

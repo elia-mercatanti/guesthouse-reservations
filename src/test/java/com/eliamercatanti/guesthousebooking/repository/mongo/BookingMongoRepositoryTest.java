@@ -72,12 +72,23 @@ class BookingMongoRepositoryTest {
 	class HappyCases {
 
 		@Test
-		@DisplayName("Find all should return a list of all bookings when database is not empty - testFindAllShouldReturnAListOfAllBookingsWhenDatabaseIsNotEmpty()")
-		void testFindAllShouldReturnAListOfAllBookingsWhenDatabaseIsNotEmpty() {
-			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
-			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
+		@DisplayName("Find all should return a list of all bookings when collection is not empty - testFindAllShouldReturnAListOfAllBookingsWhenCollectionIsNotEmpty()")
+		void testFindAllShouldReturnAListOfAllBookingsWhenCollectionIsNotEmpty() {
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
 			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
 			assertThat(bookingMongoRepository.findAll()).containsExactly(booking1, booking2);
+		}
+
+		@Test
+		@DisplayName("Save should save a booking in the collection - testSaveShouldSaveABookingInTheCollection()")
+		void testSaveShouldSaveABookingInTheCollection() {
+			Booking booking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			bookingMongoRepository.save(booking);
+			assertThat(bookingCollection.find().first()).isEqualTo(booking);
 		}
 
 	}
@@ -87,8 +98,8 @@ class BookingMongoRepositoryTest {
 	class ExceptionalCases {
 
 		@Test
-		@DisplayName("Find all should return an empty list when database is empty - testFindAllShouldReturnAnEmptyListWhenDatabaseIsEmpty()")
-		void testFindAllShouldReturnAnEmptyListWhenDatabaseIsEmpty() {
+		@DisplayName("Find all should return an empty list when booking collection is empty - testFindAllShouldReturnAnEmptyListWhenBookingCollectioneIsEmpty()")
+		void testFindAllShouldReturnAnEmptyListWhenBookingCollectioneIsEmpty() {
 			assertThat(bookingMongoRepository.findAll()).isEmpty();
 		}
 
