@@ -162,6 +162,17 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 7));
 			assertThat(availability).isFalse();
 		}
+		
+		@Test
+		@DisplayName("Check Room Availability In Date Range should return false when a booking check in date is within the dates - testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenABookingCheckInDateIsWithinTheDates()")
+		void testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenABookingCheckInDateIsWithinTheDates() {
+			Booking booking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			bookingCollection.insertOne(booking);
+			boolean availability = bookingMongoRepository.checkRoomAvailabilityInDateRange(Room.SINGLE,
+					LocalDate.of(2020, 12, 20), LocalDate.of(2021, 1, 5));
+			assertThat(availability).isFalse();
+		}
 
 	}
 

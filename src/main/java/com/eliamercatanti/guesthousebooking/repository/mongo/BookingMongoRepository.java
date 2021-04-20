@@ -55,8 +55,11 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public boolean checkRoomAvailabilityInDateRange(Room room, LocalDate firstDate, LocalDate secondDate) {
+		String checkInFieldName = "checkInDate";
+		
 		Bson filterQuery = Filters.and(Filters.eq("room", room.name()),
-				Filters.or(Filters.and(Filters.lt("checkInDate", firstDate), Filters.gt("checkOutDate", secondDate))));
+				Filters.or(Filters.and(Filters.gt(checkInFieldName, firstDate), Filters.lt(checkInFieldName, secondDate)),
+						Filters.and(Filters.lt(checkInFieldName, firstDate), Filters.gt("checkOutDate", secondDate))));
 
 		return bookingCollection.find(filterQuery).first() == null;
 	}
