@@ -118,9 +118,30 @@ class GuestMongoRepositoryTest {
 		}
 
 		@Test
+		@DisplayName("Find by id should return null when string id is not parsable into an object id - testFindByIdShouldReturnNullWhenStringIdIsNotParsableIntoAnObjectId()")
+		void testFindByIdShouldReturnNullWhenStringIdIsNotParsableIntoAnObjectId() {
+			assertThat(guestMongoRepository.findById("1")).isNull();
+			assertThat(guestMongoRepository.findById("-")).isNull();
+			assertThat(guestMongoRepository.findById("$")).isNull();
+			assertThat(guestMongoRepository.findById("aaa")).isNull();
+		}
+
+		@Test
 		@DisplayName("Find by id should return null when guest id is not found - testFindByIdShouldReturnNullWhenGuestIdIsNotFound()")
 		void testFindByIdShouldReturnNullWhenGuestIdIsNotFound() {
 			assertThat(guestMongoRepository.findById(new ObjectId().toString())).isNull();
+		}
+		
+		@Test
+		@DisplayName("Delete should do nothing when string id is not parsable into an object id - testDeleteShouldDoNothingWhenStringIdIsNotParsableIntoAnObjectId()")
+		void testDeleteShouldDoNothingWhenStringIdIsNotParsableIntoAnObjectId() {
+			Guest guest = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
+			guestCollection.insertOne(guest);
+			guestMongoRepository.delete("1");
+			guestMongoRepository.delete("-");
+			guestMongoRepository.delete("$");
+			guestMongoRepository.delete("aaa");
+			assertThat(guestCollection.countDocuments()).isEqualTo(1);		
 		}
 
 	}
