@@ -112,6 +112,19 @@ class BookingMongoRepositoryTest {
 			assertThat(bookingCollection.countDocuments()).isZero();
 		}
 
+		@Test
+		@DisplayName("Check Room Availability In Date Range should return true when no bookings are within the dates - testCheckRoomAvailabilityInDateRangeShouldReturnTrueWhenNoBookingsAreWithinTheDates()")
+		void testCheckRoomAvailabilityInDateRangeShouldReturnTrueWhenNoBookingsAreWithinTheDates() {
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
+					LocalDate.of(2021, 1, 30), 1, Room.SINGLE);
+			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
+			boolean availability = bookingMongoRepository.checkRoomAvailabilityInDateRange(Room.SINGLE,
+					LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 20));
+			assertThat(availability).isTrue();
+		}
+
 	}
 
 	@Nested
@@ -162,7 +175,7 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 7));
 			assertThat(availability).isFalse();
 		}
-		
+
 		@Test
 		@DisplayName("Check Room Availability In Date Range should return false when a booking check in date is within the dates - testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenABookingCheckInDateIsWithinTheDates()")
 		void testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenABookingCheckInDateIsWithinTheDates() {
@@ -173,7 +186,7 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2020, 12, 20), LocalDate.of(2021, 1, 5));
 			assertThat(availability).isFalse();
 		}
-		
+
 		@Test
 		@DisplayName("Check Room Availability In Date Range should return false when a booking check out date is within the dates - testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenABookingCheckOutDateIsWithinTheDates()")
 		void testCheckRoomAvailabilityInDateRangeShouldReturnFalseWhenABookingCheckOutDateIsWithinTheDates() {
