@@ -77,8 +77,8 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public List<Booking> findByRoom(Room room) {
-		// TODO Auto-generated method stub
-		return null;
+		return StreamSupport.stream(bookingCollection.find(Filters.eq("room", room.name())).spliterator(), false)
+				.collect(Collectors.toList());
 	}
 
 	@Override
