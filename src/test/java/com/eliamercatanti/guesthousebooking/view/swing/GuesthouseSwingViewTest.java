@@ -9,17 +9,14 @@ import java.util.Arrays;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 
-import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JComboBoxFixture;
 import org.assertj.swing.fixture.JListFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
+import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -31,7 +28,7 @@ import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
 
 @RunWith(MockitoJUnitRunner.class)
-class GuesthouseSwingViewTest {
+public class GuesthouseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
 
@@ -43,41 +40,31 @@ class GuesthouseSwingViewTest {
 	@Mock
 	private BookingController bookingController;
 
-	@BeforeAll
-	static void setUpOnce() {
-		FailOnThreadViolationRepaintManager.install();
-	}
-
-	@BeforeEach
-	void setUp() {
+	@Override
+	protected void onSetUp() {
 		GuiActionRunner.execute(() -> {
 			guesthouseSwingView = new GuesthouseSwingView();
 			guesthouseSwingView.setGuestController(guestController);
 			guesthouseSwingView.setBookingController(bookingController);
 			return guesthouseSwingView;
 		});
-		window = new FrameFixture(guesthouseSwingView);
+		window = new FrameFixture(robot(), guesthouseSwingView);
 		window.show();
 	}
 
-	@AfterEach
-	void tearDown() {
-		window.cleanUp();
-	}
-
 	@Test
-	void testFrameInitialState() {
+	public void testFrameInitialState() {
 		window.requireTitle("Guesthouse Reservations");
 	}
 
 	@Test
-	void testErrorLogInitialState() {
+	public void testErrorLogInitialState() {
 		window.label("errorLogLabel").requireVisible().requireEnabled().requireText("Error Log:");
 		window.label("errorLogMessageLabel").requireVisible().requireEnabled().requireText(" ");
 	}
 
 	@Test
-	void testControlsInitialStatesOfGuestsTab() {
+	public void testControlsInitialStatesOfGuestsTab() {
 		window.tabbedPane("tabbedPane").selectTab("Guests").requireVisible().requireEnabled();
 		window.label("firstNameLabel").requireVisible().requireEnabled().requireText("First Name");
 		window.textBox("firstNameTextBox").requireVisible().requireEnabled().requireEmpty();
@@ -93,7 +80,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testControlsInitialStatesOfBookingsTab() {
+	public void testControlsInitialStatesOfBookingsTab() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings").requireVisible().requireEnabled();
 		window.label("checkInDateLabel").requireVisible().requireEnabled().requireText("Check In");
 		window.textBox("checkInDateTextBox").requireVisible().requireEnabled().requireEmpty();
@@ -119,7 +106,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testWhenGuestInfosAreNonEmptyThenAddGuestButtonShouldBeEnabled() {
+	public void testWhenGuestInfosAreNonEmptyThenAddGuestButtonShouldBeEnabled() {
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 
 		window.textBox("firstNameTextBox").enterText("test");
@@ -130,7 +117,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testWhenSomeGuestInfosAreBlankThenAddGuestButtonShouldBeDisabled() {
+	public void testWhenSomeGuestInfosAreBlankThenAddGuestButtonShouldBeDisabled() {
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 
 		JTextComponentFixture firstNameTextBox = window.textBox("firstNameTextBox");
@@ -180,7 +167,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testDeleteGuestButtonShouldBeEnabledOnlyWhenAGuestIsSelected() {
+	public void testDeleteGuestButtonShouldBeEnabledOnlyWhenAGuestIsSelected() {
 		// Setup.
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
@@ -198,7 +185,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testShowGuestShouldResetAndFillGuestInfosToTheList() {
+	public void testShowGuestShouldResetAndFillGuestInfosToTheList() {
 		// Setup.
 		Guest previusGuest1 = new Guest("3", "testFirstName3", "testLastName3", "test3@email.com", "2222222222");
 		Guest previusGuest2 = new Guest("4", "testFirstName4", "testLastName4", "test4@email.com", "4444444444");
@@ -221,7 +208,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testGuestAddedShouldBeAddedToTheGuestListAndComboBoxThenClearTheErrorLogLabel() {
+	public void testGuestAddedShouldBeAddedToTheGuestListAndComboBoxThenClearTheErrorLogLabel() {
 		// Setup.
 		Guest guestToAdd = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Guests");
@@ -239,7 +226,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testGuestRemovedShouldRemoveTheGuestFromTheListAndComboBoxThenClearTheErrorLogLabel() {
+	public void testGuestRemovedShouldRemoveTheGuestFromTheListAndComboBoxThenClearTheErrorLogLabel() {
 		// Setup.
 		Guest guestToRemove = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
@@ -267,13 +254,13 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testShowErrorShouldShowTheMessageInTheErrorLog() {
+	public void testShowErrorShouldShowTheMessageInTheErrorLog() {
 		GuiActionRunner.execute(() -> guesthouseSwingView.showError("Error message test"));
 		window.label("errorLogMessageLabel").requireText("Error message test");
 	}
 
 	@Test
-	void testShowErrorGuestNotFoundShouldShowAnErrorMessage() {
+	public void testShowErrorGuestNotFoundShouldShowAnErrorMessage() {
 		// Setup
 		Guest guestNoLongerPresent = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
@@ -295,7 +282,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testAddGuestButtonShouldDelegateToGuestControllerNewGuest() {
+	public void testAddGuestButtonShouldDelegateToGuestControllerNewGuest() {
 		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("test");
@@ -311,7 +298,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testDeleteGuestButtonShouldDelegateToGuestControllerDeleteGuest() {
+	public void testDeleteGuestButtonShouldDelegateToGuestControllerDeleteGuest() {
 		// Setup.
 		Guest guestToDelete = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 		Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
@@ -331,7 +318,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled() {
+	public void testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled() {
 		// Setup.
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
@@ -347,7 +334,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testWhenSomeBookingInfoAreNotSetThenAddBookingButtonShouldBeDisabled() {
+	public void testWhenSomeBookingInfoAreNotSetThenAddBookingButtonShouldBeDisabled() {
 		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
@@ -418,7 +405,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testDeleteBookingButtonShouldBeEnabledOnlyWhenABookingIsSelected() {
+	public void testDeleteBookingButtonShouldBeEnabledOnlyWhenABookingIsSelected() {
 		// Setup.
 		Booking booking = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
@@ -434,7 +421,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testWhenBookingDatesAreNotBlankThenSearchByDatesButtonShouldBeEnabled() {
+	public void testWhenBookingDatesAreNotBlankThenSearchByDatesButtonShouldBeEnabled() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 		window.textBox("checkInDateTextBox").enterText("00-00-0000");
@@ -443,7 +430,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testWhenEitherCheckInOrCheckOutAreBlankThenSearchByDatesButtonShouldBeDisabled() {
+	public void testWhenEitherCheckInOrCheckOutAreBlankThenSearchByDatesButtonShouldBeDisabled() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 		JTextComponentFixture checkInDateTextBox = window.textBox("checkInDateTextBox");
@@ -463,7 +450,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testSearchByRoomButtonShouldBeEnabledOnlyWhenARoomIsSelected() {
+	public void testSearchByRoomButtonShouldBeEnabledOnlyWhenARoomIsSelected() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 		window.comboBox("roomComBox").selectItem(0);
@@ -473,7 +460,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testSearchByIdGuestButtonShouldBeEnabledOnlyWhenAGuestIdIsSelected() {
+	public void testSearchByIdGuestButtonShouldBeEnabledOnlyWhenAGuestIdIsSelected() {
 		// Setup.
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
@@ -487,7 +474,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testsShowBookingsShouldResetAndFillBookingDescriptionsToTheList() {
+	public void testsShowBookingsShouldResetAndFillBookingDescriptionsToTheList() {
 		// Setup.
 		Booking previusBooking1 = new Booking("3", "1", LocalDate.of(2021, 3, 1), LocalDate.of(2021, 3, 10), 3,
 				Room.TRIPLE);
@@ -513,7 +500,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testShowErrorBookingNotFoundShouldShowAnErrorMessage() {
+	public void testShowErrorBookingNotFoundShouldShowAnErrorMessage() {
 		// Setup.
 		Booking bookingNoLongerPresent = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
@@ -539,7 +526,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testBookingAddedShouldAddTheBookingToTheListAndClearTheErrorLabel() {
+	public void testBookingAddedShouldAddTheBookingToTheListAndClearTheErrorLabel() {
 		// Setup.
 		Booking bookingToAdd = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
@@ -556,7 +543,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testBookingRemovedShouldRemoveTheBookingFromTheListAndResetTheErrorLabel() {
+	public void testBookingRemovedShouldRemoveTheBookingFromTheListAndResetTheErrorLabel() {
 		// Setup.
 		Booking bookingToRemove = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
@@ -581,7 +568,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testAddBookingButtonShouldDelegateToBookingControllerNewBooking() {
+	public void testAddBookingButtonShouldDelegateToBookingControllerNewBooking() {
 		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
@@ -603,7 +590,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testSearchByDatesButtonShouldDelegateToBookingControllerSearchBookingsByDates() {
+	public void testSearchByDatesButtonShouldDelegateToBookingControllerSearchBookingsByDates() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 		window.textBox("checkInDateTextBox").enterText("1-1-2021");
@@ -613,7 +600,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testSearchByRoomButtonShouldDelegateToBookingControllerSearchBookingsByRoom() {
+	public void testSearchByRoomButtonShouldDelegateToBookingControllerSearchBookingsByRoom() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 		window.comboBox("roomComBox").selectItem("SINGLE");
@@ -622,7 +609,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testSearchByGuestButtonShouldDelegateToBookingControllerSearchBookingsByGuest() {
+	public void testSearchByGuestButtonShouldDelegateToBookingControllerSearchBookingsByGuest() {
 		// Setup.
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
@@ -640,7 +627,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testDeleteBookingButtonShouldDelegateToBookingControllerDeleteBooking() {
+	public void testDeleteBookingButtonShouldDelegateToBookingControllerDeleteBooking() {
 		// Setup.
 		Booking bookingToDelete = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
@@ -662,7 +649,7 @@ class GuesthouseSwingViewTest {
 	}
 
 	@Test
-	void testAllBookingsButtonShouldDelegateToBookingControllerAllBookings() {
+	public void testAllBookingsButtonShouldDelegateToBookingControllerAllBookings() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 		window.button("allBookingsButton").click();

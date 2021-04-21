@@ -31,6 +31,7 @@ import com.mongodb.client.MongoDatabase;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 
+@DisplayName("Tests for Booking Mongo Repository")
 class BookingMongoRepositoryTest {
 
 	private static final String DATABASE_NAME = "guesthouse";
