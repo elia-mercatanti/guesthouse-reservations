@@ -142,6 +142,17 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2021, 1, 25));
 			assertThat(bookingsList).containsExactly(booking1, booking2, booking3);
 		}
+		
+		@Test
+		@DisplayName("Find By Room should return a bookings list when there are bookings for that room - testFindByRoomShouldReturnABookingsListWhenThereAreBookingsForThatRoom()")
+		void testFindByRoomShouldReturnABookingsListWhenThereAreBookingsForThatRoom() {
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 10),
+					LocalDate.of(2021, 1, 20), 2, Room.DOUBLE);
+			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
+			assertThat(bookingMongoRepository.findByRoom(Room.SINGLE)).containsExactly(booking1);
+		}
 
 	}
 
