@@ -7,6 +7,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import java.net.InetSocketAddress;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -123,6 +124,23 @@ class BookingMongoRepositoryTest {
 			boolean availability = bookingMongoRepository.checkRoomAvailabilityInDateRange(Room.SINGLE,
 					LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 20));
 			assertThat(availability).isTrue();
+		}
+
+		@Test
+		@DisplayName("Check Room Availability In Date Range should return true when no bookings are within the dates - testFindByDatesShouldReturnListOfBookingsThatHaveCheckInDateBetweenDateRange()")
+		void testFindByDatesShouldReturnListOfBookingsThatHaveCheckInOrCheckOutDateBetweenDateRange() {
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 10),
+					LocalDate.of(2021, 1, 20), 2, Room.DOUBLE);
+			Booking booking3 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
+					LocalDate.of(2021, 1, 30), 1, Room.SINGLE);
+			Booking booking4 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 1, Room.SINGLE);
+			bookingCollection.insertMany(Arrays.asList(booking1, booking2, booking3, booking4));
+			List<Booking> bookingsList = bookingMongoRepository.findByDates(LocalDate.of(2021, 1, 5),
+					LocalDate.of(2021, 1, 25));
+			assertThat(bookingsList).containsExactly(booking1, booking2, booking3);
 		}
 
 	}

@@ -24,6 +24,8 @@ import com.mongodb.client.model.Filters;
 
 public class BookingMongoRepository implements BookingRepository {
 
+	private static final String CHECK_IN_FIELD_NAME = "checkInDate";
+	private static final String CHECK_OUT_FIELD_NAME = "checkOutDate";
 	private MongoCollection<Booking> bookingCollection;
 
 	public BookingMongoRepository(MongoClient mongoClient, String databaseName, String collectionName) {
@@ -55,21 +57,22 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public boolean checkRoomAvailabilityInDateRange(Room room, LocalDate firstDate, LocalDate secondDate) {
-		String checkInFieldName = "checkInDate";
-		String checkOutFieldName = "checkOutDate";
-
 		Bson filterQuery = Filters.and(Filters.eq("room", room.name()), Filters.or(
-				Filters.and(Filters.gt(checkInFieldName, firstDate), Filters.lt(checkInFieldName, secondDate)),
-				Filters.and(Filters.lt(checkOutFieldName, secondDate), Filters.gt(checkOutFieldName, firstDate)),
-				Filters.and(Filters.lt(checkInFieldName, firstDate), Filters.gt(checkOutFieldName, secondDate))));
+				Filters.and(Filters.gt(CHECK_IN_FIELD_NAME, firstDate), Filters.lt(CHECK_IN_FIELD_NAME, secondDate)),
+				Filters.and(Filters.lt(CHECK_OUT_FIELD_NAME, secondDate), Filters.gt(CHECK_OUT_FIELD_NAME, firstDate)),
+				Filters.and(Filters.lt(CHECK_IN_FIELD_NAME, firstDate), Filters.gt(CHECK_OUT_FIELD_NAME, secondDate))));
 
 		return bookingCollection.find(filterQuery).first() == null;
 	}
 
 	@Override
 	public List<Booking> findByDates(LocalDate firstDate, LocalDate secondDate) {
-		// TODO Auto-generated method stub
-		return null;
+		Bson filterQuery = Filters.or(
+				Filters.and(Filters.gt(CHECK_IN_FIELD_NAME, firstDate), Filters.lt(CHECK_IN_FIELD_NAME, secondDate)),
+				Filters.and(Filters.gt(CHECK_OUT_FIELD_NAME, firstDate), Filters.lt(CHECK_OUT_FIELD_NAME, secondDate)));
+
+		return StreamSupport.stream(bookingCollection.find(filterQuery).spliterator(), false)
+				.collect(Collectors.toList());
 	}
 
 	@Override
