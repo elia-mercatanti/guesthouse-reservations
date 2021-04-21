@@ -42,12 +42,20 @@ public class GuestMongoRepository implements GuestRepository {
 
 	@Override
 	public Guest findById(String id) {
-		return guestCollection.find(Filters.eq("_id", new ObjectId(id))).first();
+		return guestCollection.find(Filters.eq("_id", stringToObjectId(id))).first();
 	}
 
 	@Override
 	public void delete(String id) {
-		guestCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
+		guestCollection.deleteOne(Filters.eq("_id", stringToObjectId(id)));
+	}
+	
+	private ObjectId stringToObjectId(String id) {
+		try {
+			return new ObjectId(id);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 }
