@@ -142,7 +142,7 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2021, 1, 25));
 			assertThat(bookingsList).containsExactly(booking1, booking2, booking3);
 		}
-		
+
 		@Test
 		@DisplayName("Find By Room should return a bookings list when there are bookings for that room - testFindByRoomShouldReturnABookingsListWhenThereAreBookingsForThatRoom()")
 		void testFindByRoomShouldReturnABookingsListWhenThereAreBookingsForThatRoom() {
@@ -150,8 +150,24 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
 			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 10),
 					LocalDate.of(2021, 1, 20), 2, Room.DOUBLE);
-			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
-			assertThat(bookingMongoRepository.findByRoom(Room.SINGLE)).containsExactly(booking1);
+			Booking booking3 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
+					LocalDate.of(2021, 1, 30), 1, Room.SINGLE);
+			bookingCollection.insertMany(Arrays.asList(booking1, booking2, booking3));
+			assertThat(bookingMongoRepository.findByRoom(Room.SINGLE)).containsExactly(booking1, booking3);
+		}
+
+		@Test
+		@DisplayName("Find By Guest Id should return a bookings list when there are bookings with that guest id - testFindByGuestIdShouldReturnABookingsListWhenThereAreBookingsWithThatGuestId()")
+		void testFindByGuestIdShouldReturnABookingsListWhenThereAreBookingsWithThatGuestId() {
+			String guestIdToFind = new ObjectId().toString();
+			Booking booking1 = new Booking(guestIdToFind, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 10),
+					LocalDate.of(2021, 1, 20), 2, Room.DOUBLE);
+			Booking booking3 = new Booking(guestIdToFind, LocalDate.of(2021, 1, 20), LocalDate.of(2021, 1, 30), 2,
+					Room.DOUBLE);
+			bookingCollection.insertMany(Arrays.asList(booking1, booking2, booking3));
+			assertThat(bookingMongoRepository.findByGuestId(guestIdToFind)).containsExactly(booking1, booking3);
 		}
 
 	}
@@ -226,7 +242,7 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2021, 1, 5), LocalDate.of(2021, 1, 15));
 			assertThat(availability).isFalse();
 		}
-		
+
 		@Test
 		@DisplayName("Find By Dates should return an empty list when there are no bookings between date range - testFindByDatesShouldReturnAnEmptyListWhenThereAreNoBookingsBetweenDateRange()")
 		void testFindByDatesShouldReturnAnEmptyListWhenThereAreNoBookingsBetweenDateRange() {
@@ -239,7 +255,7 @@ class BookingMongoRepositoryTest {
 					LocalDate.of(2021, 1, 30));
 			assertThat(bookingsList).isEmpty();
 		}
-		
+
 		@Test
 		@DisplayName("Find By Room should return an empty list when there are no bookings for that room - testFindByRoomShouldReturnAnEmptyListWhenThereAreNoBookingsForThatRoom()")
 		void testFindByRoomShouldReturnAnEmptyListWhenThereAreNoBookingsForThatRoom() {
@@ -250,7 +266,7 @@ class BookingMongoRepositoryTest {
 			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
 			assertThat(bookingMongoRepository.findByRoom(Room.TRIPLE)).isEmpty();
 		}
-		
+
 		@Test
 		@DisplayName("Find By Guest Id should return an empty list when guest id is not parsable into an object id - testFindByGuestIdShouldReturnAnEmptyListWhenGuestIdIsNotParsableIntoAnObjectId()")
 		void testFindByGuestIdShouldReturnAnEmptyListWhenGuestIdIsNotParsableIntoAnObjectId() {

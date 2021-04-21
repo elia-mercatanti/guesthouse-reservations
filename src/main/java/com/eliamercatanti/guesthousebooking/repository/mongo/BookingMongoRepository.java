@@ -4,8 +4,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -85,10 +83,9 @@ public class BookingMongoRepository implements BookingRepository {
 
 	@Override
 	public List<Booking> findByGuestId(String guestId) {
-		if (stringToObjectId(guestId) == null) {
-			return Collections.emptyList();
-		}
-		return new ArrayList<>();
+		return StreamSupport
+				.stream(bookingCollection.find(Filters.eq("guestId", stringToObjectId(guestId))).spliterator(), false)
+				.collect(Collectors.toList());
 	}
 
 	private ObjectId stringToObjectId(String id) {
