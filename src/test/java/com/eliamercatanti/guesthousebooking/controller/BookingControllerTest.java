@@ -31,16 +31,16 @@ import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
 class BookingControllerTest {
 
 	@InjectMocks
-	public BookingController bookingController;
+	private BookingController bookingController;
 
 	@Mock
-	public BookingRepository bookingRepository;
+	private BookingRepository bookingRepository;
 
 	@Mock
-	public GuesthouseView guesthouseView;
+	private GuesthouseView guesthouseView;
 
 	@Mock
-	public InputValidation inputValidation;
+	private InputValidation inputValidation;
 
 	@Nested
 	@DisplayName("Booking Controller Happy Cases")

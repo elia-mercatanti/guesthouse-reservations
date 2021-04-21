@@ -37,7 +37,7 @@ class GuestMongoRepositoryTest {
 	private static InetSocketAddress serverAddress;
 	private GuestMongoRepository guestMongoRepository;
 	private MongoClient mongoClient;
-	public MongoCollection<Guest> guestCollection;
+	private MongoCollection<Guest> guestCollection;
 
 	@BeforeAll
 	static void setupServer() {
@@ -131,7 +131,7 @@ class GuestMongoRepositoryTest {
 		void testFindByIdShouldReturnNullWhenGuestIdIsNotFound() {
 			assertThat(guestMongoRepository.findById(new ObjectId().toString())).isNull();
 		}
-		
+
 		@Test
 		@DisplayName("Delete should do nothing when string id is not parsable into an object id - testDeleteShouldDoNothingWhenStringIdIsNotParsableIntoAnObjectId()")
 		void testDeleteShouldDoNothingWhenStringIdIsNotParsableIntoAnObjectId() {
@@ -141,7 +141,7 @@ class GuestMongoRepositoryTest {
 			guestMongoRepository.delete("-");
 			guestMongoRepository.delete("$");
 			guestMongoRepository.delete("aaa");
-			assertThat(guestCollection.countDocuments()).isEqualTo(1);		
+			assertThat(guestCollection.countDocuments()).isEqualTo(1);
 		}
 
 	}

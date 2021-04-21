@@ -37,7 +37,7 @@ class BookingMongoRepositoryTest {
 	private static final String COLLECTION_NAME = "booking";
 	private static MongoServer mongoServer;
 	private static InetSocketAddress serverAddress;
-	public BookingMongoRepository bookingMongoRepository;
+	private BookingMongoRepository bookingMongoRepository;
 	private MongoClient mongoClient;
 	private MongoCollection<Booking> bookingCollection;
 
