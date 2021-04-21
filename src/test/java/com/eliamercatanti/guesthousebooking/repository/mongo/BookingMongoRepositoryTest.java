@@ -250,6 +250,15 @@ class BookingMongoRepositoryTest {
 			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
 			assertThat(bookingMongoRepository.findByRoom(Room.TRIPLE)).isEmpty();
 		}
+		
+		@Test
+		@DisplayName("Find By Guest Id should return an empty list when guest id is not parsable into an object id - testFindByGuestIdShouldReturnAnEmptyListWhenGuestIdIsNotParsableIntoAnObjectId()")
+		void testFindByGuestIdShouldReturnAnEmptyListWhenGuestIdIsNotParsableIntoAnObjectId() {
+			assertThat(bookingMongoRepository.findByGuestId("1")).isEmpty();
+			assertThat(bookingMongoRepository.findByGuestId("-")).isEmpty();
+			assertThat(bookingMongoRepository.findByGuestId("$")).isEmpty();
+			assertThat(bookingMongoRepository.findByGuestId("aaa")).isEmpty();
+		}
 
 	}
 
