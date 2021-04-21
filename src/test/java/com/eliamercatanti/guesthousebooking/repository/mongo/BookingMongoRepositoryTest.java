@@ -127,7 +127,7 @@ class BookingMongoRepositoryTest {
 		}
 
 		@Test
-		@DisplayName("Check Room Availability In Date Range should return true when no bookings are within the dates - testFindByDatesShouldReturnListOfBookingsThatHaveCheckInDateBetweenDateRange()")
+		@DisplayName("Find By Dates should return list of bookings that have check in or check out date between date range - testFindByDatesShouldReturnListOfBookingsThatHaveCheckInOrCheckOutDateBetweenDateRange()")
 		void testFindByDatesShouldReturnListOfBookingsThatHaveCheckInOrCheckOutDateBetweenDateRange() {
 			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
 					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
@@ -214,6 +214,19 @@ class BookingMongoRepositoryTest {
 			boolean availability = bookingMongoRepository.checkRoomAvailabilityInDateRange(Room.SINGLE,
 					LocalDate.of(2021, 1, 5), LocalDate.of(2021, 1, 15));
 			assertThat(availability).isFalse();
+		}
+		
+		@Test
+		@DisplayName("Find By Dates should return an empty list when there are no bookings between date range - testFindByDatesShouldReturnAnEmptyListWhenThereAreNoBookingsBetweenDateRange()")
+		void testFindByDatesShouldReturnAnEmptyListWhenThereAreNoBookingsBetweenDateRange() {
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 10),
+					LocalDate.of(2021, 1, 20), 2, Room.DOUBLE);
+			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
+			List<Booking> bookingsList = bookingMongoRepository.findByDates(LocalDate.of(2021, 1, 20),
+					LocalDate.of(2021, 1, 30));
+			assertThat(bookingsList).isEmpty();
 		}
 
 	}
