@@ -276,6 +276,17 @@ class BookingMongoRepositoryTest {
 			assertThat(bookingMongoRepository.findByGuestId("aaa")).isEmpty();
 		}
 
+		@Test
+		@DisplayName("Find By Guest Id should return an empty list when there are no bookings for that guest id - testFindByGuestIdShouldReturnAnEmptyListWhenThereAreNoBookingsForThatGuestId()")
+		void testFindByGuestIdShouldReturnAnEmptyListWhenThereAreNoBookingsForThatGuestId() {
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 10),
+					LocalDate.of(2021, 1, 20), 2, Room.DOUBLE);
+			bookingCollection.insertMany(Arrays.asList(booking1, booking2));
+			assertThat(bookingMongoRepository.findByGuestId(new ObjectId().toString())).isEmpty();
+		}
+
 	}
 
 }
