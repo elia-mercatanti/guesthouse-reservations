@@ -262,11 +262,15 @@ class GuesthouseSwingViewTest {
 		}
 
 		@Test
-		@DisplayName("Guest Added should added guest to the list and combo box then clear the error log label - testGuestAddedShouldAddedGuestToTheListAndComboBoxThenClearTheErrorLogLabel()")
-		void testGuestAddedShouldAddedGuestToTheListAndComboBoxThenClearTheErrorLogLabel() {
+		@DisplayName("Guest Added should added guest to the list and combo box then clear the error log and guest form - testGuestAddedShouldAddedGuestToTheListAndComboBoxThenClearErrorLogAndGuestForm()")
+		void testGuestAddedShouldAddedGuestToTheListAndComboBoxThenClearErrorLogAndGuestForm() {
 			// Setup.
 			Guest guestToAdd = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.textBox("firstNameTextBox").setText("testFirstName");
+			window.textBox("lastNameTextBox").setText("testLastName");
+			window.textBox("emailTextBox").setText("test@email.com");
+			window.textBox("telephoneNumberTextBox").setText("0000000000");
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guestToAdd));
@@ -274,10 +278,14 @@ class GuesthouseSwingViewTest {
 			// Verify.
 			String[] guestsListContent = window.list("guestsList").contents();
 			assertThat(guestsListContent).containsExactly("1, testFirstName, testLastName, test@email.com, 0000000000");
+			window.label("errorLogMessageLabel").requireText(" ");
+			window.textBox("firstNameTextBox").requireEmpty();
+			window.textBox("lastNameTextBox").requireEmpty();
+			window.textBox("emailTextBox").requireEmpty();
+			window.textBox("telephoneNumberTextBox").requireEmpty();
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			String[] guestIdComBoxContent = window.comboBox("guestIdComBox").contents();
 			assertThat(guestIdComBoxContent).containsExactly("1, testFirstName, testLastName");
-			window.label("errorLogMessageLabel").requireText(" ");
 		}
 
 		@Test

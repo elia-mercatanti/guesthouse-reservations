@@ -449,6 +449,10 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	public void guestAdded(Guest guest) {
 		listGuestsModel.addElement(guest);
 		comboBoxGuestsModel.addElement(guest);
+		textFirstName.setText("");
+		textLastName.setText("");
+		textEmail.setText("");
+		textTelephoneNumber.setText("");
 		clearErrorLog();
 	}
 
