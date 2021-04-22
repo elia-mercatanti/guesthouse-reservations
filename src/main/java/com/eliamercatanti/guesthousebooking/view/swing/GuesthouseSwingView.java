@@ -512,6 +512,11 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	@Override
 	public void bookingAdded(Booking booking) {
 		listBookingsModel.addElement(booking);
+		textCheckInDate.setText("");
+		textCheckOutDate.setText("");
+		comBoxNumberOfGuests.setSelectedIndex(-1);
+		comBoxRoom.setSelectedIndex(-1);
+		comBoxGuestId.setSelectedIndex(-1);
 		clearErrorLog();
 	}
 

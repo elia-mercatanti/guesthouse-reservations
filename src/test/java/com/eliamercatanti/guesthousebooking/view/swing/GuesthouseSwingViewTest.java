@@ -620,12 +620,22 @@ class GuesthouseSwingViewTest {
 		}
 
 		@Test
-		@DisplayName("Booking Added should add the booking to the list and clear the error label - testBookingAddedShouldAddTheBookingToTheListAndClearTheErrorLabel()")
-		void testBookingAddedShouldAddTheBookingToTheListAndClearTheErrorLabel() {
+		@DisplayName("Booking Added should add the booking to the list then clear the error label and booking form - testBookingAddedShouldAddTheBookingToTheListThenClearTheErrorLabelAndBookingForm()")
+		void testBookingAddedShouldAddTheBookingToTheListThenClearTheErrorLabelAndBookingForm() {
 			// Setup.
 			Booking bookingToAdd = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 					Room.SINGLE);
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
+			GuiActionRunner.execute(() -> {
+				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
+				comboBoxGuestsModel.addElement(guest);
+			});
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.textBox("checkInDateTextBox").setText("01-01-2021");
+			window.textBox("checkOutDateTextBox").setText("01-10-2021");
+			window.comboBox("numberOfGuestsComBox").selectItem(0);
+			window.comboBox("roomComBox").selectItem(0);
+			window.comboBox("guestIdComBox").selectItem(0);
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.bookingAdded(bookingToAdd));
@@ -634,6 +644,11 @@ class GuesthouseSwingViewTest {
 			String[] bookingsListContent = window.list("bookingsList").contents();
 			assertThat(bookingsListContent).containsExactly(
 					"id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE");
+			window.textBox("checkInDateTextBox").requireEmpty();
+			window.textBox("checkOutDateTextBox").requireEmpty();
+			window.comboBox("numberOfGuestsComBox").requireNoSelection();
+			window.comboBox("roomComBox").requireNoSelection();
+			window.comboBox("guestIdComBox").requireNoSelection();
 			window.label("errorLogMessageLabel").requireText(" ");
 		}
 
