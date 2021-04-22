@@ -711,7 +711,7 @@ class GuesthouseSwingViewTest {
 			window.button("addBookingButton").click();
 
 			// Verify.
-			verify(bookingController).newBooking(guest.getId(), "1-1-2021", "1-10-2021", 1, Room.SINGLE);
+			verify(bookingController).newBooking(guest, "1-1-2021", "1-10-2021", 1, Room.SINGLE);
 		}
 
 	}

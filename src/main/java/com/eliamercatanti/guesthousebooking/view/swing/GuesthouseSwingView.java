@@ -299,7 +299,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		btnAddBooking.setEnabled(false);
 		btnAddBooking.setName("addBookingButton");
 		btnAddBooking
-				.addActionListener(e -> bookingController.newBooking(((Guest) comBoxGuest.getSelectedItem()).getId(),
+				.addActionListener(e -> bookingController.newBooking(((Guest) comBoxGuest.getSelectedItem()),
 						textCheckInDate.getText(), textCheckOutDate.getText(),
 						(int) comBoxNumberOfGuests.getSelectedItem(), (Room) comBoxRoom.getSelectedItem()));
 
