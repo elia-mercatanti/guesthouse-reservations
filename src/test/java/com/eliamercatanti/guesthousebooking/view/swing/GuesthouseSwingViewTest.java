@@ -564,8 +564,8 @@ class GuesthouseSwingViewTest {
 	class BookingsTabInterfaceMethodsTests {
 
 		@Test
-		@DisplayName("Show Bookings should reset the list and fill bookings infos To it - testShowBookingsShouldResetTheListAndFillBookingsInfosToIt()")
-		void testShowBookingsShouldResetTheListAndFillBookingsInfosToIt() {
+		@DisplayName("Show Bookings should clear booking form and list then should fill new bookings to it - testShowBookingsShouldclearBookingFormAndListThenShouldFillNewBookingsToIt()")
+		void testShowBookingsShouldClearBookingFormAndListThenShouldFillNewBookingsToIt() {
 			// Setup.
 			Booking previusBooking1 = new Booking("3", "1", LocalDate.of(2021, 3, 1), LocalDate.of(2021, 3, 10), 3,
 					Room.TRIPLE);
@@ -575,17 +575,30 @@ class GuesthouseSwingViewTest {
 					Room.SINGLE);
 			Booking booking2 = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
 					Room.DOUBLE);
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Booking> listBookingsModel = guesthouseSwingView.getListBookingsModel();
 				listBookingsModel.addElement(previusBooking1);
 				listBookingsModel.addElement(previusBooking2);
+				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
+				comboBoxGuestsModel.addElement(guest);
 			});
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.textBox("checkInDateTextBox").setText("01-01-2021");
+			window.textBox("checkOutDateTextBox").setText("01-10-2021");
+			window.comboBox("numberOfGuestsComBox").selectItem(0);
+			window.comboBox("roomComBox").selectItem(0);
+			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.showBookings(Arrays.asList(booking1, booking2)));
 
 			// Verify.
+			window.textBox("checkInDateTextBox").requireEmpty();
+			window.textBox("checkOutDateTextBox").requireEmpty();
+			window.comboBox("numberOfGuestsComBox").requireNoSelection();
+			window.comboBox("roomComBox").requireNoSelection();
+			window.comboBox("guestComBox").requireNoSelection();
 			String[] bookingsListContent = window.list("bookingsList").contents();
 			assertThat(bookingsListContent).containsExactly(
 					"id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE",

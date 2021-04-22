@@ -497,7 +497,16 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 	public void showBookings(List<Booking> bookings) {
 		listBookingsModel.removeAllElements();
+		clearBookingForm();
 		bookings.stream().forEach(listBookingsModel::addElement);
+	}
+
+	private void clearBookingForm() {
+		textCheckInDate.setText("");
+		textCheckOutDate.setText("");
+		comBoxNumberOfGuests.setSelectedIndex(-1);
+		comBoxRoom.setSelectedIndex(-1);
+		comBoxGuest.setSelectedIndex(-1);
 	}
 
 	@Override
@@ -512,11 +521,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	@Override
 	public void bookingAdded(Booking booking) {
 		listBookingsModel.addElement(booking);
-		textCheckInDate.setText("");
-		textCheckOutDate.setText("");
-		comBoxNumberOfGuests.setSelectedIndex(-1);
-		comBoxRoom.setSelectedIndex(-1);
-		comBoxGuest.setSelectedIndex(-1);
+		clearBookingForm();
 		clearErrorLog();
 	}
 
