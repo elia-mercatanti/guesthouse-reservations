@@ -292,7 +292,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 			}
 		});
 
-		JLabel lblGuestId = new JLabel("Guest Id");
+		JLabel lblGuestId = new JLabel("Guest");
 		lblGuestId.setName("guestIdLabel");
 
 		btnAddBooking = new JButton("Add Booking");

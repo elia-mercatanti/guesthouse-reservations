@@ -118,7 +118,7 @@ class GuesthouseSwingViewTest {
 			window.comboBox("roomComBox").requireVisible().requireEnabled();
 			comboBoxContents = window.comboBox("roomComBox").contents();
 			assertThat(comboBoxContents).containsExactly("SINGLE", "DOUBLE", "TRIPLE", "QUADRUPLE");
-			window.label("guestIdLabel").requireVisible().requireEnabled().requireText("Guest Id");
+			window.label("guestIdLabel").requireVisible().requireEnabled().requireText("Guest");
 			window.comboBox("guestIdComBox").requireVisible().requireEnabled();
 			window.button("addBookingButton").requireVisible().requireDisabled().requireText("Add Booking");
 			window.button("searchByDatesButton").requireVisible().requireDisabled().requireText("Search by Dates");
