@@ -98,7 +98,7 @@ class GuesthouseSwingViewTest {
 			window.label("telephoneNumberLabel").requireVisible().requireEnabled().requireText("Telephone N.");
 			window.textBox("telephoneNumberTextBox").requireVisible().requireEnabled().requireEmpty();
 			window.button("addGuestButton").requireVisible().requireDisabled().requireText("Add Guest");
-			window.list("guestsList").requireVisible().requireEnabled();
+			window.list("guestsList").requireVisible().requireEnabled().requireNoSelection();
 			window.button("deleteGuestButton").requireVisible().requireDisabled().requireText("Delete Guest");
 		}
 
@@ -111,20 +111,20 @@ class GuesthouseSwingViewTest {
 			window.label("checkOutDateLabel").requireVisible().requireEnabled().requireText("Check Out");
 			window.textBox("checkInDateTextBox").requireVisible().requireEnabled().requireEmpty();
 			window.label("numberOfGuestsLabel").requireVisible().requireEnabled().requireText("N. of Guests");
-			window.comboBox("numberOfGuestsComBox").requireVisible().requireEnabled();
+			window.comboBox("numberOfGuestsComBox").requireVisible().requireEnabled().requireNoSelection();
 			String[] comboBoxContents = window.comboBox("numberOfGuestsComBox").contents();
 			assertThat(comboBoxContents).containsExactly("1", "2", "3", "4");
 			window.label("roomLabel").requireVisible().requireEnabled().requireText("Room");
-			window.comboBox("roomComBox").requireVisible().requireEnabled();
+			window.comboBox("roomComBox").requireVisible().requireEnabled().requireNoSelection();
 			comboBoxContents = window.comboBox("roomComBox").contents();
 			assertThat(comboBoxContents).containsExactly("SINGLE", "DOUBLE", "TRIPLE", "QUADRUPLE");
-			window.label("guestIdLabel").requireVisible().requireEnabled().requireText("Guest");
-			window.comboBox("guestIdComBox").requireVisible().requireEnabled();
+			window.label("guestLabel").requireVisible().requireEnabled().requireText("Guest");
+			window.comboBox("guestComBox").requireVisible().requireEnabled().requireNoSelection();
 			window.button("addBookingButton").requireVisible().requireDisabled().requireText("Add Booking");
 			window.button("searchByDatesButton").requireVisible().requireDisabled().requireText("Search by Dates");
 			window.button("searchByRoomButton").requireVisible().requireDisabled().requireText("Search by Room");
 			window.button("searchByGuestButton").requireVisible().requireDisabled().requireText("Search by Guest");
-			window.list("bookingsList").requireVisible().requireEnabled();
+			window.list("bookingsList").requireVisible().requireEnabled().requireNoSelection();
 			window.button("deleteBookingButton").requireVisible().requireDisabled().requireText("Delete Booking");
 			window.button("allBookingsButton").requireVisible().requireEnabled().requireText("All Bookings");
 		}
@@ -284,8 +284,8 @@ class GuesthouseSwingViewTest {
 			window.textBox("emailTextBox").requireEmpty();
 			window.textBox("telephoneNumberTextBox").requireEmpty();
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			String[] guestIdComBoxContent = window.comboBox("guestIdComBox").contents();
-			assertThat(guestIdComBoxContent).containsExactly("1, testFirstName, testLastName");
+			String[] guestComBoxContent = window.comboBox("guestComBox").contents();
+			assertThat(guestComBoxContent).containsExactly("1, testFirstName, testLastName");
 		}
 
 		@Test
@@ -313,8 +313,8 @@ class GuesthouseSwingViewTest {
 			assertThat(guestsListContent)
 					.containsExactly("2, testFirstName2, testLastName2, test2@email.com, 1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			String[] guestIdComBoxContent = window.comboBox("guestIdComBox").contents();
-			assertThat(guestIdComBoxContent).containsExactly("2, testFirstName2, testLastName2");
+			String[] guestComBoxContent = window.comboBox("guestComBox").contents();
+			assertThat(guestComBoxContent).containsExactly("2, testFirstName2, testLastName2");
 			window.label("errorLogMessageLabel").requireText(" ");
 		}
 
@@ -406,7 +406,7 @@ class GuesthouseSwingViewTest {
 			window.textBox("checkOutDateTextBox").enterText("00-00-0000");
 			window.comboBox("numberOfGuestsComBox").selectItem(0);
 			window.comboBox("roomComBox").selectItem(0);
-			window.comboBox("guestIdComBox").selectItem(0);
+			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").requireEnabled();
 		}
 
@@ -421,7 +421,7 @@ class GuesthouseSwingViewTest {
 			JTextComponentFixture checkOutDateTextBox = window.textBox("checkOutDateTextBox");
 			JComboBoxFixture numberOfGuestComboBox = window.comboBox("numberOfGuestsComBox");
 			JComboBoxFixture roomComBox = window.comboBox("roomComBox");
-			JComboBoxFixture guestIdComBox = window.comboBox("guestIdComBox");
+			JComboBoxFixture guestComBox = window.comboBox("guestComBox");
 			JButtonFixture addBookingButton = window.button("addBookingButton");
 
 			// Verify.
@@ -429,51 +429,51 @@ class GuesthouseSwingViewTest {
 			checkOutDateTextBox.enterText("00-00-0000");
 			numberOfGuestComboBox.selectItem(0);
 			roomComBox.selectItem(0);
-			guestIdComBox.selectItem(0);
+			guestComBox.selectItem(0);
 			addBookingButton.requireDisabled();
 
 			checkInDateTextBox.setText("");
 			checkOutDateTextBox.setText("");
 			numberOfGuestComboBox.clearSelection();
 			roomComBox.clearSelection();
-			guestIdComBox.clearSelection();
+			guestComBox.clearSelection();
 
 			checkInDateTextBox.enterText("00-00-0000");
 			checkOutDateTextBox.enterText(" ");
 			numberOfGuestComboBox.selectItem(0);
 			roomComBox.selectItem(0);
-			guestIdComBox.selectItem(0);
+			guestComBox.selectItem(0);
 			addBookingButton.requireDisabled();
 
 			checkInDateTextBox.setText("");
 			checkOutDateTextBox.setText("");
 			numberOfGuestComboBox.clearSelection();
 			roomComBox.clearSelection();
-			guestIdComBox.clearSelection();
+			guestComBox.clearSelection();
 
 			checkInDateTextBox.enterText("00-00-0000");
 			checkOutDateTextBox.enterText("00-00-0000");
 			roomComBox.selectItem(0);
-			guestIdComBox.selectItem(0);
+			guestComBox.selectItem(0);
 			addBookingButton.requireDisabled();
 
 			checkInDateTextBox.setText("");
 			checkOutDateTextBox.setText("");
 			numberOfGuestComboBox.clearSelection();
 			roomComBox.clearSelection();
-			guestIdComBox.clearSelection();
+			guestComBox.clearSelection();
 
 			checkInDateTextBox.enterText("00-00-0000");
 			checkOutDateTextBox.enterText("00-00-0000");
 			numberOfGuestComboBox.selectItem(0);
-			guestIdComBox.selectItem(0);
+			guestComBox.selectItem(0);
 			addBookingButton.requireDisabled();
 
 			checkInDateTextBox.setText("");
 			checkOutDateTextBox.setText("");
 			numberOfGuestComboBox.clearSelection();
 			roomComBox.clearSelection();
-			guestIdComBox.clearSelection();
+			guestComBox.clearSelection();
 
 			checkInDateTextBox.enterText("00-00-0000");
 			checkOutDateTextBox.enterText("00-00-0000");
@@ -551,9 +551,9 @@ class GuesthouseSwingViewTest {
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 
 			// Verify.
-			window.comboBox("guestIdComBox").selectItem(0);
+			window.comboBox("guestComBox").selectItem(0);
 			window.button("searchByGuestButton").requireEnabled();
-			window.comboBox("guestIdComBox").clearSelection();
+			window.comboBox("guestComBox").clearSelection();
 			window.button("searchByGuestButton").requireDisabled();
 		}
 
@@ -635,7 +635,7 @@ class GuesthouseSwingViewTest {
 			window.textBox("checkOutDateTextBox").setText("01-10-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem(0);
 			window.comboBox("roomComBox").selectItem(0);
-			window.comboBox("guestIdComBox").selectItem(0);
+			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.bookingAdded(bookingToAdd));
@@ -648,7 +648,7 @@ class GuesthouseSwingViewTest {
 			window.textBox("checkOutDateTextBox").requireEmpty();
 			window.comboBox("numberOfGuestsComBox").requireNoSelection();
 			window.comboBox("roomComBox").requireNoSelection();
-			window.comboBox("guestIdComBox").requireNoSelection();
+			window.comboBox("guestComBox").requireNoSelection();
 			window.label("errorLogMessageLabel").requireText(" ");
 		}
 
@@ -692,7 +692,7 @@ class GuesthouseSwingViewTest {
 			window.textBox("checkOutDateTextBox").enterText("1-10-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem("1");
 			window.comboBox("roomComBox").selectItem("SINGLE");
-			window.comboBox("guestIdComBox").selectItem(0);
+			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			window.button("addBookingButton").click();
@@ -738,7 +738,7 @@ class GuesthouseSwingViewTest {
 				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
 				comboBoxGuestsModel.addElement(guest);
 			});
-			window.comboBox("guestIdComBox").selectItem(0);
+			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			window.button("searchByGuestButton").click();
