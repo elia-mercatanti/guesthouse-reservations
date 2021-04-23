@@ -27,6 +27,9 @@ plugins {
     
     // Plugin that provides a task to determine which dependencies have updates.
     id "com.github.ben-manes.versions" version "${gradleVersionsPluginVersion}"
+    
+    // Plugin that allows specifying test sets.
+    id 'org.unbroken-dome.test-sets' version "${testSetsPluginVersion}"
 }
 
 // Group, version, description and main class of the project.
@@ -81,6 +84,17 @@ test {
     // Use Junit 5 for tests.
     useJUnitPlatform()
 }
+
+// Add a new source set, dependency configurations and tasks to the build for integration tests.
+testSets {
+	integrationTest { dirName = 'it' }
+}
+
+// Ensure that integration tests are run before the check task.
+check.dependsOn integrationTest
+
+// Ensure that integration tests are run before after unit tests.
+integrationTest.mustRunAfter test
 
 // PIT mutation testing plugin configurations.
 pitest {
