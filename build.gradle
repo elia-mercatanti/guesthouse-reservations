@@ -52,12 +52,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
-    // Use JUnit 4 for some tests class.
-    testCompileOnly 'junit:junit:' + junit4Version
-    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
-    
     // Use Mockito with JUnit 5 for mocking during tests.
-    testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion  
+    testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion
     
     // Use AssertJ and Swing for fluent style testing and GUI tests.
     testImplementation 'org.assertj:assertj-swing-junit:' + assertJSwingVersion

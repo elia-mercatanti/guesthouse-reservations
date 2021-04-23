@@ -66,11 +66,12 @@ class BookingControllerTest {
 			LocalDate checkInDate = LocalDate.of(2021, 1, 1);
 			LocalDate checkOutDate = LocalDate.of(2021, 1, 10);
 			Booking newBooking = new Booking("1", checkInDate, checkOutDate, 1, Room.SINGLE);
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkInDate);
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkOutDate);
 			when(bookingRepository.checkRoomAvailabilityInDateRange(Room.SINGLE, checkInDate, checkOutDate))
 					.thenReturn(true);
-			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 1, Room.SINGLE);
+			bookingController.newBooking(guest, "01/01/2021", "10/01/2021", 1, Room.SINGLE);
 			InOrder inOrder = inOrder(bookingRepository, guesthouseView);
 			inOrder.verify(bookingRepository).save(newBooking);
 			inOrder.verify(guesthouseView).bookingAdded(newBooking);
@@ -146,9 +147,10 @@ class BookingControllerTest {
 		@Test
 		@DisplayName("New booking request when check in date is not valid - testNewBookingWhenCheckInDateIsNotValid()")
 		void testNewBookingWhenCheckInDateIsNotValid() {
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 10));
-			bookingController.newBooking("1", "dateNotValid", "10/01/2021", 1, Room.SINGLE);
+			bookingController.newBooking(guest, "dateNotValid", "10/01/2021", 1, Room.SINGLE);
 			verify(guesthouseView).showError(
 					"Booking Check In date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 			verifyNoInteractions(bookingRepository);
@@ -158,9 +160,10 @@ class BookingControllerTest {
 		@Test
 		@DisplayName("New booking request when check out date is not valid - testNewBookingWhenCheckOutDateIsNotValid()")
 		void testNewBookingWhenCheckOutDateIsNotValid() {
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
 			when(inputValidation.validateDate("dateNotValid")).thenReturn(null);
-			bookingController.newBooking("1", "01/01/2021", "dateNotValid", 1, Room.SINGLE);
+			bookingController.newBooking(guest, "01/01/2021", "dateNotValid", 1, Room.SINGLE);
 			verify(guesthouseView).showError(
 					"Booking Check Out date is not valid: dateNotValid. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 			verifyNoInteractions(bookingRepository);
@@ -172,9 +175,10 @@ class BookingControllerTest {
 		void testNewBookingWhenCheckInDateIsAfterCheckOutDate() {
 			LocalDate checkInDate = LocalDate.of(2021, 1, 10);
 			LocalDate checkOutDate = LocalDate.of(2021, 1, 1);
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkInDate);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkOutDate);
-			bookingController.newBooking("1", "10/01/2021", "01/01/2021", 1, Room.SINGLE);
+			bookingController.newBooking(guest, "10/01/2021", "01/01/2021", 1, Room.SINGLE);
 			verify(guesthouseView).showError("Check out date must be after check in date.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
@@ -184,9 +188,10 @@ class BookingControllerTest {
 		@DisplayName("New booking request when check in and check out date are the same - testNewBookingWhenCheckInAndCheckOutDateAreTheSame()")
 		void testNewBookingWhenCheckInAndCheckOutDateAreTheSame() {
 			LocalDate sameDate = LocalDate.of(2021, 1, 1);
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
-			bookingController.newBooking("1", "01/01/2021", "01/01/2021", 1, Room.SINGLE);
+			bookingController.newBooking(guest, "01/01/2021", "01/01/2021", 1, Room.SINGLE);
 			verify(guesthouseView).showError("Check out date must be after check in date.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
@@ -195,9 +200,10 @@ class BookingControllerTest {
 		@Test
 		@DisplayName("New booking request when number of guests is greater than room type  - testNewBookingWhenNumberOfGuestsIsGreaterThanRoomType()")
 		void testNewBookingWhenNumberOfGuestsIsGreaterThanRoomType() {
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(LocalDate.of(2021, 1, 1));
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(LocalDate.of(2021, 1, 10));
-			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 2, Room.SINGLE);
+			bookingController.newBooking(guest, "01/01/2021", "10/01/2021", 2, Room.SINGLE);
 			verify(guesthouseView).showError("Number of Guests must be suitable for the type of the room.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
@@ -208,11 +214,12 @@ class BookingControllerTest {
 		void testNewBookingWhenRoomIsAlreadyBookedOnTheRequestedDates() {
 			LocalDate checkInDate = LocalDate.of(2021, 1, 1);
 			LocalDate checkOutDate = LocalDate.of(2021, 1, 10);
+			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkInDate);
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkOutDate);
 			when(bookingRepository.checkRoomAvailabilityInDateRange(Room.SINGLE, checkInDate, checkOutDate))
 					.thenReturn(false);
-			bookingController.newBooking("1", "01/01/2021", "10/01/2021", 1, Room.SINGLE);
+			bookingController.newBooking(guest, "01/01/2021", "10/01/2021", 1, Room.SINGLE);
 			verify(guesthouseView).showError(
 					"The selected room is already booked on the requested dates: SINGLE on (01/01/2021 - 10/01/2021).");
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);

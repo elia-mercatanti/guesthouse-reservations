@@ -20,7 +20,7 @@ public class BookingController {
 		guesthouseView.showBookings(bookingRepository.findAll());
 	}
 
-	public void newBooking(String guestId, String checkInDateString, String checkOutDateString, int numberOfGuests,
+	public void newBooking(Guest guest, String checkInDateString, String checkOutDateString, int numberOfGuests,
 			Room room) {
 		LocalDate checkInDate = inputValidation.validateDate(checkInDateString);
 		LocalDate checkOutDate = inputValidation.validateDate(checkOutDateString);
@@ -39,7 +39,7 @@ public class BookingController {
 			guesthouseView.showError("The selected room is already booked on the requested dates: " + room + " on ("
 					+ checkInDateString + " - " + checkOutDateString + ").");
 		} else {
-			Booking newBooking = new Booking(guestId, checkInDate, checkOutDate, numberOfGuests, room);
+			Booking newBooking = new Booking(guest.getId(), checkInDate, checkOutDate, numberOfGuests, room);
 			bookingRepository.save(newBooking);
 			guesthouseView.bookingAdded(newBooking);
 		}
