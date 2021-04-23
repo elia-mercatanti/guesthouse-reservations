@@ -86,8 +86,8 @@ class GuesthouseSwingViewTest {
 		}
 
 		@Test
-		@DisplayName("Error Log Initial State - testErrorLogInitialState()")
-		void testInitialStatesOfGuestsTab() {
+		@DisplayName("Error Log initial state - testErrorLogInitialState()")
+		void testInitialStateOfGuestsTab() {
 			window.tabbedPane("tabbedPane").selectTab("Guests").requireVisible().requireEnabled();
 			window.label("firstNameLabel").requireVisible().requireEnabled().requireText("First Name");
 			window.textBox("firstNameTextBox").requireVisible().requireEnabled().requireEmpty();
@@ -691,6 +691,12 @@ class GuesthouseSwingViewTest {
 			window.label("errorLogMessageLabel").requireText(" ");
 		}
 
+	}
+
+	@Nested
+	@DisplayName("Bookings Tab Delegations Tests")
+	class BookingsTabDelegationsTests {
+		
 		@Test
 		@DisplayName("Add Booking Button should delegate to booking controller newBooking() - testAddBookingButtonShouldDelegateToBookingControllerNewBooking()")
 		void testAddBookingButtonShouldDelegateToBookingControllerNewBooking() {
@@ -713,12 +719,6 @@ class GuesthouseSwingViewTest {
 			// Verify.
 			verify(bookingController).newBooking(guest, "1-1-2021", "1-10-2021", 1, Room.SINGLE);
 		}
-
-	}
-
-	@Nested
-	@DisplayName("Bookings Tab Delegations Tests")
-	class BookingsTabDelegationsTests {
 
 		@Test
 		@DisplayName("Search By Dats Button should delegate to booking controller searchBookingsByDates() - testSearchByDatesButtonShouldDelegateToBookingControllerSearchBookingsByDates()")
