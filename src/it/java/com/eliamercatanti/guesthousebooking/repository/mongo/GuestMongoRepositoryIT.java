@@ -5,6 +5,9 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -52,6 +55,16 @@ class GuestMongoRepositoryIT {
 		Guest guest2 = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
 		guestCollection.insertMany(Arrays.asList(guest1, guest2));
 		assertThat(guestMongoRepository.findAll()).containsExactly(guest1, guest2);
+	}
+
+	@Test
+	@DisplayName("Save a guest in the collection - testSave()")
+	void testSave() {
+		Guest guestToSave = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
+		guestMongoRepository.save(guestToSave);
+		List<Guest> guestsList = StreamSupport.stream(guestCollection.find().spliterator(), false)
+				.collect(Collectors.toList());
+		assertThat(guestsList).containsExactly(guestToSave);
 	}
 
 }
