@@ -54,7 +54,9 @@ class GuestMongoRepositoryIT {
 		Guest guest1 = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
 		Guest guest2 = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
 		guestCollection.insertMany(Arrays.asList(guest1, guest2));
-		assertThat(guestMongoRepository.findAll()).containsExactly(guest1, guest2);
+		assertThat(guestMongoRepository.findAll()).containsExactly(
+				new Guest(guest1.getId(), "testFirstName1", "testLastName1", "test1@email.com", "1111111111"),
+				new Guest(guest2.getId(), "testFirstName2", "testLastName2", "test2@email.com", "2222222222"));
 	}
 
 	@Test
@@ -64,7 +66,19 @@ class GuestMongoRepositoryIT {
 		guestMongoRepository.save(guestToSave);
 		List<Guest> guestsList = StreamSupport.stream(guestCollection.find().spliterator(), false)
 				.collect(Collectors.toList());
-		assertThat(guestsList).containsExactly(guestToSave);
+		assertThat(guestsList).containsExactly(
+				new Guest(guestToSave.getId(), "testFirstName1", "testLastName1", "test1@email.com", "1111111111"));
+	}
+
+	@Test
+	@DisplayName("Find a Guest in the colelction by his id - testFindById()")
+	void testFindById() {
+		Guest guestToFind = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
+		Guest anotherGuest = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
+		guestCollection.insertMany(Arrays.asList(guestToFind, anotherGuest));
+		assertThat(guestMongoRepository.findById(guestToFind.getId())).isEqualTo(
+				new Guest(guestToFind.getId(), "testFirstName1", "testLastName1", "test1@email.com", "1111111111"));
+
 	}
 
 }
