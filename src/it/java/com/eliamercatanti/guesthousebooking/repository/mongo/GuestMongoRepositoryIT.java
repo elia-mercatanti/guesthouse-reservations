@@ -69,7 +69,7 @@ class GuestMongoRepositoryIT {
 	}
 
 	@Test
-	@DisplayName("Find a Guest in the collection by his id - testFindById()")
+	@DisplayName("Find a Guest in the collection with his id - testFindById()")
 	void testFindById() {
 		Guest guestToFind = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
 		Guest anotherGuest = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
