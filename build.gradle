@@ -77,51 +77,73 @@ dependencies {
     testImplementation 'ch.qos.logback:logback-classic:' + logbackClassicVersion
 }
 
+// Add a new source set, dependency configurations and tasks to the build for integration tests.
+testSets {
+	integrationTest { dirName = 'it' }
+}
+
 // Tasks for managing the creation, start and stop of the MongoDB container.
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
 import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerInspectContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
 import com.bmuschko.gradle.docker.tasks.container.extras.DockerWaitHealthyContainer
 
+// Pull image from Docker.
 task pullImage(type: DockerPullImage) {
     image = 'mongo:4.4.5'
 }
 
+// Create container for the image.
 task createContainer(type: DockerCreateContainer) {
 	dependsOn pullImage
-    targetImageId('mongo:4.4.5')
-    hostConfig.portBindings = ['27017:27017']
+    targetImageId(pullImage.image)
+    hostConfig.portBindings = [":27017"]
     hostConfig.autoRemove = true
 }
 
+// Start the container.
 task startContainer(type: DockerStartContainer) {
     dependsOn createContainer
     targetContainerId(createContainer.containerId)
 }
 
+// Wait an healthy container.
 task startAndWaitOnHealthyContainer(type: DockerWaitHealthyContainer) {
     dependsOn startContainer
     awaitStatusTimeout = 60
     targetContainerId(createContainer.containerId)
 }
 
-task stopContainer(type: DockerStopContainer) {
-    targetContainerId(createContainer.containerId)
+// Inspect the container to get the host port.
+task getContainerPortBindings(type: DockerInspectContainer) {
+	dependsOn startAndWaitOnHealthyContainer
+	targetContainerId(createContainer.containerId)
+    onNext {
+        it.networkSettings.getPorts().getBindings().each { k, v ->
+            def containerPort = "" + k.getPort()
+            def hostPort = "" + v[0].hostPortSpec
+            println "Container Port ${containerPort} is exposed on host as port ${hostPort}"
+            tasks.integrationTest {
+            	systemProperty 'mongo.port', hostPort
+            }
+        }
+    }
 }
 
-// Add a new source set, dependency configurations and tasks to the build for integration tests.
-testSets {
-	integrationTest { dirName = 'it' }
+// Stop the container.
+task stopContainer(type: DockerStopContainer) {
+    targetContainerId(createContainer.containerId)
 }
 
 // Ensure that integration tests are run before the check task but after unit test.
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
 
-// Ensure that integration tests are run after container is healthy and are ended with a container stop.
+// Ensure that integration tests are run after getting container port bindings and are ended with a container stop.
 integrationTest {
-    dependsOn startAndWaitOnHealthyContainer
+    dependsOn getContainerPortBindings
     finalizedBy stopContainer
 }
 

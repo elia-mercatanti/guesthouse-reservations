@@ -39,6 +39,8 @@ jobs:
          run: restart-service *docker*
       -  name: Docker Info
          run: docker info
+      -  name: Find port
+         run: netstat -aon | findstr 27017
       -  name: Grant execute permission for gradlew
          run: chmod +x gradlew
       -  name: Build with Gradle
