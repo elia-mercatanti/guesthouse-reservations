@@ -22,7 +22,7 @@ jobs:
          with:
             java-version: 11
             distribution: 'adopt'
-      -  name: Cache Gradle and SonarQube packages
+      -  name: Cache Gradle and SonarQube Packages
          uses: actions/cache@v2
          with:
             path: |
@@ -32,35 +32,37 @@ jobs:
             key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/*.yml') }}
             restore-keys: |
                $(( runner.os ))-gradle-
-      -  name: Docker configuration
+      -  name: Docker Configuration
          run: |
             sc config docker binpath="dockerd.exe --run-service -H tcp://localhost:2375"
       -  name: Docker Restart
          run: restart-service *docker*
-      -  name: Docker Info
-         run: docker info
-      -  name: Find port
-         run: netstat -aon | findstr 27017
-      -  name: Grant execute permission for gradlew
+      -  name: Grant Execute Permission for Gradlew
          run: chmod +x gradlew
       -  name: Build with Gradle
          env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
          run: ./gradlew build jacocoTestReport coverallsJacoco pitest sonarqube -i
-      -  name: Archive JUnit Report
+      -  name: Archive Unit Tests Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}
          with:
-            name: junit-report
+            name: unit-tests-report
             path: '**/build/reports/tests/test'
+      -  name: Archive Integration Tests Report
+         uses: actions/upload-artifact@v2
+         if: ${{ failure() }}
+         with:
+            name: integration-tests-report
+            path: '**/build/reports/tests/integrationTest'
       -  name: Archive PIT Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}
          with:
             name: pit-report
             path: '**/build/reports/pitest'
-      -  name: Archive jar and fatjar
+      -  name: Archive Jar and Fatjar
          uses: actions/upload-artifact@v2
          with:
             name: guesthouse-reservations-packages
