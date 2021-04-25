@@ -186,7 +186,7 @@ sonarqube {
 	    property 'sonar.organization', 'elia-mercatanti'
 	    property 'sonar.host.url', 'https://sonarcloud.io'
 	    
-	    // Property for excluding some classes from code coverage.
+	    // Property for excluding some classes from code coverage report.
 	    property 'sonar.coverage.exclusions', ['**/model/**', '**/app/**']
 	    
 	    // Properties for ignoring some code issues.
