@@ -6,6 +6,9 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -61,6 +64,17 @@ class BookingMongoRepositoryIT {
 						LocalDate.of(2021, 1, 10), 1, Room.SINGLE),
 				new Booking(booking2.getId(), booking2.getGuestId(), LocalDate.of(2021, 2, 1),
 						LocalDate.of(2021, 2, 10), 2, Room.DOUBLE));
+	}
+
+	@Test
+	@DisplayName("Save a booking in the collection - testSave()")
+	void testSave() {
+		Booking booking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+				Room.SINGLE);
+		bookingMongoRepository.save(booking);
+		List<Booking> bookingsList = StreamSupport.stream(bookingCollection.find().spliterator(), false).collect(Collectors.toList());
+		assertThat(bookingsList).containsExactly(booking);
+
 	}
 
 }
