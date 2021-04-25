@@ -27,6 +27,12 @@ plugins {
     
     // Plugin that provides a task to determine which dependencies have updates.
     id "com.github.ben-manes.versions" version "${gradleVersionsPluginVersion}"
+    
+    // Plugin that allows specifying test sets.
+    id 'org.unbroken-dome.test-sets' version "${testSetsPluginVersion}"
+    
+    // Plugin that allows managing Docker images and containers.
+    id 'com.bmuschko.docker-remote-api' version "${gradleDockerPluginVersion}"
 }
 
 // Group, version, description and main class of the project.
@@ -35,6 +41,7 @@ version = '0.0.1-SNAPSHOT'
 description = 'Project for ATTSD Course - Simple app to manage reservations of a guesthouse'
 mainClassName = 'com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingApp'
 
+// Java configurations.
 java {
 	// Set Java version for building the project. Setup all compile and test tasks to use the defined toolchain.
     toolchain {
@@ -42,11 +49,13 @@ java {
     }
 }
 
+// Repositories declarations for resolving dependencies.
 repositories {
-    // Use Maven Central for resolving dependencies.
+    // Use Maven Central.
     mavenCentral()
 }
 
+// Dependencies declarations.
 dependencies {
     // Use JUnit 5 Jupiter API and Engine for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
@@ -68,18 +77,80 @@ dependencies {
     testImplementation 'ch.qos.logback:logback-classic:' + logbackClassicVersion
 }
 
-// Jar task configurations.
-jar {
-	// Generate a jar file with main java class in the MANIFEST. Inherited by shadowJar task.
-    manifest {
-        attributes 'Main-Class': mainClassName
+// Add a new source set, dependency configurations and tasks to the build for integration tests.
+testSets {
+	integrationTest { dirName = 'it' }
+}
+
+// Tasks for managing the creation, start and stop of the MongoDB container.
+import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerInspectContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+import com.bmuschko.gradle.docker.tasks.container.extras.DockerWaitHealthyContainer
+
+// Pull image from Docker.
+task pullImage(type: DockerPullImage) {
+    image = 'mongo:4.4.5'
+}
+
+// Create container for the image.
+task createContainer(type: DockerCreateContainer) {
+	dependsOn pullImage
+    targetImageId(pullImage.image)
+    hostConfig.portBindings = [":27017"]
+    hostConfig.autoRemove = true
+}
+
+// Start the container.
+task startContainer(type: DockerStartContainer) {
+    dependsOn createContainer
+    targetContainerId(createContainer.containerId)
+}
+
+// Wait an healthy container.
+task startAndWaitOnHealthyContainer(type: DockerWaitHealthyContainer) {
+    dependsOn startContainer
+    awaitStatusTimeout = 60
+    targetContainerId(createContainer.containerId)
+}
+
+// Inspect the container to get the host port.
+task getContainerPortBindings(type: DockerInspectContainer) {
+	dependsOn startAndWaitOnHealthyContainer
+	targetContainerId(createContainer.containerId)
+    onNext {
+        it.networkSettings.getPorts().getBindings().each { k, v ->
+            def containerPort = "" + k.getPort()
+            def hostPort = "" + v[0].hostPortSpec
+            println "Container Port ${containerPort} is exposed on host as port ${hostPort}"
+            tasks.integrationTest {
+            	systemProperty 'mongo.port', hostPort
+            }
+        }
     }
 }
 
-// Test task configurationsm.
-test {
-    // Use Junit 5 for tests.
-    useJUnitPlatform()
+// Stop the container.
+task stopContainer(type: DockerStopContainer) {
+    targetContainerId(createContainer.containerId)
+}
+
+// Ensure that integration tests are run before the check task but after unit test.
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+// Ensure that integration tests are run after getting container port bindings and are ended with a container stop.
+integrationTest {
+    dependsOn getContainerPortBindings
+    finalizedBy stopContainer
+}
+
+// Test type tasks configuration.
+tasks.withType(Test){
+	// Use JUnit 5.
+	useJUnitPlatform()
 }
 
 // PIT mutation testing plugin configurations.
@@ -99,7 +170,7 @@ jacocoTestReport {
         html.enabled = true
     }
     
-    // Exclude some classes from tests.
+    // Exclude some classes from jacoco report.
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: ['**/model/**', '**/app/**'])
@@ -115,7 +186,7 @@ sonarqube {
 	    property 'sonar.organization', 'elia-mercatanti'
 	    property 'sonar.host.url', 'https://sonarcloud.io'
 	    
-	    // Property for excluding some classes from code coverage.
+	    // Property for excluding some classes from code coverage report.
 	    property 'sonar.coverage.exclusions', ['**/model/**', '**/app/**']
 	    
 	    // Properties for ignoring some code issues.
@@ -125,7 +196,20 @@ sonarqube {
 	    property 'sonar.issue.ignore.multicriteria', 'e12'
 	    property 'sonar.issue.ignore.multicriteria.e12.ruleKey', 'java:S2699'
 	    property 'sonar.issue.ignore.multicriteria.e12.resourceKey', '**/GuesthouseSwingViewTest.java'
+	    
+	    // Properties for specifying the directories of junit reports for unit and integration tests.
+	    property 'sonar.junit.reportPaths', ['build/test-results/test', 'build/test-results/integrationTest']
+	    properties['sonar.tests'] += 'src/it/java'
+	    properties['sonar.java.test.binaries'] += 'build/classes/java/integrationTest'
 	}
+}
+
+// Jar task configurations.
+jar {
+	// Generate a jar file with main java class in the MANIFEST. Inherited by shadowJar task.
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
 }
 
 // Application plugin configurations.
