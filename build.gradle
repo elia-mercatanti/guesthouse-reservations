@@ -197,10 +197,14 @@ sonarqube {
 	    property 'sonar.issue.ignore.multicriteria.e12.ruleKey', 'java:S2699'
 	    property 'sonar.issue.ignore.multicriteria.e12.resourceKey', '**/GuesthouseSwingViewTest.java'
 	    
-	    // Property for specifying the directories of reports for unit and integration tests.
+	    // Properties for specifying the directories of reports for unit and integration tests.
 	    property 'sonar.junit.reportPaths', ['build/test-results/test', 'build/test-results/integrationTest']
+	    properties['sonar.tests'] += 'src/it/java'
+	    properties['sonar.java.test.binaries'] += 'build/classes/java/integrationTest'
 	}
 }
+
+println project.sourceSets.integrationTest.output.classesDirs.files.findAll { File file -> file.exists() }
 
 // Jar task configurations.
 jar {
