@@ -72,9 +72,7 @@ class BookingMongoRepositoryIT {
 		Booking booking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 				Room.SINGLE);
 		bookingMongoRepository.save(booking);
-		List<Booking> bookingsList = StreamSupport.stream(bookingCollection.find().spliterator(), false)
-				.collect(Collectors.toList());
-		assertThat(bookingsList).containsExactly(booking);
+		assertThat(getBookingsList()).containsExactly(booking);
 	}
 
 	@Test
@@ -87,6 +85,23 @@ class BookingMongoRepositoryIT {
 		bookingCollection.insertMany(Arrays.asList(bookingToFind, anotherBooking));
 		assertThat(bookingMongoRepository.findById(bookingToFind.getId())).isEqualTo(new Booking(bookingToFind.getId(),
 				bookingToFind.getGuestId(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE));
+	}
+
+	@Test
+	@DisplayName("Delete a booking in the collection with his id - testDelete()")
+	void testDelete() {
+		Booking bookingToDelete = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+				LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+		Booking anotherBooking = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+				LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
+		bookingCollection.insertMany(Arrays.asList(bookingToDelete, anotherBooking));
+		bookingMongoRepository.delete(bookingToDelete.getId());
+		assertThat(getBookingsList()).containsExactly(new Booking(anotherBooking.getId(), anotherBooking.getGuestId(),
+				LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2, Room.DOUBLE));
+	}
+
+	private List<Booking> getBookingsList() {
+		return StreamSupport.stream(bookingCollection.find().spliterator(), false).collect(Collectors.toList());
 	}
 
 }
