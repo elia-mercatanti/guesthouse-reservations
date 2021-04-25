@@ -198,7 +198,7 @@ sonarqube {
 	    property 'sonar.issue.ignore.multicriteria.e12.resourceKey', '**/GuesthouseSwingViewTest.java'
 	    
 	    // Property for specifying the directories of reports for unit and integration tests.
-	    property 'sonar.junit.reportPaths', ['${project.buildDir}/reports/tests/test', '${project.buildDir}/reports/tests/integrationTest']
+	    property 'sonar.junit.reportPaths', ['${buildDir}/test-results/test', '${buildDir}/test-results/integrationTest']
 	}
 }
 
