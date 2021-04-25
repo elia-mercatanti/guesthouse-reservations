@@ -100,6 +100,19 @@ class BookingMongoRepositoryIT {
 				LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2, Room.DOUBLE));
 	}
 
+	@Test
+	@DisplayName("Check Room Availability In Date Range when room is free - testCheckRoomAvailabilityInDateRangeWhenRoomIsFree()")
+	void testCheckRoomAvailabilityInDateRangeWhenRoomIsFree() {
+		Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10),
+				1, Room.SINGLE);
+		Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20), LocalDate.of(2021, 1, 30),
+				2, Room.SINGLE);
+		bookingCollection.insertMany(Arrays.asList(booking1, booking2));
+		boolean roomAvailability = bookingMongoRepository.checkRoomAvailabilityInDateRange(Room.SINGLE,
+				LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 20));
+		assertThat(roomAvailability).isTrue();
+	}
+
 	private List<Booking> getBookingsList() {
 		return StreamSupport.stream(bookingCollection.find().spliterator(), false).collect(Collectors.toList());
 	}
