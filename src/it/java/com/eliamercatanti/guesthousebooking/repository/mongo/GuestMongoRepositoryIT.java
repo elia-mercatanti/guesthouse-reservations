@@ -37,7 +37,6 @@ class GuestMongoRepositoryIT {
 		int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 		mongoClient = new MongoClient(new ServerAddress("localhost", mongoPort));
 		guestMongoRepository = new GuestMongoRepository(mongoClient, DATABASE_NAME, COLLECTION_NAME);
-
 		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 		MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME).withCodecRegistry(pojoCodecRegistry);
@@ -51,7 +50,7 @@ class GuestMongoRepositoryIT {
 	}
 
 	@Test
-	@DisplayName("Find all guest in the collection - testFindAll()")
+	@DisplayName("Find all guests in the collection - testFindAll()")
 	void testFindAll() {
 		Guest guest1 = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
 		Guest guest2 = new Guest("testFirstName2", "testLastName2", "test2@email.com", "2222222222");
