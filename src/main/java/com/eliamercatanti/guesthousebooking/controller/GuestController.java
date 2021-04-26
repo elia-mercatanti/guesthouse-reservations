@@ -11,6 +11,11 @@ public class GuestController {
 	private GuestRepository guestRepository;
 	private InputValidation inputValidation;
 
+	public GuestController(GuestRepository guestRepository, GuesthouseView guesthouseView) {
+		this.guestRepository = guestRepository;
+		this.guesthouseView = guesthouseView;
+	}
+
 	public void allGuests() {
 		guesthouseView.showGuests(guestRepository.findAll());
 	}
@@ -18,8 +23,7 @@ public class GuestController {
 	public void newGuest(String firstName, String lastName, String email, String telephoneNumber) {
 		if ((!inputValidation.validateEmail(email))) {
 			guesthouseView.showError("Guest Email is not valid: " + email + ". Format must be like prefix@domain.");
-		}
-		else if (!inputValidation.validateTelephoneNumber(telephoneNumber)) {
+		} else if (!inputValidation.validateTelephoneNumber(telephoneNumber)) {
 			guesthouseView.showError(
 					"Guest Telephone N. is not valid: " + telephoneNumber + ". Format must be like +10000000000.");
 		} else {
