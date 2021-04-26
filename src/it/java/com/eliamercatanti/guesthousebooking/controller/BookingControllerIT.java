@@ -15,9 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eliamercatanti.guesthousebooking.model.Booking;
+import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
 import com.eliamercatanti.guesthousebooking.repository.BookingRepository;
 import com.eliamercatanti.guesthousebooking.repository.mongo.BookingMongoRepository;
+import com.eliamercatanti.guesthousebooking.validation.InputValidation;
+import com.eliamercatanti.guesthousebooking.validation.controller.ControllerInputValidator;
 import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
 import com.mongodb.MongoClient;
 
@@ -31,16 +34,18 @@ class BookingControllerIT {
 	private BookingController bookingController;
 	@Mock
 	private GuesthouseView guesthouseView;
+	private InputValidation inputValidation;
 
 	@BeforeEach
 	public void setUp() {
 		int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 		bookingRepository = new BookingMongoRepository(new MongoClient("localhost", mongoPort), DATABASE_NAME,
 				COLLECTION_NAME);
+		inputValidation = new ControllerInputValidator();
 		for (Booking booking : bookingRepository.findAll()) {
 			bookingRepository.delete(booking.getId());
 		}
-		bookingController = new BookingController(bookingRepository, guesthouseView);
+		bookingController = new BookingController(bookingRepository, guesthouseView, inputValidation);
 	}
 
 	@Test
@@ -54,6 +59,17 @@ class BookingControllerIT {
 		bookingRepository.save(booking2);
 		bookingController.allBookings();
 		verify(guesthouseView).showBookings(Arrays.asList(booking1, booking2));
+		verifyNoMoreInteractions(guesthouseView);
+	}
+
+	@Test
+	@DisplayName("New booking request - testNewBooking()")
+	void testNewBooking() {
+		Guest guest = new Guest(new ObjectId().toString(), "testFirstName", "testLastName", "test@email.com",
+				"0000000000");
+		bookingController.newBooking(guest, "01/01/2021", "10/01/2021", 1, Room.SINGLE);
+		Booking newBooking = bookingRepository.findAll().get(0);
+		verify(guesthouseView).bookingAdded(newBooking);
 		verifyNoMoreInteractions(guesthouseView);
 	}
 
