@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -35,7 +34,7 @@ class GuestMongoRepositoryIT {
 	@BeforeEach
 	void setUp() {
 		int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
-		mongoClient = new MongoClient(new ServerAddress("localhost", mongoPort));
+		mongoClient = new MongoClient("localhost", mongoPort);
 		guestMongoRepository = new GuestMongoRepository(mongoClient, DATABASE_NAME, COLLECTION_NAME);
 		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
