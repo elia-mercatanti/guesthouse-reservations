@@ -16,6 +16,13 @@ public class BookingController {
 	private BookingRepository bookingRepository;
 	private InputValidation inputValidation;
 
+	public BookingController(BookingRepository bookingRepository, GuesthouseView guesthouseView,
+			InputValidation inputValidation) {
+		this.bookingRepository = bookingRepository;
+		this.guesthouseView = guesthouseView;
+		this.inputValidation = inputValidation;
+	}
+
 	public void allBookings() {
 		guesthouseView.showBookings(bookingRepository.findAll());
 	}

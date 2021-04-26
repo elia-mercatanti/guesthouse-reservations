@@ -33,18 +33,18 @@ class GuestControllerIT {
 	private GuestController guestController;
 	@Mock
 	private GuesthouseView guesthouseView;
-	private InputValidation inputValidator;
+	private InputValidation inputValidation;
 
 	@BeforeEach
 	public void setUp() {
 		int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 		guestRepository = new GuestMongoRepository(new MongoClient("localhost", mongoPort), DATABASE_NAME,
 				COLLECTION_NAME);
-		inputValidator = new ControllerInputValidator();
+		inputValidation = new ControllerInputValidator();
 		for (Guest guest : guestRepository.findAll()) {
 			guestRepository.delete(guest.getId());
 		}
-		guestController = new GuestController(guestRepository, guesthouseView, inputValidator);
+		guestController = new GuestController(guestRepository, guesthouseView, inputValidation);
 	}
 
 	@Test
