@@ -11,9 +11,11 @@ public class GuestController {
 	private GuestRepository guestRepository;
 	private InputValidation inputValidation;
 
-	public GuestController(GuestRepository guestRepository, GuesthouseView guesthouseView) {
+	public GuestController(GuestRepository guestRepository, GuesthouseView guesthouseView,
+			InputValidation inputValidation) {
 		this.guestRepository = guestRepository;
 		this.guesthouseView = guesthouseView;
+		this.inputValidation = inputValidation;
 	}
 
 	public void allGuests() {

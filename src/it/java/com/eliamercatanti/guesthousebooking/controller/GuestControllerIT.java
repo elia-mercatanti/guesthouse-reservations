@@ -1,8 +1,9 @@
 package com.eliamercatanti.guesthousebooking.controller;
 
-import static java.util.Arrays.asList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.repository.GuestRepository;
 import com.eliamercatanti.guesthousebooking.repository.mongo.GuestMongoRepository;
+import com.eliamercatanti.guesthousebooking.validation.InputValidation;
+import com.eliamercatanti.guesthousebooking.validation.controller.ControllerInputValidator;
 import com.eliamercatanti.guesthousebooking.view.GuesthouseView;
 import com.mongodb.MongoClient;
 
@@ -29,16 +32,18 @@ class GuestControllerIT {
 	private GuestController guestController;
 	@Mock
 	private GuesthouseView guesthouseView;
+	private InputValidation inputValidator;
 
 	@BeforeEach
 	public void setUp() {
 		int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 		guestRepository = new GuestMongoRepository(new MongoClient("localhost", mongoPort), DATABASE_NAME,
 				COLLECTION_NAME);
+		inputValidator = new ControllerInputValidator();
 		for (Guest guest : guestRepository.findAll()) {
 			guestRepository.delete(guest.getId());
 		}
-		guestController = new GuestController(guestRepository, guesthouseView);
+		guestController = new GuestController(guestRepository, guesthouseView, inputValidator);
 	}
 
 	@Test
@@ -49,7 +54,16 @@ class GuestControllerIT {
 		guestRepository.save(guest1);
 		guestRepository.save(guest2);
 		guestController.allGuests();
-		verify(guesthouseView).showGuests(asList(guest1, guest2));
+		verify(guesthouseView).showGuests(Arrays.asList(guest1, guest2));
+		verifyNoMoreInteractions(guesthouseView);
+	}
+
+	@Test
+	@DisplayName("New guest request - testNewGuest()")
+	void testNewGuest() {
+		guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890");
+		Guest newGuest = guestRepository.findAll().get(0);
+		verify(guesthouseView).guestAdded(newGuest);
 		verifyNoMoreInteractions(guesthouseView);
 	}
 
