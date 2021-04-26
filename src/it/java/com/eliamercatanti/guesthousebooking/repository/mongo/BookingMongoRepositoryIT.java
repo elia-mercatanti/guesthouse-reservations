@@ -22,10 +22,10 @@ import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Room;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+@DisplayName("Integration Tests for Booking Mongo Repository")
 class BookingMongoRepositoryIT {
 
 	private static final String DATABASE_NAME = "guesthouse";
@@ -37,7 +37,7 @@ class BookingMongoRepositoryIT {
 	@BeforeEach
 	void setUp() {
 		int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
-		mongoClient = new MongoClient(new ServerAddress("localhost", mongoPort));
+		mongoClient = new MongoClient("localhost", mongoPort);
 		bookingMongoRepository = new BookingMongoRepository(mongoClient, DATABASE_NAME, COLLECTION_NAME);
 		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
