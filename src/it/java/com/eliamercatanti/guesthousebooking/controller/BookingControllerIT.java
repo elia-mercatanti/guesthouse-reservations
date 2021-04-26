@@ -73,4 +73,17 @@ class BookingControllerIT {
 		verifyNoMoreInteractions(guesthouseView);
 	}
 
+	@Test
+	@DisplayName("Delete booking request - testDeleteBooking()")
+	void testDeleteBooking() {
+		Guest guest = new Guest(new ObjectId().toString(), "testFirstName", "testLastName", "test@email.com",
+				"0000000000");
+		Booking bookingToDelete = new Booking(guest.getId(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+				Room.SINGLE);
+		bookingRepository.save(bookingToDelete);
+		bookingController.deleteBooking(bookingToDelete);
+		verify(guesthouseView).bookingRemoved(bookingToDelete);
+		verifyNoMoreInteractions(guesthouseView);
+	}
+
 }
