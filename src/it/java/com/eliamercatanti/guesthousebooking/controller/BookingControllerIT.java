@@ -86,4 +86,21 @@ class BookingControllerIT {
 		verifyNoMoreInteractions(guesthouseView);
 	}
 
+	@Test
+	@DisplayName("Search bookings by dates request - testSearchBookingsByDates()")
+	void testSearchBookingsByDates() {
+		Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10),
+				1, Room.SINGLE);
+		Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 20),
+				2, Room.DOUBLE);
+		Booking booking3 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20), LocalDate.of(2021, 1, 30),
+				1, Room.SINGLE);
+		bookingRepository.save(booking1);
+		bookingRepository.save(booking2);
+		bookingRepository.save(booking3);
+		bookingController.searchBookingsByDates("05/01/2021", "25/01/2021");
+		verify(guesthouseView).showBookings(Arrays.asList(booking1, booking2, booking3));
+		verifyNoMoreInteractions(guesthouseView);
+	}
+
 }
