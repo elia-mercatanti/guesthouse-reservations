@@ -103,4 +103,21 @@ class BookingControllerIT {
 		verifyNoMoreInteractions(guesthouseView);
 	}
 
+	@Test
+	@DisplayName("Search bookings by room request - testSearchBookingsByRoom()")
+	void testSearchBookingsByRoom() {
+		Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10),
+				1, Room.SINGLE);
+		Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10),
+				2, Room.DOUBLE);
+		Booking booking3 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10),
+				1, Room.SINGLE);
+		bookingRepository.save(booking1);
+		bookingRepository.save(booking2);
+		bookingRepository.save(booking3);
+		bookingController.searchBookingsByRoom(Room.SINGLE);
+		verify(guesthouseView).showBookings(Arrays.asList(booking1, booking3));
+		verifyNoMoreInteractions(guesthouseView);
+	}
+
 }
