@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,17 @@ class GuestControllerIT {
 		guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890");
 		Guest newGuest = guestRepository.findAll().get(0);
 		verify(guesthouseView).guestAdded(newGuest);
+		verifyNoMoreInteractions(guesthouseView);
+	}
+
+	@Test
+	@DisplayName("Delete guest request - testDeleteGuest()")
+	void testDeleteGuest() {
+		Guest guestToDelete = new Guest(new ObjectId().toString(), "testFirstName", "testLastName", "test@email.com",
+				"0000000000");
+		guestRepository.save(guestToDelete);
+		guestController.deleteGuest(guestToDelete);
+		verify(guesthouseView).guestRemoved(guestToDelete);
 		verifyNoMoreInteractions(guesthouseView);
 	}
 
