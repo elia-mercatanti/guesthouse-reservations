@@ -298,10 +298,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		btnAddBooking = new JButton("Add Booking");
 		btnAddBooking.setEnabled(false);
 		btnAddBooking.setName("addBookingButton");
-		btnAddBooking
-				.addActionListener(e -> bookingController.newBooking(((Guest) comBoxGuest.getSelectedItem()),
-						textCheckInDate.getText(), textCheckOutDate.getText(),
-						(int) comBoxNumberOfGuests.getSelectedItem(), (Room) comBoxRoom.getSelectedItem()));
+		btnAddBooking.addActionListener(e -> bookingController.newBooking(((Guest) comBoxGuest.getSelectedItem()),
+				textCheckInDate.getText(), textCheckOutDate.getText(), (int) comBoxNumberOfGuests.getSelectedItem(),
+				(Room) comBoxRoom.getSelectedItem()));
 
 		JButton btnDeleteBooking = new JButton("Delete Booking");
 		btnDeleteBooking.addActionListener(e -> bookingController.deleteBooking(listBookings.getSelectedValue()));
@@ -435,7 +434,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	}
 
 	private String getGuestListDisplayString(Guest guest) {
-		return guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName() + ", " + guest.getEmail() + ", "
+		return "id=" + guest.getId().substring(guest.getId().length() / 2) + ", firstName=" + guest.getFirstName()
+				+ ", lastName=" + guest.getLastName() + ", email=" + guest.getEmail() + ", telNum="
 				+ guest.getTelephoneNumber();
 	}
 

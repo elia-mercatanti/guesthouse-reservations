@@ -257,8 +257,8 @@ class GuesthouseSwingViewTest {
 			// Verify.
 			String[] guestsListContent = window.list("guestsList").contents();
 			assertThat(guestsListContent).containsExactly(
-					"1, testFirstName1, testLastName1, test1@email.com, 0000000000",
-					"2, testFirstName2, testLastName2, test2@email.com, 1111111111");
+					"id=1, firstName=testFirstName1, lastName=testLastName1, email=test1@email.com, telNum=0000000000",
+					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
 		}
 
 		@Test
@@ -277,7 +277,8 @@ class GuesthouseSwingViewTest {
 
 			// Verify.
 			String[] guestsListContent = window.list("guestsList").contents();
-			assertThat(guestsListContent).containsExactly("1, testFirstName, testLastName, test@email.com, 0000000000");
+			assertThat(guestsListContent).containsExactly(
+					"id=1, firstName=testFirstName, lastName=testLastName, email=test@email.com, telNum=0000000000");
 			window.label("errorLogMessageLabel").requireText(" ");
 			window.textBox("firstNameTextBox").requireEmpty();
 			window.textBox("lastNameTextBox").requireEmpty();
@@ -310,8 +311,8 @@ class GuesthouseSwingViewTest {
 
 			// Verify.
 			String[] guestsListContent = window.list("guestsList").contents();
-			assertThat(guestsListContent)
-					.containsExactly("2, testFirstName2, testLastName2, test2@email.com, 1111111111");
+			assertThat(guestsListContent).containsExactly(
+					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			String[] guestComBoxContent = window.comboBox("guestComBox").contents();
 			assertThat(guestComBoxContent).containsExactly("2, testFirstName2, testLastName2");
@@ -339,8 +340,8 @@ class GuesthouseSwingViewTest {
 			// Verify.
 			window.label("errorLogMessageLabel").requireText("Error message test: 1, testFirstName1, testLastName1");
 			String[] guestsListContent = window.list("guestsList").contents();
-			assertThat(guestsListContent)
-					.containsExactly("2, testFirstName2, testLastName2, test2@email.com, 1111111111");
+			assertThat(guestsListContent).containsExactly(
+					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
 		}
 
 	}
@@ -696,7 +697,7 @@ class GuesthouseSwingViewTest {
 	@Nested
 	@DisplayName("Bookings Tab Delegations Tests")
 	class BookingsTabDelegationsTests {
-		
+
 		@Test
 		@DisplayName("Add Booking Button should delegate to booking controller newBooking() - testAddBookingButtonShouldDelegateToBookingControllerNewBooking()")
 		void testAddBookingButtonShouldDelegateToBookingControllerNewBooking() {
