@@ -89,7 +89,7 @@ class GuesthouseSwingViewIT {
 	class HappyCases {
 
 		@Test
-		@DisplayName("All Guest list request - testShowGuests()")
+		@DisplayName("All guest list request - testShowGuests()")
 		void testShowAllGuests() {
 			// Setup.
 			Guest guest1 = new Guest("testFirstName1", "testLastName1", "test1@email.com", "1111111111");
@@ -106,7 +106,7 @@ class GuesthouseSwingViewIT {
 			GuiActionRunner.execute(() -> guestController.allGuests());
 
 			// Verify.
-			assertThat(window.list("guestsList").contents()).containsExactly(guest1ListString, guest2ListString);
+			assertThat(window.list().contents()).containsExactly(guest1ListString, guest2ListString);
 		}
 
 		@Test
@@ -185,6 +185,35 @@ class GuesthouseSwingViewIT {
 					+ getIdSubstring(booking2.getGuestId())
 					+ ", checkIn=10/01/2021, checkOut=20/01/2021, numGuests=2, room=DOUBLE";
 			assertThat(window.list().contents()).containsExactly(booking1ListString, booking2ListString);
+		}
+
+		@Test
+		@DisplayName("Search bookings by room button success - testSearchBookingsByRoomButtonSuccess()")
+		void testSearchBookingsByRoomButtonSuccess() {
+			// Setup.
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
+			Booking booking3 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 1, Room.SINGLE);
+			bookingRepository.save(booking1);
+			bookingRepository.save(booking2);
+			bookingRepository.save(booking3);
+			String booking1ListString = "id=" + getIdSubstring(booking1.getId()) + ", guestId="
+					+ getIdSubstring(booking1.getGuestId())
+					+ ", checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE";
+			String booking3ListString = "id=" + getIdSubstring(booking3.getId()) + ", guestId="
+					+ getIdSubstring(booking3.getGuestId())
+					+ ", checkIn=01/02/2021, checkOut=10/02/2021, numGuests=1, room=SINGLE";
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+			// Execute.
+			window.comboBox("roomComBox").selectItem("SINGLE");
+			window.button("searchByRoomButton").click();
+
+			// Verify.
+			assertThat(window.list().contents()).containsExactly(booking1ListString, booking3ListString);
 		}
 
 	}
