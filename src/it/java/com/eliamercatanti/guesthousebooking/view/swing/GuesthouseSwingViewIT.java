@@ -119,6 +119,20 @@ class GuesthouseSwingViewIT {
 					.requireText("Guest Email is not valid: email. Format must be like prefix@domain.");
 		}
 
+		@Test
+		@DisplayName("Add Guest button error when telephni n. is not Valid - testAddGuestButtonErrorWhenTelephoneNumIsNotValid()")
+		void testAddGuestButtonErrorWhenTelephoneNumIsNotValid() {
+			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.textBox("firstNameTextBox").enterText("test");
+			window.textBox("lastNameTextBox").enterText("test");
+			window.textBox("emailTextBox").setText("test@email.com");
+			window.textBox("telephoneNumberTextBox").enterText("aaaa");
+			window.button("addGuestButton").click();
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel")
+					.requireText("Guest Telephone N. is not valid: aaaa. Format must be like +10000000000.");
+		}
+
 	}
 
 	private String getIdSubstring(String id) {
