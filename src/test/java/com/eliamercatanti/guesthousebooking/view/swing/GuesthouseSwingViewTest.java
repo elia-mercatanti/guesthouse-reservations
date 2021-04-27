@@ -237,8 +237,8 @@ class GuesthouseSwingViewTest {
 	class GuestsTabInterfaceMethodsTests {
 
 		@Test
-		@DisplayName("Show Guests should reset the list and fill guest infos to it - testShowGuestShouldResetTheListAndFillGuestInfosToIt()")
-		void testShowGuestShouldResetTheListAndFillGuestInfosToIt() {
+		@DisplayName("Show Guests should reset the list and combobox then fill guest infos to both - testShowGuestShouldResetTheListAndComboBoxThenFillGuestInfosToBoth()")
+		void testShowGuestShouldResetTheListAndComboBoxThenFillGuestInfosToBoth() {
 			// Setup.
 			Guest previusGuest1 = new Guest("3", "testFirstName3", "testLastName3", "test3@email.com", "2222222222");
 			Guest previusGuest2 = new Guest("4", "testFirstName4", "testLastName4", "test4@email.com", "4444444444");
@@ -249,6 +249,9 @@ class GuesthouseSwingViewTest {
 				DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
 				listGuestsModel.addElement(previusGuest1);
 				listGuestsModel.addElement(previusGuest2);
+				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
+				comboBoxGuestsModel.addElement(previusGuest1);
+				comboBoxGuestsModel.addElement(previusGuest2);
 			});
 
 			// Execute.
@@ -259,6 +262,10 @@ class GuesthouseSwingViewTest {
 			assertThat(guestsListContent).containsExactly(
 					"id=1, firstName=testFirstName1, lastName=testLastName1, email=test1@email.com, telNum=0000000000",
 					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			guestsListContent = window.comboBox("guestComBox").contents();
+			assertThat(guestsListContent).containsExactly("1, testFirstName1, testLastName1",
+					"2, testFirstName2, testLastName2");
 		}
 
 		@Test

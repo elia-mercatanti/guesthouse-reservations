@@ -445,7 +445,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	@Override
 	public void showGuests(List<Guest> guests) {
 		listGuestsModel.removeAllElements();
+		comboBoxGuestsModel.removeAllElements();
 		guests.stream().forEach(listGuestsModel::addElement);
+		guests.stream().forEach(comboBoxGuestsModel::addElement);
 	}
 
 	@Override

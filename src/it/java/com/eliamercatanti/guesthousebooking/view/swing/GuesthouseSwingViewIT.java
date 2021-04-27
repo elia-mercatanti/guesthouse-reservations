@@ -242,6 +242,56 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).containsExactly(booking1ListString);
 		}
 
+		@Test
+		@DisplayName("All bookings button button - testShowAllBookingsButton()")
+		void testShowAllBookingsButton() {
+			// Setup.
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
+			bookingRepository.save(booking1);
+			bookingRepository.save(booking2);
+			String booking1ListString = "id=" + getIdSubstring(booking1.getId()) + ", guestId="
+					+ getIdSubstring(booking1.getGuestId())
+					+ ", checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE";
+			String booking2ListString = "id=" + getIdSubstring(booking2.getId()) + ", guestId="
+					+ getIdSubstring(booking2.getGuestId())
+					+ ", checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE";
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+			// Execute.
+			window.button("allBookingsButton").click();
+
+			// Verify.
+			assertThat(window.list().contents()).containsExactly(booking1ListString, booking2ListString);
+		}
+
+		@Test
+		@DisplayName("All bookings list request - testShowAllBookingRequest()")
+		void testShowAllBookingRequest() {
+			// Setup.
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 2, Room.DOUBLE);
+			bookingRepository.save(booking1);
+			bookingRepository.save(booking2);
+			String booking1ListString = "id=" + getIdSubstring(booking1.getId()) + ", guestId="
+					+ getIdSubstring(booking1.getGuestId())
+					+ ", checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE";
+			String booking2ListString = "id=" + getIdSubstring(booking2.getId()) + ", guestId="
+					+ getIdSubstring(booking2.getGuestId())
+					+ ", checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE";
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+			// Execute.
+			GuiActionRunner.execute(() -> bookingController.allBookings());
+
+			// Verify.
+			assertThat(window.list().contents()).containsExactly(booking1ListString, booking2ListString);
+		}
+
 	}
 
 	@Nested
