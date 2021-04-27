@@ -2,6 +2,8 @@ package com.eliamercatanti.guesthousebooking.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
@@ -17,6 +19,7 @@ import com.eliamercatanti.guesthousebooking.controller.BookingController;
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
 import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
+import com.eliamercatanti.guesthousebooking.model.Room;
 import com.eliamercatanti.guesthousebooking.repository.BookingRepository;
 import com.eliamercatanti.guesthousebooking.repository.GuestRepository;
 import com.eliamercatanti.guesthousebooking.repository.mongo.BookingMongoRepository;
@@ -134,15 +137,20 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Add Booking button success - testAddBookingButtonSuccess()")
 		void testAddBookingButtonSuccess() {
+			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			
+			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem("1");
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
+			
+			// Verify.
 			Booking newBooking = bookingRepository.findAll().get(0);
 			String bookingListString = "id=" + getIdSubstring(newBooking.getId()) + ", guestId="
 					+ getIdSubstring(guest.getId())
@@ -187,12 +195,17 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Delete Guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDB()")
 		void testDeleteGuestButtonErrorWhenGuestIsNotInTheDB() {
+			// Setup.
 			Guest guestNotPresent = new Guest(new ObjectId().toString(), "testFirstName", "testLastName",
 					"test@email.com", "1111111111");
 			window.tabbedPane().selectTab("Guests");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guestNotPresent));
+			
+			// Execute.
 			window.list().selectItem(0);
 			window.button("deleteGuestButton").click();
+			
+			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText("There is no guest with id " + guestNotPresent.getId()
 					+ ": " + guestNotPresent.getId() + ", testFirstName, testLastName");
@@ -201,15 +214,20 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Add Booking button error when check in date is not valid - testAddBookingButtonErrorWhenCheckInDateIsNotValid()")
 		void testAddBookingButtonErrorWhenCheckInDateIsNotValid() {
+			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			
+			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01012021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem("1");
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
+			
+			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText(
 					"Booking Check In date is not valid: 01012021. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
@@ -218,15 +236,20 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Add Booking button error when check out date is not valid - testAddBookingButtonErrorWhenCheckOutDateIsNotValid()")
 		void testAddBookingButtonErrorWhenCheckOutDateIsNotValid() {
+			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			
+			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10012021");
 			window.comboBox("numberOfGuestsComBox").selectItem("1");
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
+			
+			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText(
 					"Booking Check Out date is not valid: 10012021. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
@@ -235,15 +258,20 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Add Booking button error when check out date is not after check out date - testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate()")
 		void testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate() {
+			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			
+			// Execute.
 			window.textBox("checkInDateTextBox").enterText("20-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem("1");
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
+			
+			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText("Check Out date must be after check in date.");
 		}
@@ -251,18 +279,51 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Add Booking button error when number of guests is greater than room type - testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType()")
 		void testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType() {
+			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			
+			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem("2");
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
+			
+			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel")
 					.requireText("Number of Guests must be suitable for the type of the room.");
+		}
+
+		@Test
+		@DisplayName("Add Booking button error when room is already booked on the requested dates - testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates()")
+		void testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates() {
+			// Setup.
+			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
+					LocalDate.of(2021, 1, 30), 1, Room.SINGLE);
+			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			bookingRepository.save(booking1);
+			bookingRepository.save(booking2);
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+
+			// Execute.
+			window.textBox("checkInDateTextBox").enterText("09-01-2021");
+			window.textBox("checkOutDateTextBox").enterText("21-01-2021");
+			window.comboBox("numberOfGuestsComBox").selectItem("1");
+			window.comboBox("roomComBox").selectItem("SINGLE");
+			window.comboBox("guestComBox").selectItem(0);
+			window.button("addBookingButton").click();
+			
+			// Verify.
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel").requireText(
+					"The selected room is already booked on the requested dates: SINGLE on (09-01-2021 - 21-01-2021).");
 		}
 
 	}
