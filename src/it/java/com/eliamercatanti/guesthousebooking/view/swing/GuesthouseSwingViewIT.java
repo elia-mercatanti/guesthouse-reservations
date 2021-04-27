@@ -248,6 +248,23 @@ class GuesthouseSwingViewIT {
 			window.label("errorLogMessageLabel").requireText("Check Out date must be after check in date.");
 		}
 
+		@Test
+		@DisplayName("Add Booking button error when number of guests is greater than room type - testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType()")
+		void testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType() {
+			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			window.textBox("checkInDateTextBox").enterText("01-01-2021");
+			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
+			window.comboBox("numberOfGuestsComBox").selectItem("2");
+			window.comboBox("roomComBox").selectItem("SINGLE");
+			window.comboBox("guestComBox").selectItem(0);
+			window.button("addBookingButton").click();
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel")
+					.requireText("Number of Guests must be suitable for the type of the room.");
+		}
+
 	}
 
 	private String getIdSubstring(String id) {
