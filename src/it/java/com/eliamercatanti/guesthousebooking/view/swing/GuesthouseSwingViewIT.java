@@ -99,6 +99,17 @@ class GuesthouseSwingViewIT {
 					+ ", firstName=test, lastName=test, email=test@email.com, telNum=0000000000");
 		}
 
+		@Test
+		@DisplayName("Delete Guest button success - testDeleteGuestButtonSuccess()")
+		void testDeleteGuestButtonSuccess() {
+			window.tabbedPane().selectTab("Guests");
+			GuiActionRunner.execute(
+					() -> guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890"));
+			window.list().selectItem(0);
+			window.button("deleteGuestButton").click();
+			assertThat(window.list().contents()).isEmpty();
+		}
+
 	}
 
 	@Nested
@@ -120,8 +131,8 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Guest button error when telephni n. is not Valid - testAddGuestButtonErrorWhenTelephoneNumIsNotValid()")
-		void testAddGuestButtonErrorWhenTelephoneNumIsNotValid() {
+		@DisplayName("Add Guest button error when telephni n. is not Valid - testAddGuestButtonErrorWhenTelNumIsNotValid()")
+		void testAddGuestButtonErrorWhenTelNumIsNotValid() {
 			window.tabbedPane("tabbedPane").selectTab("Guests");
 			window.textBox("firstNameTextBox").enterText("test");
 			window.textBox("lastNameTextBox").enterText("test");
