@@ -13,9 +13,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.eliamercatanti.guesthousebooking.controller.BookingController;
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
+import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
+import com.eliamercatanti.guesthousebooking.repository.BookingRepository;
 import com.eliamercatanti.guesthousebooking.repository.GuestRepository;
+import com.eliamercatanti.guesthousebooking.repository.mongo.BookingMongoRepository;
 import com.eliamercatanti.guesthousebooking.repository.mongo.GuestMongoRepository;
 import com.eliamercatanti.guesthousebooking.validation.InputValidation;
 import com.eliamercatanti.guesthousebooking.validation.controller.ControllerInputValidator;
@@ -24,10 +28,14 @@ import com.mongodb.MongoClient;
 @DisplayName("Integration Tests for Guesthouse Swing View")
 class GuesthouseSwingViewIT {
 
+	private static final String MONGO_CLIENT_HOST = "localhost";
 	private static final String DATABASE_NAME = "guesthouse";
 	private static final String GUEST_COLLECTION_NAME = "guest";
+	private static final String BOOKING_COLLECTION_NAME = "booking";
 	private GuestRepository guestRepository;
+	private BookingRepository bookingRepository;
 	private GuestController guestController;
+	private BookingController bookingController;
 	private GuesthouseSwingView guesthouseSwingView;
 	private InputValidation inputValidation;
 	private FrameFixture window;
@@ -39,17 +47,29 @@ class GuesthouseSwingViewIT {
 
 	@BeforeEach
 	void onSetUp() {
+		// Set repositories and input validation.
 		int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
-		guestRepository = new GuestMongoRepository(new MongoClient("localhost", mongoPort), DATABASE_NAME,
+		guestRepository = new GuestMongoRepository(new MongoClient(MONGO_CLIENT_HOST, mongoPort), DATABASE_NAME,
 				GUEST_COLLECTION_NAME);
+		bookingRepository = new BookingMongoRepository(new MongoClient(MONGO_CLIENT_HOST, mongoPort), DATABASE_NAME,
+				BOOKING_COLLECTION_NAME);
 		inputValidation = new ControllerInputValidator();
+
+		// Clean the collections.
 		for (Guest guest : guestRepository.findAll()) {
 			guestRepository.delete(guest.getId());
 		}
+		for (Booking booking : bookingRepository.findAll()) {
+			bookingRepository.delete(booking.getId());
+		}
+
+		// Set swing view.
 		GuiActionRunner.execute(() -> {
 			guesthouseSwingView = new GuesthouseSwingView();
 			guestController = new GuestController(guestRepository, guesthouseSwingView, inputValidation);
+			bookingController = new BookingController(bookingRepository, guesthouseSwingView, inputValidation);
 			guesthouseSwingView.setGuestController(guestController);
+			guesthouseSwingView.setBookingController(bookingController);
 			return guesthouseSwingView;
 		});
 		window = new FrameFixture(guesthouseSwingView);
@@ -111,6 +131,27 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).isEmpty();
 		}
 
+		@Test
+		@DisplayName("Add Booking button success - testAddBookingButtonSuccess()")
+		void testAddBookingButtonSuccess() {
+			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+
+			window.textBox("checkInDateTextBox").enterText("01-01-2021");
+			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
+			window.comboBox("numberOfGuestsComBox").selectItem("1");
+			window.comboBox("roomComBox").selectItem("SINGLE");
+			window.comboBox("guestComBox").selectItem(0);
+
+			window.button("addBookingButton").click();
+			Booking newBooking = bookingRepository.findAll().get(0);
+			String bookingListString = "id=" + getIdSubstring(newBooking.getId()) + ", guestId="
+					+ getIdSubstring(guest.getId())
+					+ ", checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE";
+			assertThat(window.list().contents()).containsExactly(bookingListString);
+		}
+
 	}
 
 	@Nested
@@ -146,8 +187,8 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Delete Guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDatabase()")
-		void testDeleteGuestButtonErrorWhenGuestIsNotInTheDatabase() {
+		@DisplayName("Delete Guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDB()")
+		void testDeleteGuestButtonErrorWhenGuestIsNotInTheDB() {
 			Guest guestNotPresent = new Guest(new ObjectId().toString(), "testFirstName", "testLastName",
 					"test@email.com", "1111111111");
 			window.tabbedPane().selectTab("Guests");

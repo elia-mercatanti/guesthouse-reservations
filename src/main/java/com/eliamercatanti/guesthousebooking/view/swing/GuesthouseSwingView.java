@@ -422,21 +422,24 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	}
 
 	private String getGuestComboBoxDisplayString(Guest guest) {
-		return guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName();
+		return getIdSubstring(guest.getId()) + ", " + guest.getFirstName() + ", " + guest.getLastName();
+	}
+
+	private String getIdSubstring(String id) {
+		return id.substring(id.length() / 2);
 	}
 
 	private String getBookingListDisplayString(Booking booking) {
 		String pattern = "dd/MM/yyyy";
-		return "id=" + booking.getId() + ", guestId=" + booking.getGuestId() + ", checkIn="
-				+ booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
+		return "id=" + getIdSubstring(booking.getId()) + ", guestId=" + getIdSubstring(booking.getGuestId())
+				+ ", checkIn=" + booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
 				+ booking.getCheckOutDate().format(DateTimeFormatter.ofPattern(pattern)) + ", numGuests="
 				+ booking.getNumberOfGuests() + ", room=" + booking.getRoom();
 	}
 
 	private String getGuestListDisplayString(Guest guest) {
-		return "id=" + guest.getId().substring(guest.getId().length() / 2) + ", firstName=" + guest.getFirstName()
-				+ ", lastName=" + guest.getLastName() + ", email=" + guest.getEmail() + ", telNum="
-				+ guest.getTelephoneNumber();
+		return "id=" + getIdSubstring(guest.getId()) + ", firstName=" + guest.getFirstName() + ", lastName="
+				+ guest.getLastName() + ", email=" + guest.getEmail() + ", telNum=" + guest.getTelephoneNumber();
 	}
 
 	@Override

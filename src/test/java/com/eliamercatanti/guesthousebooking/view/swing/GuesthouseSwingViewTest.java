@@ -586,7 +586,7 @@ class GuesthouseSwingViewTest {
 			});
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			window.textBox("checkInDateTextBox").setText("01-01-2021");
-			window.textBox("checkOutDateTextBox").setText("01-10-2021");
+			window.textBox("checkOutDateTextBox").setText("10-01-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem(0);
 			window.comboBox("roomComBox").selectItem(0);
 			window.comboBox("guestComBox").selectItem(0);
@@ -646,7 +646,7 @@ class GuesthouseSwingViewTest {
 			});
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			window.textBox("checkInDateTextBox").setText("01-01-2021");
-			window.textBox("checkOutDateTextBox").setText("01-10-2021");
+			window.textBox("checkOutDateTextBox").setText("10-01-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem(0);
 			window.comboBox("roomComBox").selectItem(0);
 			window.comboBox("guestComBox").selectItem(0);
