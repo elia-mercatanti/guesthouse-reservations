@@ -140,7 +140,7 @@ class GuesthouseSwingViewIT {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
@@ -163,7 +163,7 @@ class GuesthouseSwingViewIT {
 		void testSearchBookingsByDatesButtonSuccess() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 			Booking booking1 = new Booking(guest.getId(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 					Room.SINGLE);
 			Booking booking2 = new Booking(guest.getId(), LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 20), 2,
@@ -189,7 +189,7 @@ class GuesthouseSwingViewIT {
 
 		@Test
 		@DisplayName("Search bookings by room button success - testSearchBookingsByRoomButtonSuccess()")
-		void testSearchBookingsByRoomButtonSuccess() {
+		void testSearchBookingsByRoomButton() {
 			// Setup.
 			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
 					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
@@ -214,6 +214,32 @@ class GuesthouseSwingViewIT {
 
 			// Verify.
 			assertThat(window.list().contents()).containsExactly(booking1ListString, booking3ListString);
+		}
+
+		@Test
+		@DisplayName("Search bookings by room button success - testSearchBookingsByGuestIdButton()")
+		void testSearchBookingsByGuestIdButton() {
+			// Setup.
+			String guestId = new ObjectId().toString();
+			Guest guest = new Guest(guestId, "testFirstName", "testLastName", "test@email.com", "0000000000");
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
+			Booking booking1 = new Booking(guestId, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+					LocalDate.of(2021, 2, 10), 1, Room.SINGLE);
+			bookingRepository.save(booking1);
+			bookingRepository.save(booking2);
+			String booking1ListString = "id=" + getIdSubstring(booking1.getId()) + ", guestId="
+					+ getIdSubstring(booking1.getGuestId())
+					+ ", checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE";
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+			// Execute.
+			window.comboBox("guestComBox").selectItem(0);
+			window.button("searchByGuestButton").click();
+
+			// Verify.
+			assertThat(window.list().contents()).containsExactly(booking1ListString);
 		}
 
 	}
@@ -277,7 +303,7 @@ class GuesthouseSwingViewIT {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01012021");
@@ -299,7 +325,7 @@ class GuesthouseSwingViewIT {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
@@ -321,7 +347,7 @@ class GuesthouseSwingViewIT {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("20-01-2021");
@@ -342,7 +368,7 @@ class GuesthouseSwingViewIT {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
@@ -370,7 +396,7 @@ class GuesthouseSwingViewIT {
 			bookingRepository.save(booking1);
 			bookingRepository.save(booking2);
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("09-01-2021");
@@ -391,7 +417,7 @@ class GuesthouseSwingViewIT {
 		void testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotValid() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 			// Execute.
@@ -410,7 +436,7 @@ class GuesthouseSwingViewIT {
 		void testSearchBookingsByDatesButtonErrorWhenSecondDateIsNotValid() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 			// Execute.
@@ -429,7 +455,7 @@ class GuesthouseSwingViewIT {
 		void testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotAfterSecondDate() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 
 			// Execute.
