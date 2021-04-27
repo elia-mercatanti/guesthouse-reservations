@@ -137,13 +137,11 @@ class GuesthouseSwingViewIT {
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
-
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
 			window.comboBox("numberOfGuestsComBox").selectItem("1");
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
-
 			window.button("addBookingButton").click();
 			Booking newBooking = bookingRepository.findAll().get(0);
 			String bookingListString = "id=" + getIdSubstring(newBooking.getId()) + ", guestId="
@@ -198,6 +196,23 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText("There is no guest with id " + guestNotPresent.getId()
 					+ ": " + guestNotPresent.getId() + ", testFirstName, testLastName");
+		}
+
+		@Test
+		@DisplayName("Add Booking button error when check in date is not valid - testAddBookingButtonErrorWhenCheckInDateIsNotValid()")
+		void testAddBookingButtonErrorWhenCheckInDateIsNotValid() {
+			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			window.textBox("checkInDateTextBox").enterText("01012021");
+			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
+			window.comboBox("numberOfGuestsComBox").selectItem("1");
+			window.comboBox("roomComBox").selectItem("SINGLE");
+			window.comboBox("guestComBox").selectItem(0);
+			window.button("addBookingButton").click();
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel").requireText(
+					"Booking Check In date is not valid: 01012021. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		}
 
 	}
