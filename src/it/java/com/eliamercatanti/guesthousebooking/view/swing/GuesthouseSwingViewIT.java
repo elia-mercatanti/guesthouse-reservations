@@ -110,7 +110,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Guest button success - testAddGuestButtonSuccess()")
+		@DisplayName("Add guest button success - testAddGuestButtonSuccess()")
 		void testAddGuestButtonSuccess() {
 			window.tabbedPane("tabbedPane").selectTab("Guests");
 			window.textBox("firstNameTextBox").enterText("test");
@@ -124,7 +124,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Delete Guest button success - testDeleteGuestButtonSuccess()")
+		@DisplayName("Delete guest button success - testDeleteGuestButtonSuccess()")
 		void testDeleteGuestButtonSuccess() {
 			window.tabbedPane().selectTab("Guests");
 			GuiActionRunner.execute(
@@ -135,7 +135,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Booking button success - testAddBookingButtonSuccess()")
+		@DisplayName("Add booking button success - testAddBookingButtonSuccess()")
 		void testAddBookingButtonSuccess() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
@@ -158,6 +158,35 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).containsExactly(bookingListString);
 		}
 
+		@Test
+		@DisplayName("Search bookings by dates button success - testsearchBookingsByDatesButtonSuccess()")
+		void testSearchBookingsByDatesButtonSuccess() {
+			// Setup.
+			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			Booking booking1 = new Booking(guest.getId(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Booking booking2 = new Booking(guest.getId(), LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 20), 2,
+					Room.DOUBLE);
+			bookingRepository.save(booking1);
+			bookingRepository.save(booking2);
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+
+			// Execute.
+			window.textBox("checkInDateTextBox").enterText("05-01-2021");
+			window.textBox("checkOutDateTextBox").enterText("15-01-2021");
+			window.button("searchByDatesButton").click();
+
+			// Verify.
+			String booking1ListString = "id=" + getIdSubstring(booking1.getId()) + ", guestId="
+					+ getIdSubstring(booking1.getGuestId())
+					+ ", checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE";
+			String booking2ListString = "id=" + getIdSubstring(booking2.getId()) + ", guestId="
+					+ getIdSubstring(booking2.getGuestId())
+					+ ", checkIn=10/01/2021, checkOut=20/01/2021, numGuests=2, room=DOUBLE";
+			assertThat(window.list().contents()).containsExactly(booking1ListString, booking2ListString);
+		}
+
 	}
 
 	@Nested
@@ -165,7 +194,7 @@ class GuesthouseSwingViewIT {
 	class ExceptionalCases {
 
 		@Test
-		@DisplayName("Add Guest button error when email is not Valid - testAddGuestButtonErrorWhenEmailIsNotValid()")
+		@DisplayName("Add guest button error when email is not Valid - testAddGuestButtonErrorWhenEmailIsNotValid()")
 		void testAddGuestButtonErrorWhenEmailIsNotValid() {
 			window.tabbedPane("tabbedPane").selectTab("Guests");
 			window.textBox("firstNameTextBox").enterText("test");
@@ -179,7 +208,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Guest button error when telephni n. is not Valid - testAddGuestButtonErrorWhenTelNumIsNotValid()")
+		@DisplayName("Add guest button error when telephni n. is not Valid - testAddGuestButtonErrorWhenTelNumIsNotValid()")
 		void testAddGuestButtonErrorWhenTelNumIsNotValid() {
 			window.tabbedPane("tabbedPane").selectTab("Guests");
 			window.textBox("firstNameTextBox").enterText("test");
@@ -193,7 +222,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Delete Guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDB()")
+		@DisplayName("Delete guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDB()")
 		void testDeleteGuestButtonErrorWhenGuestIsNotInTheDB() {
 			// Setup.
 			Guest guestNotPresent = new Guest(new ObjectId().toString(), "testFirstName", "testLastName",
@@ -212,7 +241,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Booking button error when check in date is not valid - testAddBookingButtonErrorWhenCheckInDateIsNotValid()")
+		@DisplayName("Add booking button error when check in date is not valid - testAddBookingButtonErrorWhenCheckInDateIsNotValid()")
 		void testAddBookingButtonErrorWhenCheckInDateIsNotValid() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
@@ -234,7 +263,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Booking button error when check out date is not valid - testAddBookingButtonErrorWhenCheckOutDateIsNotValid()")
+		@DisplayName("Add booking button error when check out date is not valid - testAddBookingButtonErrorWhenCheckOutDateIsNotValid()")
 		void testAddBookingButtonErrorWhenCheckOutDateIsNotValid() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
@@ -256,7 +285,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Booking button error when check out date is not after check out date - testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate()")
+		@DisplayName("Add booking button error when check out date is not after check out date - testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate()")
 		void testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
@@ -277,7 +306,7 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Booking button error when number of guests is greater than room type - testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType()")
+		@DisplayName("Add booking button error when number of guests is greater than room type - testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType()")
 		void testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
@@ -299,14 +328,14 @@ class GuesthouseSwingViewIT {
 		}
 
 		@Test
-		@DisplayName("Add Booking button error when room is already booked on the requested dates - testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates()")
+		@DisplayName("Add booking button error when room is already booked on the requested dates - testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates()")
 		void testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates() {
 			// Setup.
-			Booking booking1 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
-					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
-			Booking booking2 = new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
-					LocalDate.of(2021, 1, 30), 1, Room.SINGLE);
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			Booking booking1 = new Booking(guest.getId(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
+					Room.SINGLE);
+			Booking booking2 = new Booking(guest.getId(), LocalDate.of(2021, 1, 20), LocalDate.of(2021, 1, 30), 1,
+					Room.SINGLE);
 			bookingRepository.save(booking1);
 			bookingRepository.save(booking2);
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
