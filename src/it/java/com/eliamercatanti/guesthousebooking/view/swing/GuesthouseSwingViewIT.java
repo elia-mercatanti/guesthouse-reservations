@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -127,7 +128,7 @@ class GuesthouseSwingViewIT {
 			window.button("addGuestButton").click();
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel")
-					.requireText("Guest Email is not valid: email. Format must be like prefix@domain.");
+					.requireText("Guest Email is not valid: email. Format must be similar to prefix@domain.");
 		}
 
 		@Test
@@ -141,7 +142,21 @@ class GuesthouseSwingViewIT {
 			window.button("addGuestButton").click();
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel")
-					.requireText("Guest Telephone N. is not valid: aaaa. Format must be like +10000000000.");
+					.requireText("Guest Telephone N. is not valid: aaaa. Format must be similar to +10000000000.");
+		}
+
+		@Test
+		@DisplayName("Delete Guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDatabase()")
+		void testDeleteGuestButtonErrorWhenGuestIsNotInTheDatabase() {
+			Guest guestNotPresent = new Guest(new ObjectId().toString(), "testFirstName", "testLastName",
+					"test@email.com", "1111111111");
+			window.tabbedPane().selectTab("Guests");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guestNotPresent));
+			window.list().selectItem(0);
+			window.button("deleteGuestButton").click();
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel").requireText("There is no guest with id " + guestNotPresent.getId()
+					+ ": " + guestNotPresent.getId() + ", testFirstName, testLastName");
 		}
 
 	}
