@@ -141,7 +141,7 @@ class GuesthouseSwingViewIT {
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
-			
+
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
@@ -149,7 +149,7 @@ class GuesthouseSwingViewIT {
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
-			
+
 			// Verify.
 			Booking newBooking = bookingRepository.findAll().get(0);
 			String bookingListString = "id=" + getIdSubstring(newBooking.getId()) + ", guestId="
@@ -200,11 +200,11 @@ class GuesthouseSwingViewIT {
 					"test@email.com", "1111111111");
 			window.tabbedPane().selectTab("Guests");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guestNotPresent));
-			
+
 			// Execute.
 			window.list().selectItem(0);
 			window.button("deleteGuestButton").click();
-			
+
 			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText("There is no guest with id " + guestNotPresent.getId()
@@ -218,7 +218,7 @@ class GuesthouseSwingViewIT {
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
-			
+
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01012021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
@@ -226,7 +226,7 @@ class GuesthouseSwingViewIT {
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
-			
+
 			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText(
@@ -240,7 +240,7 @@ class GuesthouseSwingViewIT {
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
-			
+
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10012021");
@@ -248,7 +248,7 @@ class GuesthouseSwingViewIT {
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
-			
+
 			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText(
@@ -262,7 +262,7 @@ class GuesthouseSwingViewIT {
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
-			
+
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("20-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
@@ -270,7 +270,7 @@ class GuesthouseSwingViewIT {
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
-			
+
 			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText("Check Out date must be after check in date.");
@@ -283,7 +283,7 @@ class GuesthouseSwingViewIT {
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
-			
+
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01-01-2021");
 			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
@@ -291,7 +291,7 @@ class GuesthouseSwingViewIT {
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
-			
+
 			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel")
@@ -319,7 +319,7 @@ class GuesthouseSwingViewIT {
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.comboBox("guestComBox").selectItem(0);
 			window.button("addBookingButton").click();
-			
+
 			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText(

@@ -501,6 +501,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	public void showBookings(List<Booking> bookings) {
 		listBookingsModel.removeAllElements();
 		clearBookingForm();
+		clearErrorLog();
 		bookings.stream().forEach(listBookingsModel::addElement);
 	}
 

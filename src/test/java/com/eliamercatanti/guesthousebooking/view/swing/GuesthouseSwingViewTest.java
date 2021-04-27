@@ -266,11 +266,6 @@ class GuesthouseSwingViewTest {
 		void testGuestAddedShouldAddedGuestToTheListAndComboBoxThenClearErrorLogAndGuestForm() {
 			// Setup.
 			Guest guestToAdd = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-			window.tabbedPane("tabbedPane").selectTab("Guests");
-			window.textBox("firstNameTextBox").setText("testFirstName");
-			window.textBox("lastNameTextBox").setText("testLastName");
-			window.textBox("emailTextBox").setText("test@email.com");
-			window.textBox("telephoneNumberTextBox").setText("0000000000");
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guestToAdd));
@@ -565,8 +560,8 @@ class GuesthouseSwingViewTest {
 	class BookingsTabInterfaceMethodsTests {
 
 		@Test
-		@DisplayName("Show Bookings should clear booking form and list then should fill new bookings to it - testShowBookingsShouldclearBookingFormAndListThenShouldFillNewBookingsToIt()")
-		void testShowBookingsShouldClearBookingFormAndListThenShouldFillNewBookingsToIt() {
+		@DisplayName("Show Bookings should clear booking form, list and then Error Label then should fill new bookings to it - testShowBookingsShouldClearBookingFormListAndErrorLabelThenShouldFillNewBookingsToIt()")
+		void testShowBookingsShouldClearBookingFormListAndErrorLabelThenShouldFillNewBookingsToIt() {
 			// Setup.
 			Booking previusBooking1 = new Booking("3", "1", LocalDate.of(2021, 3, 1), LocalDate.of(2021, 3, 10), 3,
 					Room.TRIPLE);
@@ -585,11 +580,6 @@ class GuesthouseSwingViewTest {
 				comboBoxGuestsModel.addElement(guest);
 			});
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			window.textBox("checkInDateTextBox").setText("01-01-2021");
-			window.textBox("checkOutDateTextBox").setText("10-01-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem(0);
-			window.comboBox("roomComBox").selectItem(0);
-			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.showBookings(Arrays.asList(booking1, booking2)));
@@ -600,6 +590,7 @@ class GuesthouseSwingViewTest {
 			window.comboBox("numberOfGuestsComBox").requireNoSelection();
 			window.comboBox("roomComBox").requireNoSelection();
 			window.comboBox("guestComBox").requireNoSelection();
+			window.label("errorLogMessageLabel").requireText(" ");
 			String[] bookingsListContent = window.list("bookingsList").contents();
 			assertThat(bookingsListContent).containsExactly(
 					"id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE",
@@ -645,11 +636,6 @@ class GuesthouseSwingViewTest {
 				comboBoxGuestsModel.addElement(guest);
 			});
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			window.textBox("checkInDateTextBox").setText("01-01-2021");
-			window.textBox("checkOutDateTextBox").setText("10-01-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem(0);
-			window.comboBox("roomComBox").selectItem(0);
-			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.bookingAdded(bookingToAdd));
