@@ -214,7 +214,7 @@ class GuesthouseSwingViewIT {
 			window.label("errorLogMessageLabel").requireText(
 					"Booking Check In date is not valid: 01012021. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		}
-		
+
 		@Test
 		@DisplayName("Add Booking button error when check out date is not valid - testAddBookingButtonErrorWhenCheckOutDateIsNotValid()")
 		void testAddBookingButtonErrorWhenCheckOutDateIsNotValid() {
@@ -230,6 +230,22 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText(
 					"Booking Check Out date is not valid: 10012021. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
+		}
+
+		@Test
+		@DisplayName("Add Booking button error when check out date is not after check out date - testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate()")
+		void testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate() {
+			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
+			window.textBox("checkInDateTextBox").enterText("20-01-2021");
+			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
+			window.comboBox("numberOfGuestsComBox").selectItem("1");
+			window.comboBox("roomComBox").selectItem("SINGLE");
+			window.comboBox("guestComBox").selectItem(0);
+			window.button("addBookingButton").click();
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel").requireText("Check Out date must be after check in date.");
 		}
 
 	}
