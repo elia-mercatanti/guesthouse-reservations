@@ -101,6 +101,26 @@ class GuesthouseSwingViewIT {
 
 	}
 
+	@Nested
+	@DisplayName("Exceptional Cases")
+	class ExceptionalCases {
+
+		@Test
+		@DisplayName("Add Guest button error when email is not Valid - testAddGuestButtonErrorWhenEmailIsNotValid()")
+		void testAddGuestButtonErrorWhenEmailIsNotValid() {
+			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.textBox("firstNameTextBox").enterText("test");
+			window.textBox("lastNameTextBox").enterText("test");
+			window.textBox("emailTextBox").enterText("email");
+			window.textBox("telephoneNumberTextBox").enterText("0000000000");
+			window.button("addGuestButton").click();
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel")
+					.requireText("Guest Email is not valid: email. Format must be like prefix@domain.");
+		}
+
+	}
+
 	private String getIdSubstring(String id) {
 		return id.substring(id.length() / 2);
 	}
