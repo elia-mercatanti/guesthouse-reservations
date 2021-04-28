@@ -146,7 +146,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
 		window.comboBox("numberOfGuestsComBox").selectItem("1");
 		window.comboBox("roomComBox").selectItem("SINGLE");
-		window.comboBox("guestComBox").selectItem(Pattern.compile(".*testFirstName1.*"));
+		window.comboBox("guestComBox").selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
 		window.button("addBookingButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("10/01/2021", "20/01/2021", "1", "SINGLE"));
@@ -177,7 +177,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void testSearchBookingsByGuestButton() {
 		window.tabbedPane().selectTab("Bookings");
-		window.comboBox("guestComBox").selectItem(0);
+		window.comboBox("guestComBox").selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
 		window.button("searchByGuestButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"));
@@ -205,15 +205,15 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddGuestButtonErrorWhenEmailIsNotValid() {
-		window.tabbedPane("tabbedPane").selectTab("Guests");
+		window.tabbedPane().selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("test");
 		window.textBox("lastNameTextBox").enterText("test");
 		window.textBox("emailTextBox").enterText("email");
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 		window.button("addGuestButton").click();
 		assertThat(window.list().contents()).hasSize(2);
-		window.label("errorLogMessageLabel")
-				.requireText("Guest Email is not valid: email. Format must be similar to prefix@domain.");
+		assertThat(window.label("errorLogMessageLabel").text()).contains("email",
+				"Format must be similar to prefix@domain.");
 	}
 
 	@Test
@@ -225,6 +225,19 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("deleteGuestButton").click();
 		assertThat(window.list().contents()).noneMatch(e -> e.contains("testFirstName1"));
 		assertThat(window.label("errorLogMessageLabel").text()).contains("testFirstName1", "testLastName1");
+	}
+
+	@Test
+	public void testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates() {
+		window.tabbedPane().selectTab("Bookings");
+		window.textBox("checkInDateTextBox").enterText("05-01-2021");
+		window.textBox("checkOutDateTextBox").enterText("25-01-2021");
+		window.comboBox("numberOfGuestsComBox").selectItem("1");
+		window.comboBox("roomComBox").selectItem("SINGLE");
+		window.comboBox("guestComBox").selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
+		window.button("addBookingButton").click();
+		assertThat(window.list().contents()).hasSize(2);
+		assertThat(window.label("errorLogMessageLabel").text()).contains("booked", "SINGLE", "05-01-2021", "25-01-2021");
 	}
 
 }
