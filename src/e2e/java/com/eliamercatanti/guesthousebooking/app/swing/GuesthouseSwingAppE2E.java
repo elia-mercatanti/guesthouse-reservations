@@ -124,6 +124,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testDeleteGuestButtonSuccess() {
 		window.tabbedPane().selectTab("Guests");
 		window.list().selectItem(Pattern.compile(".*testFirstName1.*"));
@@ -132,6 +133,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testAddBookingButtonSuccess() {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("10-01-2021");
@@ -142,6 +144,17 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("addBookingButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("10/01/2021", "20/01/2021", "1", "SINGLE"));
+	}
+
+	@Test
+	@GUITest
+	public void testSearchBookingsByDatesButtonSuccess() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.textBox("checkInDateTextBox").enterText("01-01-2021");
+		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
+		window.button("searchByDatesButton").click();
+		assertThat(window.list().contents())
+				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"));
 	}
 
 }
