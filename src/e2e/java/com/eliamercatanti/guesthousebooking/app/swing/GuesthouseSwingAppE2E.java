@@ -27,6 +27,7 @@ import com.eliamercatanti.guesthousebooking.model.Guest;
 import com.eliamercatanti.guesthousebooking.model.Room;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.model.Filters;
 
 @RunWith(GUITestRunner.class)
 public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
@@ -38,6 +39,8 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	private FrameFixture window;
 	private MongoClient mongoClient;
 	private CodecRegistry pojoCodecRegistry;
+	private String guest1Id;
+	private String guest2Id;
 
 	@Override
 	protected void onSetUp() {
@@ -48,8 +51,8 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 
 		// Reset database, add guests and bookings to the database.
 		mongoClient.getDatabase(DATABASE_NAME).drop();
-		String guest1Id = new ObjectId().toString();
-		String guest2Id = new ObjectId().toString();
+		guest1Id = new ObjectId().toString();
+		guest2Id = new ObjectId().toString();
 		addTestGuestToDatabase(new Guest(guest1Id, "testFirstName1", "testLastName1", "test1@email.com", "1111111111"));
 		addTestGuestToDatabase(new Guest(guest2Id, "testFirstName2", "testLastName2", "test2@email.com", "2222222222"));
 		addTestBookingToDatabase(
@@ -86,6 +89,11 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	private void addTestGuestToDatabase(Guest guest) {
 		mongoClient.getDatabase(DATABASE_NAME).withCodecRegistry(pojoCodecRegistry)
 				.getCollection(GUEST_COLLECTION_NAME, Guest.class).insertOne(guest);
+	}
+
+	private void removeTestGuestFromDatabase(String id) {
+		mongoClient.getDatabase(DATABASE_NAME).getCollection(GUEST_COLLECTION_NAME).withCodecRegistry(pojoCodecRegistry)
+				.deleteOne(Filters.eq("_id", new ObjectId(id)));
 	}
 
 	@Test
@@ -125,7 +133,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void testDeleteGuestButtonSuccess() {
 		window.tabbedPane().selectTab("Guests");
-		window.list().selectItem(Pattern.compile(".*testFirstName1.*"));
+		window.list().selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
 		window.button("deleteGuestButton").click();
 		assertThat(window.list().contents()).noneMatch(e -> e.contains("testFirstName1"));
 	}
@@ -193,8 +201,9 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("deleteBookingButton").click();
 		assertThat(window.list().contents()).noneMatch(e -> e.contains("01/01/2021"));
 	}
-	
+
 	@Test
+	@GUITest
 	public void testAddGuestButtonErrorWhenEmailIsNotValid() {
 		window.tabbedPane("tabbedPane").selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("test");
@@ -205,6 +214,17 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		assertThat(window.list().contents()).hasSize(2);
 		window.label("errorLogMessageLabel")
 				.requireText("Guest Email is not valid: email. Format must be similar to prefix@domain.");
+	}
+
+	@Test
+	@GUITest
+	public void testDeleteGuestButtonErrorWhenGuestIsNotInTheDB() {
+		window.tabbedPane().selectTab("Guests");
+		window.list().selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
+		removeTestGuestFromDatabase(guest1Id);
+		window.button("deleteGuestButton").click();
+		assertThat(window.list().contents()).noneMatch(e -> e.contains("testFirstName1"));
+		assertThat(window.label("errorLogMessageLabel").text()).contains("testFirstName1", "testLastName1");
 	}
 
 }

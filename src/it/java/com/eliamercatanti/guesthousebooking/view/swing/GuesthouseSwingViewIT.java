@@ -133,7 +133,7 @@ class GuesthouseSwingViewIT {
 			window.button("deleteGuestButton").click();
 			assertThat(window.list().contents()).isEmpty();
 		}
-		
+
 		@Test
 		@DisplayName("Add guest button error when email is not Valid - testAddGuestButtonErrorWhenEmailIsNotValid()")
 		void testAddGuestButtonErrorWhenEmailIsNotValid() {
@@ -146,6 +146,25 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel")
 					.requireText("Guest Email is not valid: email. Format must be similar to prefix@domain.");
+		}
+
+		@Test
+		@DisplayName("Delete guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDB()")
+		void testDeleteGuestButtonErrorWhenGuestIsNotInTheDB() {
+			// Setup.
+			Guest guestNotPresent = new Guest(new ObjectId().toString(), "testFirstName", "testLastName",
+					"test@email.com", "1111111111");
+			window.tabbedPane().selectTab("Guests");
+			GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guestNotPresent));
+
+			// Execute.
+			window.list().selectItem(0);
+			window.button("deleteGuestButton").click();
+
+			// Verify.
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel").requireText("There is no guest with id " + guestNotPresent.getId()
+					+ ": " + guestNotPresent.getId() + ", testFirstName, testLastName");
 		}
 
 	}
