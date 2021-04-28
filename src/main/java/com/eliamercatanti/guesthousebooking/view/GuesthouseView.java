@@ -15,14 +15,14 @@ public interface GuesthouseView {
 
 	public void showErrorGuestNotFound(String message, Guest guest);
 
-	void showError(String message);
+	public void showError(String message);
 
 	public void showBookings(List<Booking> bookings);
 
-	void bookingAdded(Booking booking);
+	public void bookingAdded(Booking booking);
 
-	void bookingRemoved(Booking booking);
+	public void bookingRemoved(Booking booking);
 
-	void showErrorBookingNotFound(String message, Booking booking);
+	public void showErrorBookingNotFound(String message, Booking booking);
 
 }

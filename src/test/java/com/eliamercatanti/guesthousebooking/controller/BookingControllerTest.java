@@ -179,7 +179,7 @@ class BookingControllerTest {
 			when(inputValidation.validateDate("10/01/2021")).thenReturn(checkInDate);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(checkOutDate);
 			bookingController.newBooking(guest, "10/01/2021", "01/01/2021", 1, Room.SINGLE);
-			verify(guesthouseView).showError("Check out date must be after check in date.");
+			verify(guesthouseView).showError("Check Out date must be after check in date.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
@@ -192,7 +192,7 @@ class BookingControllerTest {
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
 			when(inputValidation.validateDate("01/01/2021")).thenReturn(sameDate);
 			bookingController.newBooking(guest, "01/01/2021", "01/01/2021", 1, Room.SINGLE);
-			verify(guesthouseView).showError("Check out date must be after check in date.");
+			verify(guesthouseView).showError("Check Out date must be after check in date.");
 			verifyNoInteractions(bookingRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}

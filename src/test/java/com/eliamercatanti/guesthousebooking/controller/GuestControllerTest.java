@@ -91,7 +91,7 @@ class GuestControllerTest {
 			when(inputValidation.validateEmail("emailNotValid")).thenReturn(false);
 			guestController.newGuest("testFirstName", "testLastName", "emailNotValid", "1234567890");
 			verify(guesthouseView)
-					.showError("Guest Email is not valid: emailNotValid. Format must be like prefix@domain.");
+					.showError("Guest Email is not valid: emailNotValid. Format must be similar to prefix@domain.");
 			verifyNoInteractions(guestRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
@@ -103,7 +103,7 @@ class GuestControllerTest {
 			when(inputValidation.validateTelephoneNumber("telephoneNumNotValid")).thenReturn(false);
 			guestController.newGuest("testFirstName", "testLastName", "test@email.com", "telephoneNumNotValid");
 			verify(guesthouseView).showError(
-					"Guest Telephone N. is not valid: telephoneNumNotValid. Format must be like +10000000000.");
+					"Guest Telephone N. is not valid: telephoneNumNotValid. Format must be similar to +10000000000.");
 			verifyNoInteractions(guestRepository);
 			verifyNoMoreInteractions(guesthouseView);
 		}
@@ -114,7 +114,7 @@ class GuestControllerTest {
 			Guest guestNotPresent = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			when(guestRepository.findById(guestNotPresent.getId())).thenReturn(null);
 			guestController.deleteGuest(guestNotPresent);
-			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId() + ".",
+			verify(guesthouseView).showErrorGuestNotFound("There is no guest with id " + guestNotPresent.getId(),
 					guestNotPresent);
 			verifyNoMoreInteractions(guestRepository, guesthouseView);
 		}

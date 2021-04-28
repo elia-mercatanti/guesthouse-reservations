@@ -155,8 +155,8 @@ class GuesthouseSwingViewTest {
 
 			window.textBox("firstNameTextBox").enterText("test");
 			window.textBox("lastNameTextBox").enterText("test");
-			window.textBox("emailTextBox").enterText("test@email.com");
-			window.textBox("telephoneNumberTextBox").enterText("0000000000");
+			window.textBox("emailTextBox").enterText("test");
+			window.textBox("telephoneNumberTextBox").enterText("test");
 			window.button("addGuestButton").requireEnabled();
 		}
 
@@ -173,8 +173,8 @@ class GuesthouseSwingViewTest {
 
 			firstNameTextBox.enterText(" ");
 			lastNameTextBox.enterText("test");
-			emailTextBox.enterText("test@email.com");
-			telephoneNumberTextBox.enterText("0000000000");
+			emailTextBox.enterText("test");
+			telephoneNumberTextBox.enterText("test");
 			addGuestButton.requireDisabled();
 
 			firstNameTextBox.setText("");
@@ -184,8 +184,8 @@ class GuesthouseSwingViewTest {
 
 			firstNameTextBox.enterText("test");
 			lastNameTextBox.enterText(" ");
-			emailTextBox.enterText("test@email.com");
-			telephoneNumberTextBox.enterText("0000000000");
+			emailTextBox.enterText("test");
+			telephoneNumberTextBox.enterText("test");
 			addGuestButton.requireDisabled();
 
 			firstNameTextBox.setText("");
@@ -196,7 +196,7 @@ class GuesthouseSwingViewTest {
 			firstNameTextBox.enterText("test");
 			lastNameTextBox.enterText("test");
 			emailTextBox.enterText(" ");
-			telephoneNumberTextBox.enterText("0000000000");
+			telephoneNumberTextBox.enterText("test");
 			addGuestButton.requireDisabled();
 
 			firstNameTextBox.setText("");
@@ -206,7 +206,7 @@ class GuesthouseSwingViewTest {
 
 			firstNameTextBox.enterText("test");
 			lastNameTextBox.enterText("test");
-			emailTextBox.enterText("test@email.com");
+			emailTextBox.enterText("test");
 			telephoneNumberTextBox.enterText(" ");
 			addGuestButton.requireDisabled();
 		}
@@ -237,8 +237,8 @@ class GuesthouseSwingViewTest {
 	class GuestsTabInterfaceMethodsTests {
 
 		@Test
-		@DisplayName("Show Guests should reset the list and fill guest infos to it - testShowGuestShouldResetTheListAndFillGuestInfosToIt()")
-		void testShowGuestShouldResetTheListAndFillGuestInfosToIt() {
+		@DisplayName("Show Guests should reset the list and combobox then fill guest infos to both - testShowGuestShouldResetTheListAndComboBoxThenFillGuestInfosToBoth()")
+		void testShowGuestShouldResetTheListAndComboBoxThenFillGuestInfosToBoth() {
 			// Setup.
 			Guest previusGuest1 = new Guest("3", "testFirstName3", "testLastName3", "test3@email.com", "2222222222");
 			Guest previusGuest2 = new Guest("4", "testFirstName4", "testLastName4", "test4@email.com", "4444444444");
@@ -249,6 +249,9 @@ class GuesthouseSwingViewTest {
 				DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
 				listGuestsModel.addElement(previusGuest1);
 				listGuestsModel.addElement(previusGuest2);
+				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
+				comboBoxGuestsModel.addElement(previusGuest1);
+				comboBoxGuestsModel.addElement(previusGuest2);
 			});
 
 			// Execute.
@@ -257,8 +260,12 @@ class GuesthouseSwingViewTest {
 			// Verify.
 			String[] guestsListContent = window.list("guestsList").contents();
 			assertThat(guestsListContent).containsExactly(
-					"1, testFirstName1, testLastName1, test1@email.com, 0000000000",
-					"2, testFirstName2, testLastName2, test2@email.com, 1111111111");
+					"id=1, firstName=testFirstName1, lastName=testLastName1, email=test1@email.com, telNum=0000000000",
+					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
+			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			guestsListContent = window.comboBox("guestComBox").contents();
+			assertThat(guestsListContent).containsExactly("1, testFirstName1, testLastName1",
+					"2, testFirstName2, testLastName2");
 		}
 
 		@Test
@@ -266,18 +273,14 @@ class GuesthouseSwingViewTest {
 		void testGuestAddedShouldAddedGuestToTheListAndComboBoxThenClearErrorLogAndGuestForm() {
 			// Setup.
 			Guest guestToAdd = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-			window.tabbedPane("tabbedPane").selectTab("Guests");
-			window.textBox("firstNameTextBox").setText("testFirstName");
-			window.textBox("lastNameTextBox").setText("testLastName");
-			window.textBox("emailTextBox").setText("test@email.com");
-			window.textBox("telephoneNumberTextBox").setText("0000000000");
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guestToAdd));
 
 			// Verify.
 			String[] guestsListContent = window.list("guestsList").contents();
-			assertThat(guestsListContent).containsExactly("1, testFirstName, testLastName, test@email.com, 0000000000");
+			assertThat(guestsListContent).containsExactly(
+					"id=1, firstName=testFirstName, lastName=testLastName, email=test@email.com, telNum=0000000000");
 			window.label("errorLogMessageLabel").requireText(" ");
 			window.textBox("firstNameTextBox").requireEmpty();
 			window.textBox("lastNameTextBox").requireEmpty();
@@ -310,8 +313,8 @@ class GuesthouseSwingViewTest {
 
 			// Verify.
 			String[] guestsListContent = window.list("guestsList").contents();
-			assertThat(guestsListContent)
-					.containsExactly("2, testFirstName2, testLastName2, test2@email.com, 1111111111");
+			assertThat(guestsListContent).containsExactly(
+					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 			String[] guestComBoxContent = window.comboBox("guestComBox").contents();
 			assertThat(guestComBoxContent).containsExactly("2, testFirstName2, testLastName2");
@@ -339,8 +342,8 @@ class GuesthouseSwingViewTest {
 			// Verify.
 			window.label("errorLogMessageLabel").requireText("Error message test: 1, testFirstName1, testLastName1");
 			String[] guestsListContent = window.list("guestsList").contents();
-			assertThat(guestsListContent)
-					.containsExactly("2, testFirstName2, testLastName2, test2@email.com, 1111111111");
+			assertThat(guestsListContent).containsExactly(
+					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
 		}
 
 	}
@@ -402,8 +405,8 @@ class GuesthouseSwingViewTest {
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 
 			// Verify.
-			window.textBox("checkInDateTextBox").enterText("00-00-0000");
-			window.textBox("checkOutDateTextBox").enterText("00-00-0000");
+			window.textBox("checkInDateTextBox").enterText("test");
+			window.textBox("checkOutDateTextBox").enterText("test");
 			window.comboBox("numberOfGuestsComBox").selectItem(0);
 			window.comboBox("roomComBox").selectItem(0);
 			window.comboBox("guestComBox").selectItem(0);
@@ -426,7 +429,7 @@ class GuesthouseSwingViewTest {
 
 			// Verify.
 			checkInDateTextBox.enterText(" ");
-			checkOutDateTextBox.enterText("00-00-0000");
+			checkOutDateTextBox.enterText("test");
 			numberOfGuestComboBox.selectItem(0);
 			roomComBox.selectItem(0);
 			guestComBox.selectItem(0);
@@ -438,7 +441,7 @@ class GuesthouseSwingViewTest {
 			roomComBox.clearSelection();
 			guestComBox.clearSelection();
 
-			checkInDateTextBox.enterText("00-00-0000");
+			checkInDateTextBox.enterText("test");
 			checkOutDateTextBox.enterText(" ");
 			numberOfGuestComboBox.selectItem(0);
 			roomComBox.selectItem(0);
@@ -451,8 +454,8 @@ class GuesthouseSwingViewTest {
 			roomComBox.clearSelection();
 			guestComBox.clearSelection();
 
-			checkInDateTextBox.enterText("00-00-0000");
-			checkOutDateTextBox.enterText("00-00-0000");
+			checkInDateTextBox.enterText("test");
+			checkOutDateTextBox.enterText("test");
 			roomComBox.selectItem(0);
 			guestComBox.selectItem(0);
 			addBookingButton.requireDisabled();
@@ -463,8 +466,8 @@ class GuesthouseSwingViewTest {
 			roomComBox.clearSelection();
 			guestComBox.clearSelection();
 
-			checkInDateTextBox.enterText("00-00-0000");
-			checkOutDateTextBox.enterText("00-00-0000");
+			checkInDateTextBox.enterText("test");
+			checkOutDateTextBox.enterText("test");
 			numberOfGuestComboBox.selectItem(0);
 			guestComBox.selectItem(0);
 			addBookingButton.requireDisabled();
@@ -475,8 +478,8 @@ class GuesthouseSwingViewTest {
 			roomComBox.clearSelection();
 			guestComBox.clearSelection();
 
-			checkInDateTextBox.enterText("00-00-0000");
-			checkOutDateTextBox.enterText("00-00-0000");
+			checkInDateTextBox.enterText("test");
+			checkOutDateTextBox.enterText("test");
 			numberOfGuestComboBox.selectItem(0);
 			roomComBox.selectItem(0);
 			addBookingButton.requireDisabled();
@@ -505,8 +508,8 @@ class GuesthouseSwingViewTest {
 		void testWhenBookingDatesAreNotBlankThenSearchByDatesButtonShouldBeEnabled() {
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
 
-			window.textBox("checkInDateTextBox").enterText("00-00-0000");
-			window.textBox("checkOutDateTextBox").enterText("00-00-0000");
+			window.textBox("checkInDateTextBox").enterText("test");
+			window.textBox("checkOutDateTextBox").enterText("test");
 			window.button("searchByDatesButton").requireEnabled();
 		}
 
@@ -519,7 +522,7 @@ class GuesthouseSwingViewTest {
 			JTextComponentFixture checkOutDateTextBox = window.textBox("checkOutDateTextBox");
 			JButtonFixture searchByDatesButton = window.button("searchByDatesButton");
 
-			checkInDateTextBox.enterText("00-00-0000");
+			checkInDateTextBox.enterText("test");
 			checkOutDateTextBox.enterText(" ");
 			searchByDatesButton.requireDisabled();
 
@@ -527,7 +530,7 @@ class GuesthouseSwingViewTest {
 			checkOutDateTextBox.setText("");
 
 			checkInDateTextBox.enterText(" ");
-			checkOutDateTextBox.enterText("00-00-0000");
+			checkOutDateTextBox.enterText("test");
 			searchByDatesButton.requireDisabled();
 		}
 
@@ -564,8 +567,8 @@ class GuesthouseSwingViewTest {
 	class BookingsTabInterfaceMethodsTests {
 
 		@Test
-		@DisplayName("Show Bookings should clear booking form and list then should fill new bookings to it - testShowBookingsShouldclearBookingFormAndListThenShouldFillNewBookingsToIt()")
-		void testShowBookingsShouldClearBookingFormAndListThenShouldFillNewBookingsToIt() {
+		@DisplayName("Show Bookings should clear booking form, list and then Error Label then should fill new bookings to it - testShowBookingsShouldClearBookingFormListAndErrorLabelThenShouldFillNewBookingsToIt()")
+		void testShowBookingsShouldClearBookingFormListAndErrorLabelThenShouldFillNewBookingsToIt() {
 			// Setup.
 			Booking previusBooking1 = new Booking("3", "1", LocalDate.of(2021, 3, 1), LocalDate.of(2021, 3, 10), 3,
 					Room.TRIPLE);
@@ -584,11 +587,6 @@ class GuesthouseSwingViewTest {
 				comboBoxGuestsModel.addElement(guest);
 			});
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			window.textBox("checkInDateTextBox").setText("01-01-2021");
-			window.textBox("checkOutDateTextBox").setText("01-10-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem(0);
-			window.comboBox("roomComBox").selectItem(0);
-			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.showBookings(Arrays.asList(booking1, booking2)));
@@ -599,6 +597,7 @@ class GuesthouseSwingViewTest {
 			window.comboBox("numberOfGuestsComBox").requireNoSelection();
 			window.comboBox("roomComBox").requireNoSelection();
 			window.comboBox("guestComBox").requireNoSelection();
+			window.label("errorLogMessageLabel").requireText(" ");
 			String[] bookingsListContent = window.list("bookingsList").contents();
 			assertThat(bookingsListContent).containsExactly(
 					"id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE",
@@ -644,11 +643,6 @@ class GuesthouseSwingViewTest {
 				comboBoxGuestsModel.addElement(guest);
 			});
 			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			window.textBox("checkInDateTextBox").setText("01-01-2021");
-			window.textBox("checkOutDateTextBox").setText("01-10-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem(0);
-			window.comboBox("roomComBox").selectItem(0);
-			window.comboBox("guestComBox").selectItem(0);
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.bookingAdded(bookingToAdd));
@@ -696,7 +690,7 @@ class GuesthouseSwingViewTest {
 	@Nested
 	@DisplayName("Bookings Tab Delegations Tests")
 	class BookingsTabDelegationsTests {
-		
+
 		@Test
 		@DisplayName("Add Booking Button should delegate to booking controller newBooking() - testAddBookingButtonShouldDelegateToBookingControllerNewBooking()")
 		void testAddBookingButtonShouldDelegateToBookingControllerNewBooking() {

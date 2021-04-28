@@ -298,10 +298,9 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 		btnAddBooking = new JButton("Add Booking");
 		btnAddBooking.setEnabled(false);
 		btnAddBooking.setName("addBookingButton");
-		btnAddBooking
-				.addActionListener(e -> bookingController.newBooking(((Guest) comBoxGuest.getSelectedItem()),
-						textCheckInDate.getText(), textCheckOutDate.getText(),
-						(int) comBoxNumberOfGuests.getSelectedItem(), (Room) comBoxRoom.getSelectedItem()));
+		btnAddBooking.addActionListener(e -> bookingController.newBooking(((Guest) comBoxGuest.getSelectedItem()),
+				textCheckInDate.getText(), textCheckOutDate.getText(), (int) comBoxNumberOfGuests.getSelectedItem(),
+				(Room) comBoxRoom.getSelectedItem()));
 
 		JButton btnDeleteBooking = new JButton("Delete Booking");
 		btnDeleteBooking.addActionListener(e -> bookingController.deleteBooking(listBookings.getSelectedValue()));
@@ -423,26 +422,32 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	}
 
 	private String getGuestComboBoxDisplayString(Guest guest) {
-		return guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName();
+		return getIdSubstring(guest.getId()) + ", " + guest.getFirstName() + ", " + guest.getLastName();
+	}
+
+	private String getIdSubstring(String id) {
+		return id.substring(id.length() / 2);
 	}
 
 	private String getBookingListDisplayString(Booking booking) {
 		String pattern = "dd/MM/yyyy";
-		return "id=" + booking.getId() + ", guestId=" + booking.getGuestId() + ", checkIn="
-				+ booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
+		return "id=" + getIdSubstring(booking.getId()) + ", guestId=" + getIdSubstring(booking.getGuestId())
+				+ ", checkIn=" + booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
 				+ booking.getCheckOutDate().format(DateTimeFormatter.ofPattern(pattern)) + ", numGuests="
 				+ booking.getNumberOfGuests() + ", room=" + booking.getRoom();
 	}
 
 	private String getGuestListDisplayString(Guest guest) {
-		return guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName() + ", " + guest.getEmail() + ", "
-				+ guest.getTelephoneNumber();
+		return "id=" + getIdSubstring(guest.getId()) + ", firstName=" + guest.getFirstName() + ", lastName="
+				+ guest.getLastName() + ", email=" + guest.getEmail() + ", telNum=" + guest.getTelephoneNumber();
 	}
 
 	@Override
 	public void showGuests(List<Guest> guests) {
 		listGuestsModel.removeAllElements();
+		comboBoxGuestsModel.removeAllElements();
 		guests.stream().forEach(listGuestsModel::addElement);
+		guests.stream().forEach(comboBoxGuestsModel::addElement);
 	}
 
 	@Override
@@ -498,6 +503,7 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	public void showBookings(List<Booking> bookings) {
 		listBookingsModel.removeAllElements();
 		clearBookingForm();
+		clearErrorLog();
 		bookings.stream().forEach(listBookingsModel::addElement);
 	}
 
