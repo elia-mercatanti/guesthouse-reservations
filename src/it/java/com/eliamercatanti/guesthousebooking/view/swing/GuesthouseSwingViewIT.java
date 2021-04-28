@@ -391,6 +391,31 @@ class GuesthouseSwingViewIT {
 					"First date is not valid: 01012021. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		}
 
+		@Test
+		@DisplayName("Delete booking button error when guest is not in the database - testDeleteBookingButtonErrorWhenBookingIsNotInTheDB()")
+		void testDeleteBookingButtonErrorWhenBookingIsNotInTheDB() {
+			// Setup.
+			Guest guest = new Guest(new ObjectId().toString(), "testFirstName", "testLastName", "test@email.com",
+					"1111111111");
+			Booking bookingNotPresent = new Booking(new ObjectId().toString(), guest.getId(), LocalDate.of(2021, 1, 1),
+					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
+			window.tabbedPane().selectTab("Bookings");
+			GuiActionRunner.execute(() -> {
+				guesthouseSwingView.guestAdded(guest);
+				guesthouseSwingView.getListBookingsModel().addElement(bookingNotPresent);
+			});
+
+			// Execute.
+			window.list().selectItem(0);
+			window.button("deleteBookingButton").click();
+
+			// Verify.
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel")
+					.requireText("There is no booking with id " + bookingNotPresent.getId() + ": id="
+							+ getIdSubstring(bookingNotPresent.getId()) + ", checkIn=01/01/2021, checkOut=10/01/2021");
+		}
+
 	}
 
 	private String getIdSubstring(String id) {

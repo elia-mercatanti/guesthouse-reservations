@@ -474,8 +474,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 
 	@Override
 	public void showErrorGuestNotFound(String message, Guest guest) {
-		lblErrorLogMessage
-				.setText(message + ": " + guest.getId() + ", " + guest.getFirstName() + ", " + guest.getLastName());
+		lblErrorLogMessage.setText(message + ": " + getIdSubstring(guest.getId()) + ", " + guest.getFirstName() + ", "
+				+ guest.getLastName());
 		listGuestsModel.removeElement(guest);
 	}
 
@@ -518,8 +518,8 @@ public class GuesthouseSwingView extends JFrame implements GuesthouseView {
 	@Override
 	public void showErrorBookingNotFound(String message, Booking booking) {
 		String pattern = "dd/MM/yyyy";
-		lblErrorLogMessage.setText(message + ": id=" + booking.getId() + ", guestId=" + booking.getGuestId()
-				+ ", checkIn=" + booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
+		lblErrorLogMessage.setText(message + ": id=" + getIdSubstring(booking.getId()) + ", checkIn="
+				+ booking.getCheckInDate().format(DateTimeFormatter.ofPattern(pattern)) + ", checkOut="
 				+ booking.getCheckOutDate().format(DateTimeFormatter.ofPattern(pattern)));
 		listBookingsModel.removeElement(booking);
 	}
