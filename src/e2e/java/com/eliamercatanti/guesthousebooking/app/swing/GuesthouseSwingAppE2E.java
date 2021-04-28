@@ -193,5 +193,18 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("deleteBookingButton").click();
 		assertThat(window.list().contents()).noneMatch(e -> e.contains("01/01/2021"));
 	}
+	
+	@Test
+	public void testAddGuestButtonErrorWhenEmailIsNotValid() {
+		window.tabbedPane("tabbedPane").selectTab("Guests");
+		window.textBox("firstNameTextBox").enterText("test");
+		window.textBox("lastNameTextBox").enterText("test");
+		window.textBox("emailTextBox").enterText("email");
+		window.textBox("telephoneNumberTextBox").enterText("0000000000");
+		window.button("addGuestButton").click();
+		assertThat(window.list().contents()).hasSize(2);
+		window.label("errorLogMessageLabel")
+				.requireText("Guest Email is not valid: email. Format must be similar to prefix@domain.");
+	}
 
 }

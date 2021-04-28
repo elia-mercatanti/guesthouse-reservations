@@ -133,6 +133,20 @@ class GuesthouseSwingViewIT {
 			window.button("deleteGuestButton").click();
 			assertThat(window.list().contents()).isEmpty();
 		}
+		
+		@Test
+		@DisplayName("Add guest button error when email is not Valid - testAddGuestButtonErrorWhenEmailIsNotValid()")
+		void testAddGuestButtonErrorWhenEmailIsNotValid() {
+			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.textBox("firstNameTextBox").enterText("test");
+			window.textBox("lastNameTextBox").enterText("test");
+			window.textBox("emailTextBox").enterText("email");
+			window.textBox("telephoneNumberTextBox").enterText("0000000000");
+			window.button("addGuestButton").click();
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel")
+					.requireText("Guest Email is not valid: email. Format must be similar to prefix@domain.");
+		}
 
 	}
 
