@@ -131,4 +131,17 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		assertThat(window.list().contents()).noneMatch(e -> e.contains("testFirstName1"));
 	}
 
+	@Test
+	public void testAddBookingButtonSuccess() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.textBox("checkInDateTextBox").enterText("10-01-2021");
+		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
+		window.comboBox("numberOfGuestsComBox").selectItem("1");
+		window.comboBox("roomComBox").selectItem("SINGLE");
+		window.comboBox("guestComBox").selectItem(Pattern.compile(".*testFirstName1.*"));
+		window.button("addBookingButton").click();
+		assertThat(window.list().contents())
+				.anySatisfy(e -> assertThat(e).contains("10/01/2021", "20/01/2021", "1", "SINGLE"));
+	}
+
 }
