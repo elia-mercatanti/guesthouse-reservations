@@ -85,8 +85,8 @@ class GuesthouseSwingViewIT {
 	}
 
 	@Nested
-	@DisplayName("Happy Cases")
-	class HappyCases {
+	@DisplayName("Guests Tab Tests")
+	class GuestsTabTests {
 
 		@Test
 		@DisplayName("All guest list request - testShowGuests()")
@@ -133,6 +133,12 @@ class GuesthouseSwingViewIT {
 			window.button("deleteGuestButton").click();
 			assertThat(window.list().contents()).isEmpty();
 		}
+
+	}
+
+	@Nested
+	@DisplayName("Bookings Tab Tests")
+	class BookingsTabTests {
 
 		@Test
 		@DisplayName("Add booking button success - testAddBookingButtonSuccess()")
@@ -292,230 +298,17 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).containsExactly(booking1ListString, booking2ListString);
 		}
 
-	}
-
-	@Nested
-	@DisplayName("Exceptional Cases")
-	class ExceptionalCases {
-
-		private static final String DATE_FORMAT_ERROR_MESSAGE = "Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.";
-
 		@Test
-		@DisplayName("Add guest button error when email is not Valid - testAddGuestButtonErrorWhenEmailIsNotValid()")
-		void testAddGuestButtonErrorWhenEmailIsNotValid() {
-			window.tabbedPane("tabbedPane").selectTab("Guests");
-			window.textBox("firstNameTextBox").enterText("test");
-			window.textBox("lastNameTextBox").enterText("test");
-			window.textBox("emailTextBox").enterText("email");
-			window.textBox("telephoneNumberTextBox").enterText("0000000000");
-			window.button("addGuestButton").click();
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel")
-					.requireText("Guest Email is not valid: email. Format must be similar to prefix@domain.");
-		}
-
-		@Test
-		@DisplayName("Add guest button error when telephni n. is not Valid - testAddGuestButtonErrorWhenTelNumIsNotValid()")
-		void testAddGuestButtonErrorWhenTelNumIsNotValid() {
-			window.tabbedPane("tabbedPane").selectTab("Guests");
-			window.textBox("firstNameTextBox").enterText("test");
-			window.textBox("lastNameTextBox").enterText("test");
-			window.textBox("emailTextBox").setText("test@email.com");
-			window.textBox("telephoneNumberTextBox").enterText("aaaa");
-			window.button("addGuestButton").click();
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel")
-					.requireText("Guest Telephone N. is not valid: aaaa. Format must be similar to +10000000000.");
-		}
-
-		@Test
-		@DisplayName("Delete guest button error when guest is not in the database - testDeleteGuestButtonErrorWhenGuestIsNotInTheDB()")
-		void testDeleteGuestButtonErrorWhenGuestIsNotInTheDB() {
-			// Setup.
-			Guest guestNotPresent = new Guest(new ObjectId().toString(), "testFirstName", "testLastName",
-					"test@email.com", "1111111111");
-			window.tabbedPane().selectTab("Guests");
-			GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guestNotPresent));
-
-			// Execute.
+		@DisplayName("Delete booking button success - testDeleteBookingButtonSuccess()")
+		void testDeleteBookingButtonSuccess() {
+			Guest guest = new Guest(new ObjectId().toString(), "testFirstName", "testLastName", "test@email.com",
+					"0000000000");
+			window.tabbedPane().selectTab("Bookings");
+			GuiActionRunner
+					.execute(() -> bookingController.newBooking(guest, "01/01/2021", "10/01/2021", 1, Room.SINGLE));
 			window.list().selectItem(0);
-			window.button("deleteGuestButton").click();
-
-			// Verify.
+			window.button("deleteBookingButton").click();
 			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel").requireText("There is no guest with id " + guestNotPresent.getId()
-					+ ": " + guestNotPresent.getId() + ", testFirstName, testLastName");
-		}
-
-		@Test
-		@DisplayName("Add booking button error when check in date is not valid - testAddBookingButtonErrorWhenCheckInDateIsNotValid()")
-		void testAddBookingButtonErrorWhenCheckInDateIsNotValid() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("01012021");
-			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem("1");
-			window.comboBox("roomComBox").selectItem("SINGLE");
-			window.comboBox("guestComBox").selectItem(0);
-			window.button("addBookingButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel")
-					.requireText("Booking Check In date is not valid: 01012021. " + DATE_FORMAT_ERROR_MESSAGE);
-		}
-
-		@Test
-		@DisplayName("Add booking button error when check out date is not valid - testAddBookingButtonErrorWhenCheckOutDateIsNotValid()")
-		void testAddBookingButtonErrorWhenCheckOutDateIsNotValid() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("01-01-2021");
-			window.textBox("checkOutDateTextBox").enterText("10012021");
-			window.comboBox("numberOfGuestsComBox").selectItem("1");
-			window.comboBox("roomComBox").selectItem("SINGLE");
-			window.comboBox("guestComBox").selectItem(0);
-			window.button("addBookingButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel")
-					.requireText("Booking Check Out date is not valid: 10012021. " + DATE_FORMAT_ERROR_MESSAGE);
-		}
-
-		@Test
-		@DisplayName("Add booking button error when check out date is not after check out date - testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate()")
-		void testAddBookingButtonErrorWhenCheckOutDateIsNotAfterCheckInDate() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("20-01-2021");
-			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem("1");
-			window.comboBox("roomComBox").selectItem("SINGLE");
-			window.comboBox("guestComBox").selectItem(0);
-			window.button("addBookingButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel").requireText("Check Out date must be after check in date.");
-		}
-
-		@Test
-		@DisplayName("Add booking button error when number of guests is greater than room type - testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType()")
-		void testAddBookingButtonErrorWhenNumberOfGuestsIsGreaterThanRoomType() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("01-01-2021");
-			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem("2");
-			window.comboBox("roomComBox").selectItem("SINGLE");
-			window.comboBox("guestComBox").selectItem(0);
-			window.button("addBookingButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel")
-					.requireText("Number of Guests must be suitable for the type of the room.");
-		}
-
-		@Test
-		@DisplayName("Add booking button error when room is already booked on the requested dates - testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates()")
-		void testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			Booking booking1 = new Booking(guest.getId(), LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
-					Room.SINGLE);
-			Booking booking2 = new Booking(guest.getId(), LocalDate.of(2021, 1, 20), LocalDate.of(2021, 1, 30), 1,
-					Room.SINGLE);
-			bookingRepository.save(booking1);
-			bookingRepository.save(booking2);
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("09-01-2021");
-			window.textBox("checkOutDateTextBox").enterText("21-01-2021");
-			window.comboBox("numberOfGuestsComBox").selectItem("1");
-			window.comboBox("roomComBox").selectItem("SINGLE");
-			window.comboBox("guestComBox").selectItem(0);
-			window.button("addBookingButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel").requireText(
-					"The selected room is already booked on the requested dates: SINGLE on (09-01-2021 - 21-01-2021).");
-		}
-
-		@Test
-		@DisplayName("Search bookings by dates button error when first date is not valid - testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotValid()")
-		void testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotValid() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("01012021");
-			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
-			window.button("searchByDatesButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel")
-					.requireText("First date is not valid: 01012021. " + DATE_FORMAT_ERROR_MESSAGE);
-		}
-
-		@Test
-		@DisplayName("Search bookings by dates button error when second date is not valid - testSearchBookingsByDatesButtonErrorWhenSecondDateIsNotValid()")
-		void testSearchBookingsByDatesButtonErrorWhenSecondDateIsNotValid() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("01-01-2021");
-			window.textBox("checkOutDateTextBox").enterText("10012021");
-			window.button("searchByDatesButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel")
-					.requireText("Second date is not valid: 10012021. " + DATE_FORMAT_ERROR_MESSAGE);
-		}
-
-		@Test
-		@DisplayName("Search bookings by dates button error when first date is not after second date - testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotAfterSecondDate()")
-		void testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotAfterSecondDate() {
-			// Setup.
-			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
-
-			// Execute.
-			window.textBox("checkInDateTextBox").enterText("20-01-2021");
-			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
-			window.button("searchByDatesButton").click();
-
-			// Verify.
-			assertThat(window.list().contents()).isEmpty();
-			window.label("errorLogMessageLabel").requireText("First date must be after second date.");
 		}
 
 	}
