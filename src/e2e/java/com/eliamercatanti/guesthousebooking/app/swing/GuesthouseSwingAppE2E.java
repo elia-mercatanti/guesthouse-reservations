@@ -109,4 +109,17 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 				.anySatisfy(e -> assertThat(e).contains("01/02/2021", "10/02/2021", "2", "DOUBLE"));
 	}
 
+	@Test
+	@GUITest
+	public void testAddGuestButtonSuccess() {
+		window.tabbedPane().selectTab("Guests");
+		window.textBox("firstNameTextBox").enterText("guest");
+		window.textBox("lastNameTextBox").enterText("guest");
+		window.textBox("emailTextBox").setText("guest@email.com");
+		window.textBox("telephoneNumberTextBox").enterText("0000000000");
+		window.button("addGuestButton").click();
+		assertThat(window.list().contents())
+				.anySatisfy(e -> assertThat(e).contains("guest", "guest", "guest@email.com", "0000000000"));
+	}
+
 }
