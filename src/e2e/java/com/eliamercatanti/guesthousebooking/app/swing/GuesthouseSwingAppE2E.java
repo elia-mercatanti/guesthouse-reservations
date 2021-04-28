@@ -5,6 +5,8 @@ import static org.assertj.swing.launcher.ApplicationLauncher.application;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+import java.time.LocalDate;
+
 import javax.swing.JFrame;
 
 import org.assertj.swing.annotation.GUITest;
@@ -19,7 +21,9 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.eliamercatanti.guesthousebooking.model.Booking;
 import com.eliamercatanti.guesthousebooking.model.Guest;
+import com.eliamercatanti.guesthousebooking.model.Room;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 
@@ -49,6 +53,11 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		addTestGuestToDatabase(new Guest(new ObjectId().toString(), "testFirstName2", "testLastName2",
 				"test2@email.com", "2222222222"));
 
+		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
+				LocalDate.of(2021, 1, 10), 1, Room.SINGLE));
+		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
+				LocalDate.of(2021, 2, 10), 2, Room.DOUBLE));
+
 		// Start the Swing application.
 		application("com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingApp")
 				.withArgs("--mongo-host=" + MONGO_CLIENT_HOST, "--mongo-port=" + mongoPort,
@@ -63,6 +72,11 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 				return "Guesthouse Reservations".equals(frame.getTitle()) && frame.isShowing();
 			}
 		}).using(robot());
+	}
+
+	private void addTestBookingToDatabase(Booking booking) {
+		mongoClient.getDatabase(DATABASE_NAME).withCodecRegistry(pojoCodecRegistry)
+				.getCollection(BOOKING_COLLECTION_NAME, Booking.class).insertOne(booking);
 	}
 
 	@Override
@@ -84,6 +98,15 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 						e -> assertThat(e).contains("testFirstName1", "testLastName1", "test1@email.com", "1111111111"))
 				.anySatisfy(e -> assertThat(e).contains("testFirstName2", "testLastName2", "test2@email.com",
 						"2222222222"));
+	}
+
+	@Test
+	@GUITest
+	public void testOnStartAllBookingsAreShown() {
+		window.tabbedPane().selectTab("Bookings");
+		assertThat(window.list().contents())
+				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"))
+				.anySatisfy(e -> assertThat(e).contains("01/02/2021", "10/02/2021", "2", "DOUBLE"));
 	}
 
 }
