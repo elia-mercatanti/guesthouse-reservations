@@ -36,6 +36,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	private static final String DATABASE_NAME = "guesthouse";
 	private static final String GUEST_COLLECTION_NAME = "guest";
 	private static final String BOOKING_COLLECTION_NAME = "booking";
+	private static final int INITIAL_NUM_OF_BOOKINGS = 2;
 	private FrameFixture window;
 	private MongoClient mongoClient;
 	private CodecRegistry pojoCodecRegistry;
@@ -211,7 +212,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.textBox("emailTextBox").enterText("email");
 		window.textBox("telephoneNumberTextBox").enterText("0000000000");
 		window.button("addGuestButton").click();
-		assertThat(window.list().contents()).hasSize(2);
+		assertThat(window.list().contents()).hasSize(INITIAL_NUM_OF_BOOKINGS);
 		assertThat(window.label("errorLogMessageLabel").text()).contains("email",
 				"Format must be similar to prefix@domain.");
 	}
@@ -228,6 +229,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates() {
 		window.tabbedPane().selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("05-01-2021");
@@ -236,8 +238,21 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.comboBox("roomComBox").selectItem("SINGLE");
 		window.comboBox("guestComBox").selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
 		window.button("addBookingButton").click();
-		assertThat(window.list().contents()).hasSize(2);
-		assertThat(window.label("errorLogMessageLabel").text()).contains("booked", "SINGLE", "05-01-2021", "25-01-2021");
+		assertThat(window.list().contents()).hasSize(INITIAL_NUM_OF_BOOKINGS);
+		assertThat(window.label("errorLogMessageLabel").text()).contains("already booked", "SINGLE", "05-01-2021",
+				"25-01-2021");
+	}
+
+	@Test
+	@GUITest
+	public void testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotValid() {
+		window.tabbedPane().selectTab("Bookings");
+		window.textBox("checkInDateTextBox").enterText("01012021");
+		window.textBox("checkOutDateTextBox").enterText("10-01-2021");
+		window.button("searchByDatesButton").click();
+		assertThat(window.list().contents()).hasSize(INITIAL_NUM_OF_BOOKINGS);
+		assertThat(window.label("errorLogMessageLabel").text()).contains("First date", "01012021",
+				"Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 	}
 
 }

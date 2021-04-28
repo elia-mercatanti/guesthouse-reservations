@@ -343,7 +343,7 @@ class GuesthouseSwingViewIT {
 			window.button("deleteBookingButton").click();
 			assertThat(window.list().contents()).isEmpty();
 		}
-		
+
 		@Test
 		@DisplayName("Add booking button error when room is already booked on the requested dates - testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates()")
 		void testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates() {
@@ -370,6 +370,25 @@ class GuesthouseSwingViewIT {
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText(
 					"The selected room is already booked on the requested dates: SINGLE on (09-01-2021 - 21-01-2021).");
+		}
+
+		@Test
+		@DisplayName("Search bookings by dates button error when first date is not valid - testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotValid()")
+		void testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotValid() {
+			// Setup.
+			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
+			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
+			window.tabbedPane().selectTab("Bookings");
+
+			// Execute.
+			window.textBox("checkInDateTextBox").enterText("01012021");
+			window.textBox("checkOutDateTextBox").enterText("10-01-2021");
+			window.button("searchByDatesButton").click();
+
+			// Verify.
+			assertThat(window.list().contents()).isEmpty();
+			window.label("errorLogMessageLabel").requireText(
+					"First date is not valid: 01012021. Format must be like dd(/.-)mm(/.-)yyyy or yyyy(/.-)mm(/.-)dd.");
 		}
 
 	}
