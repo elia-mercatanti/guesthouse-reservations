@@ -74,12 +74,16 @@ dependencies {
     implementation 'org.mongodb:mongodb-driver-legacy:' + mongoDBJavaDriverVersion
     
     // Use Logback Classic Module to see Mongo Java Driver logs.
-    testImplementation 'ch.qos.logback:logback-classic:' + logbackClassicVersion
+    implementation 'ch.qos.logback:logback-classic:' + logbackClassicVersion
+    
+    // Use Picocli for java command line parser.
+    implementation 'info.picocli:picocli:' + picocliVersion 
 }
 
-// Add a new source set, dependency configurations and tasks to the build for integration tests.
+// Add a new source set, dependency configurations and tasks to the build for IT an E2E tests.
 testSets {
 	integrationTest { dirName = 'it' }
+	endToEndTest { dirName = 'e2e' }
 }
 
 // Tasks for managing the creation, start and stop of the MongoDB container.
@@ -128,6 +132,9 @@ task getContainerPortBindings(type: DockerInspectContainer) {
             tasks.integrationTest {
             	systemProperty 'mongo.port', hostPort
             }
+            tasks.endToEndTest {
+            	systemProperty 'mongo.port', hostPort
+            }
         }
     }
 }
@@ -137,12 +144,20 @@ task stopContainer(type: DockerStopContainer) {
     targetContainerId(createContainer.containerId)
 }
 
-// Ensure that integration tests are run before the check task but after unit test.
+// Ensure that integration tests are run before the check task but after unit test and E2E test after IT.
 check.dependsOn integrationTest
+check.dependsOn endToEndTest
 integrationTest.mustRunAfter test
+endToEndTest.mustRunAfter integrationTest
 
 // Ensure that integration tests are run after getting container port bindings and are ended with a container stop.
 integrationTest {
+    dependsOn getContainerPortBindings
+    finalizedBy stopContainer
+}
+
+// Ensure that E2E tests are run after getting container port bindings and are ended with a container stop.
+endToEndTest {
     dependsOn getContainerPortBindings
     finalizedBy stopContainer
 }
@@ -197,10 +212,12 @@ sonarqube {
 	    property 'sonar.issue.ignore.multicriteria.e12.ruleKey', 'java:S2699'
 	    property 'sonar.issue.ignore.multicriteria.e12.resourceKey', '**/GuesthouseSwingViewTest.java'
 	    
-	    // Properties for specifying the directories of junit reports for unit and integration tests.
-	    property 'sonar.junit.reportPaths', ['build/test-results/test', 'build/test-results/integrationTest']
+	    // Properties for specifying the directories of junit reports for unit, integration and e2e tests.
+	    property 'sonar.junit.reportPaths', ['build/test-results/test', 'build/test-results/integrationTest', 'build/test-results/endToEndTest']
 	    properties['sonar.tests'] += 'src/it/java'
+	    properties['sonar.tests'] += 'src/e2e/java'
 	    properties['sonar.java.test.binaries'] += 'build/classes/java/integrationTest'
+	    properties['sonar.java.test.binaries'] += 'build/classes/java/endToEndTest'
 	}
 }
 

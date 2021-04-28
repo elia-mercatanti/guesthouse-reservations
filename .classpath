@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <classpath>
 	<classpathentry kind="src" output="bin/main" path="src/main/java">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test,integrationTest"/>
+			<attribute name="gradle_used_by_scope" value="main,test,endToEndTest,integrationTest"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" output="bin/main" path="src/main/resources">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test,integrationTest"/>
+			<attribute name="gradle_used_by_scope" value="main,test,endToEndTest,integrationTest"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" output="bin/test" path="src/test/java">
@@ -30,6 +31,13 @@
 		<attributes>
 			<attribute name="gradle_scope" value="integrationTest"/>
 			<attribute name="gradle_used_by_scope" value="integrationTest"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="bin/endToEndTest" path="src/e2e/java">
+		<attributes>
+			<attribute name="gradle_scope" value="endToEndTest"/>
+			<attribute name="gradle_used_by_scope" value="endToEndTest"/>
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
