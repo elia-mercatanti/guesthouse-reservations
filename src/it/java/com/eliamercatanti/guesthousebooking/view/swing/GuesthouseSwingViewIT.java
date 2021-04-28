@@ -164,7 +164,7 @@ class GuesthouseSwingViewIT {
 			// Verify.
 			assertThat(window.list().contents()).isEmpty();
 			window.label("errorLogMessageLabel").requireText("There is no guest with id " + guestNotPresent.getId()
-					+ ": " + guestNotPresent.getId() + ", testFirstName, testLastName");
+					+ ": " + getIdSubstring(guestNotPresent.getId()) + ", testFirstName, testLastName");
 		}
 
 	}
