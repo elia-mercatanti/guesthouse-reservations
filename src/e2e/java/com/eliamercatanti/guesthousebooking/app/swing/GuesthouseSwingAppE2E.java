@@ -185,4 +185,13 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 				.anySatisfy(e -> assertThat(e).contains("20/01/2021", "30/01/2021", "2", "DOUBLE"));
 	}
 
+	@Test
+	@GUITest
+	public void testDeleteBookingButtonSuccess() {
+		window.tabbedPane().selectTab("Bookings");
+		window.list().selectItem(Pattern.compile(".*01/01/2021.*10/01/2021.*"));
+		window.button("deleteBookingButton").click();
+		assertThat(window.list().contents()).noneMatch(e -> e.contains("01/01/2021"));
+	}
+
 }
