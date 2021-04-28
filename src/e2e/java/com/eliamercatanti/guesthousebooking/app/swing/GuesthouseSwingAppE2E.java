@@ -48,16 +48,14 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 
 		// Reset database, add guests and bookings to the database.
 		mongoClient.getDatabase(DATABASE_NAME).drop();
-
-		addTestGuestToDatabase(new Guest(new ObjectId().toString(), "testFirstName1", "testLastName1",
-				"test1@email.com", "1111111111"));
-		addTestGuestToDatabase(new Guest(new ObjectId().toString(), "testFirstName2", "testLastName2",
-				"test2@email.com", "2222222222"));
-
-		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
-				LocalDate.of(2021, 1, 10), 1, Room.SINGLE));
-		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
-				LocalDate.of(2021, 1, 30), 2, Room.DOUBLE));
+		String guest1Id = new ObjectId().toString();
+		String guest2Id = new ObjectId().toString();
+		addTestGuestToDatabase(new Guest(guest1Id, "testFirstName1", "testLastName1", "test1@email.com", "1111111111"));
+		addTestGuestToDatabase(new Guest(guest2Id, "testFirstName2", "testLastName2", "test2@email.com", "2222222222"));
+		addTestBookingToDatabase(
+				new Booking(guest1Id, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1, Room.SINGLE));
+		addTestBookingToDatabase(
+				new Booking(guest2Id, LocalDate.of(2021, 1, 20), LocalDate.of(2021, 1, 30), 2, Room.DOUBLE));
 
 		// Start the Swing application.
 		application("com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingApp")
@@ -163,6 +161,16 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.tabbedPane("tabbedPane").selectTab("Bookings");
 		window.comboBox("roomComBox").selectItem("SINGLE");
 		window.button("searchByRoomButton").click();
+		assertThat(window.list().contents())
+				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"));
+	}
+
+	@Test
+	@GUITest
+	public void testSearchBookingsByGuestIdButton() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.comboBox("guestComBox").selectItem(0);
+		window.button("searchByGuestButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"));
 	}
