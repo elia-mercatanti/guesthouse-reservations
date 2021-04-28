@@ -133,7 +133,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddBookingButtonSuccess() {
-		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.tabbedPane().selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("10-01-2021");
 		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
 		window.comboBox("numberOfGuestsComBox").selectItem("1");
@@ -147,7 +147,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testSearchBookingsByDatesButtonSuccess() {
-		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.tabbedPane().selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("01-01-2021");
 		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
 		window.button("searchByDatesButton").click();
@@ -158,7 +158,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testSearchBookingsByRoomButton() {
-		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.tabbedPane().selectTab("Bookings");
 		window.comboBox("roomComBox").selectItem("SINGLE");
 		window.button("searchByRoomButton").click();
 		assertThat(window.list().contents())
@@ -167,12 +167,22 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void testSearchBookingsByGuestIdButton() {
-		window.tabbedPane("tabbedPane").selectTab("Bookings");
+	public void testSearchBookingsByGuestButton() {
+		window.tabbedPane().selectTab("Bookings");
 		window.comboBox("guestComBox").selectItem(0);
 		window.button("searchByGuestButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"));
+	}
+
+	@Test
+	@GUITest
+	public void testShowAllBookingsButton() {
+		window.tabbedPane().selectTab("Bookings");
+		window.button("allBookingsButton").click();
+		assertThat(window.list().contents())
+				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"))
+				.anySatisfy(e -> assertThat(e).contains("20/01/2021", "30/01/2021", "2", "DOUBLE"));
 	}
 
 }

@@ -224,7 +224,7 @@ class GuesthouseSwingViewIT {
 
 		@Test
 		@DisplayName("Search bookings by room button success - testSearchBookingsByGuestIdButton()")
-		void testSearchBookingsByGuestIdButton() {
+		void testSearchBookingsByGuestButton() {
 			// Setup.
 			String guestId = new ObjectId().toString();
 			Guest guest = new Guest(guestId, "testFirstName", "testLastName", "test@email.com", "0000000000");
