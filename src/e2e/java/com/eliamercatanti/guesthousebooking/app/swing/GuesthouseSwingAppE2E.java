@@ -57,7 +57,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
 				LocalDate.of(2021, 1, 10), 1, Room.SINGLE));
 		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
-				LocalDate.of(2021, 1, 30), 1, Room.SINGLE));
+				LocalDate.of(2021, 1, 30), 2, Room.DOUBLE));
 
 		// Start the Swing application.
 		application("com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingApp")
@@ -107,7 +107,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.tabbedPane().selectTab("Bookings");
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"))
-				.anySatisfy(e -> assertThat(e).contains("20/01/2021", "30/01/2021", "1", "SINGLE"));
+				.anySatisfy(e -> assertThat(e).contains("20/01/2021", "30/01/2021", "2", "DOUBLE"));
 	}
 
 	@Test
@@ -153,6 +153,16 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.textBox("checkInDateTextBox").enterText("01-01-2021");
 		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
 		window.button("searchByDatesButton").click();
+		assertThat(window.list().contents())
+				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"));
+	}
+
+	@Test
+	@GUITest
+	public void testSearchBookingsByRoomButton() {
+		window.tabbedPane("tabbedPane").selectTab("Bookings");
+		window.comboBox("roomComBox").selectItem("SINGLE");
+		window.button("searchByRoomButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"));
 	}
