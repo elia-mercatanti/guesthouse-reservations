@@ -6,6 +6,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 
@@ -55,8 +56,8 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 
 		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 1),
 				LocalDate.of(2021, 1, 10), 1, Room.SINGLE));
-		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 2, 1),
-				LocalDate.of(2021, 2, 10), 2, Room.DOUBLE));
+		addTestBookingToDatabase(new Booking(new ObjectId().toString(), LocalDate.of(2021, 1, 20),
+				LocalDate.of(2021, 1, 30), 1, Room.SINGLE));
 
 		// Start the Swing application.
 		application("com.eliamercatanti.guesthousebooking.app.swing.GuesthouseSwingApp")
@@ -106,7 +107,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.tabbedPane().selectTab("Bookings");
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"))
-				.anySatisfy(e -> assertThat(e).contains("01/02/2021", "10/02/2021", "2", "DOUBLE"));
+				.anySatisfy(e -> assertThat(e).contains("20/01/2021", "30/01/2021", "1", "SINGLE"));
 	}
 
 	@Test
@@ -120,6 +121,14 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		window.button("addGuestButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("guest", "guest", "guest@email.com", "0000000000"));
+	}
+
+	@Test
+	public void testDeleteGuestButtonSuccess() {
+		window.tabbedPane().selectTab("Guests");
+		window.list().selectItem(Pattern.compile(".*testFirstName1.*"));
+		window.button("deleteGuestButton").click();
+		assertThat(window.list().contents()).noneMatch(e -> e.contains("testFirstName1"));
 	}
 
 }
