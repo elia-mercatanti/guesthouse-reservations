@@ -61,6 +61,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
+    // Use JUnit 4 for some GUI tests.
+    testCompileOnly 'junit:junit:' + junit4Version
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
+    
     // Use Mockito with JUnit 5 for mocking during tests.
     testImplementation 'org.mockito:mockito-junit-jupiter:' + mockitoVersion
     
@@ -211,6 +215,9 @@ sonarqube {
 	    property 'sonar.issue.ignore.multicriteria', 'e12'
 	    property 'sonar.issue.ignore.multicriteria.e12.ruleKey', 'java:S2699'
 	    property 'sonar.issue.ignore.multicriteria.e12.resourceKey', '**/GuesthouseSwingViewTest.java'
+	    property 'sonar.issue.ignore.multicriteria', 'e13'
+	    property 'sonar.issue.ignore.multicriteria.e13.ruleKey', 'java:S3577'
+	    property 'sonar.issue.ignore.multicriteria.e13.resourceKey', '**/GuesthouseSwingAppE2E.java'
 	    
 	    // Properties for specifying the directories of junit reports for unit, integration and e2e tests.
 	    property 'sonar.junit.reportPaths', ['build/test-results/test', 'build/test-results/integrationTest', 'build/test-results/endToEndTest']
