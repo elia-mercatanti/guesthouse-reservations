@@ -60,7 +60,7 @@ public class BookingMongoRepository implements BookingRepository {
 		Bson filterQuery = Filters.and(Filters.eq("room", room.name()), Filters.or(
 				Filters.and(Filters.gt(CHECK_IN_FIELD_NAME, firstDate), Filters.lt(CHECK_IN_FIELD_NAME, secondDate)),
 				Filters.and(Filters.lt(CHECK_OUT_FIELD_NAME, secondDate), Filters.gt(CHECK_OUT_FIELD_NAME, firstDate)),
-				Filters.and(Filters.lt(CHECK_IN_FIELD_NAME, firstDate), Filters.gt(CHECK_OUT_FIELD_NAME, secondDate))));
+				Filters.and(Filters.lte(CHECK_IN_FIELD_NAME, firstDate), Filters.gte(CHECK_OUT_FIELD_NAME, secondDate))));
 
 		return bookingCollection.find(filterQuery).first() == null;
 	}
