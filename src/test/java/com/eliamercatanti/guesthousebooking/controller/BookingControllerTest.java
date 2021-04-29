@@ -233,7 +233,7 @@ class BookingControllerTest {
 			when(bookingRepository.findById(bookingNotPresent.getId())).thenReturn(null);
 			bookingController.deleteBooking(bookingNotPresent);
 			verify(guesthouseView).showErrorBookingNotFound(
-					"There is no booking with id " + bookingNotPresent.getId() + ".", bookingNotPresent);
+					"There is no booking with id " + bookingNotPresent.getId(), bookingNotPresent);
 			verifyNoMoreInteractions(bookingRepository, guesthouseView);
 		}
 

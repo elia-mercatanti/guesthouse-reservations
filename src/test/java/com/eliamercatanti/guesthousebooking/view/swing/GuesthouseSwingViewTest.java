@@ -625,7 +625,7 @@ class GuesthouseSwingViewTest {
 
 			// Verify.
 			window.label("errorLogMessageLabel")
-					.requireText("Error message test: id=1, guestId=1, checkIn=01/01/2021, checkOut=10/01/2021");
+					.requireText("Error message test: id=1, checkIn=01/01/2021, checkOut=10/01/2021");
 			String[] bookingsListContent = window.list("bookingsList").contents();
 			assertThat(bookingsListContent).containsExactly(
 					"id=2, guestId=1, checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE");
