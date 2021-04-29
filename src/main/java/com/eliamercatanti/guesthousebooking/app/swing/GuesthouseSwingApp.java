@@ -2,6 +2,8 @@ package com.eliamercatanti.guesthousebooking.app.swing;
 
 import java.awt.EventQueue;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.eliamercatanti.guesthousebooking.controller.BookingController;
 import com.eliamercatanti.guesthousebooking.controller.GuestController;
@@ -56,7 +58,7 @@ public class GuesthouseSwingApp implements Callable<Void> {
 				guestController.allGuests();
 				bookingController.allBookings();
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(getClass().getName()).log(Level.SEVERE, "An exception was thrown!", e);
 			}
 		});
 		return null;
