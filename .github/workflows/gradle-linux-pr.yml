@@ -1,18 +1,11 @@
-# This workflow will build a Java project with Gradle in Linux
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle in Windows
+name: Java CI with Gradle in Linux On Pull Request
 
 on:
-   push:
    pull_request:
    
 jobs:
    build:
-      runs-on: windows-2019
-      env:
-         DOCKER_HOST: tcp://localhost:2375
-      
+      runs-on: ubuntu-20.04
       steps:
       -  uses: actions/checkout@v2
          with:
@@ -32,18 +25,13 @@ jobs:
             key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/*.yml') }}
             restore-keys: |
                $(( runner.os ))-gradle-
-      -  name: Docker Configuration
-         run: |
-            sc config docker binpath="dockerd.exe --run-service -H tcp://localhost:2375"
-      -  name: Docker Restart
-         run: restart-service *docker*
       -  name: Grant Execute Permission for Gradlew
          run: chmod +x gradlew
       -  name: Build with Gradle
          env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         run: ./gradlew build jacocoTestReport coverallsJacoco pitest sonarqube -i
+         run: xvfb-run ./gradlew build -i
       -  name: Archive Unit Tests Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}
@@ -62,15 +50,9 @@ jobs:
          with:
             name: integration-tests-report
             path: '**/build/reports/tests/endToEndTest'
-      -  name: Archive PIT Report
-         uses: actions/upload-artifact@v2
-         if: ${{ failure() }}
-         with:
-            name: pit-report
-            path: '**/build/reports/pitest'
       -  name: Archive Jar and Fatjar
          uses: actions/upload-artifact@v2
          with:
             name: guesthouse-reservations-packages
             path: '**/build/libs'
-            
+         

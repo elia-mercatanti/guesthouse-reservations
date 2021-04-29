@@ -61,7 +61,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitJupiterApiVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitJupiterEngineVersion
     
-    // Use JUnit 4 for some GUI tests.
+    // Use JUnit 4 for E2E GUI tests.
     testCompileOnly 'junit:junit:' + junit4Version
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:' + junitVintageEngineVersion
     
@@ -81,7 +81,7 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:' + logbackClassicVersion
     
     // Use Picocli for java command line parser.
-    implementation 'info.picocli:picocli:' + picocliVersion 
+    implementation 'info.picocli:picocli:' + picocliVersion
 }
 
 // Add a new source set, dependency configurations and tasks to the build for IT an E2E tests.
