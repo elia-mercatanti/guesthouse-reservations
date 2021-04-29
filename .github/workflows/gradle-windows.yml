@@ -56,6 +56,12 @@ jobs:
          with:
             name: integration-tests-report
             path: '**/build/reports/tests/integrationTest'
+      -  name: Archive End to End Tests Report
+         uses: actions/upload-artifact@v2
+         if: ${{ failure() }}
+         with:
+            name: integration-tests-report
+            path: '**/build/reports/tests/endToEndTest'
       -  name: Archive PIT Report
          uses: actions/upload-artifact@v2
          if: ${{ failure() }}
