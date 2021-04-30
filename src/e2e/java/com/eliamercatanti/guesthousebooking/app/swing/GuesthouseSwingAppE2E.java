@@ -88,7 +88,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 		mongoClient.getDatabase(DATABASE_NAME).withCodecRegistry(pojoCodecRegistry)
 				.getCollection(GUEST_COLLECTION_NAME, Guest.class).insertOne(guest);
 	}
-	
+
 	private void addTestBookingToDatabase(Booking booking) {
 		mongoClient.getDatabase(DATABASE_NAME).withCodecRegistry(pojoCodecRegistry)
 				.getCollection(BOOKING_COLLECTION_NAME, Booking.class).insertOne(booking);
@@ -107,7 +107,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testOnStartAllGuestsAreShown() {
-		window.tabbedPane().selectTab("Guests");
+		window.tabbedPane().focus().selectTab("Guests");
 		assertThat(window.list().contents())
 				.anySatisfy(
 						e -> assertThat(e).contains("testFirstName1", "testLastName1", "test1@email.com", "1111111111"))
@@ -118,7 +118,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testOnStartAllBookingsAreShown() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"))
 				.anySatisfy(e -> assertThat(e).contains("20/01/2021", "30/01/2021", "2", "DOUBLE"));
@@ -127,7 +127,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddGuestButtonSuccess() {
-		window.tabbedPane().selectTab("Guests");
+		window.tabbedPane().focus().selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("guest");
 		window.textBox("lastNameTextBox").enterText("guest");
 		window.textBox("emailTextBox").setText("guest@email.com");
@@ -140,7 +140,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testDeleteGuestButtonSuccess() {
-		window.tabbedPane().selectTab("Guests");
+		window.tabbedPane().focus().selectTab("Guests");
 		window.list().selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
 		window.button("deleteGuestButton").click();
 		assertThat(window.list().contents()).noneMatch(e -> e.contains("testFirstName1"));
@@ -149,7 +149,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddBookingButtonSuccess() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("10-01-2021");
 		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
 		window.comboBox("numberOfGuestsComBox").selectItem("1");
@@ -163,7 +163,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testSearchBookingsByDatesButtonSuccess() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("01-01-2021");
 		window.textBox("checkOutDateTextBox").enterText("20-01-2021");
 		window.button("searchByDatesButton").click();
@@ -174,7 +174,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testSearchBookingsByRoomButton() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.comboBox("roomComBox").selectItem("SINGLE");
 		window.button("searchByRoomButton").click();
 		assertThat(window.list().contents())
@@ -184,7 +184,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testSearchBookingsByGuestButton() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.comboBox("guestComBox").selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
 		window.button("searchByGuestButton").click();
 		assertThat(window.list().contents())
@@ -194,7 +194,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testShowAllBookingsButton() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.button("allBookingsButton").click();
 		assertThat(window.list().contents())
 				.anySatisfy(e -> assertThat(e).contains("01/01/2021", "10/01/2021", "1", "SINGLE"))
@@ -204,7 +204,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testDeleteBookingButtonSuccess() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.list().selectItem(Pattern.compile(".*01/01/2021.*10/01/2021.*"));
 		window.button("deleteBookingButton").click();
 		assertThat(window.list().contents()).noneMatch(e -> e.contains("01/01/2021"));
@@ -213,7 +213,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddGuestButtonErrorWhenEmailIsNotValid() {
-		window.tabbedPane().selectTab("Guests");
+		window.tabbedPane().focus().selectTab("Guests");
 		window.textBox("firstNameTextBox").enterText("test");
 		window.textBox("lastNameTextBox").enterText("test");
 		window.textBox("emailTextBox").enterText("email");
@@ -227,7 +227,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testDeleteGuestButtonErrorWhenGuestIsNotInTheDB() {
-		window.tabbedPane().selectTab("Guests");
+		window.tabbedPane().focus().selectTab("Guests");
 		window.list().selectItem(Pattern.compile(".*testFirstName1.*testLastName1.*"));
 		removeTestGuestFromDatabase(GUEST_FIXTURE_1_ID);
 		window.button("deleteGuestButton").click();
@@ -238,7 +238,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddBookingButtonErrorWhenRoomIsAlreadyBookedOnTheRequestedDates() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("05-01-2021");
 		window.textBox("checkOutDateTextBox").enterText("25-01-2021");
 		window.comboBox("numberOfGuestsComBox").selectItem("1");
@@ -253,7 +253,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testSearchBookingsByDatesButtonErrorWhenFirstDateIsNotValid() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.textBox("checkInDateTextBox").enterText("01012021");
 		window.textBox("checkOutDateTextBox").enterText("10-01-2021");
 		window.button("searchByDatesButton").click();
@@ -265,7 +265,7 @@ public class GuesthouseSwingAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testDeleteBookingButtonErrorWhenBookingIsNotInTheDB() {
-		window.tabbedPane().selectTab("Bookings");
+		window.tabbedPane().focus().selectTab("Bookings");
 		window.list().selectItem(Pattern.compile(".*01/01/2021.*10/01/2021.*"));
 		removeTestBookingFromDatabase(BOOKING_FIXTURE_1_ID);
 		window.button("deleteBookingButton").click();

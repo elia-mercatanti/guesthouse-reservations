@@ -88,7 +88,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Error Log initial state - testErrorLogInitialState()")
 		void testInitialStateOfGuestsTab() {
-			window.tabbedPane("tabbedPane").selectTab("Guests").requireVisible().requireEnabled();
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests").requireVisible().requireEnabled();
 			window.label("firstNameLabel").requireVisible().requireEnabled().requireText("First Name");
 			window.textBox("firstNameTextBox").requireVisible().requireEnabled().requireEmpty();
 			window.label("lastNameLabel").requireVisible().requireEnabled().requireText("Last Name");
@@ -105,7 +105,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Bookings Tab initial state - testInitialStatesOfBookingsTab()")
 		void testInitialStatesOfBookingsTab() {
-			window.tabbedPane("tabbedPane").selectTab("Bookings").requireVisible().requireEnabled();
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings").requireVisible().requireEnabled();
 			window.label("checkInDateLabel").requireVisible().requireEnabled().requireText("Check In");
 			window.textBox("checkInDateTextBox").requireVisible().requireEnabled().requireEmpty();
 			window.label("checkOutDateLabel").requireVisible().requireEnabled().requireText("Check Out");
@@ -151,7 +151,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Add Guest Button should be enabled when guest infos are not empty - testWhenGuestInfosAreNotEmptyThenAddGuestButtonShouldBeEnabled()")
 		void testWhenGuestInfosAreNotEmptyThenAddGuestButtonShouldBeEnabled() {
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 
 			window.textBox("firstNameTextBox").enterText("test");
 			window.textBox("lastNameTextBox").enterText("test");
@@ -163,7 +163,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Add Guest Button should be disabled when guest infos are blank - testWhenSomeGuestInfosAreBlankThenAddGuestButtonShouldBeDisabled()")
 		void testWhenSomeGuestInfosAreBlankThenAddGuestButtonShouldBeDisabled() {
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 
 			JTextComponentFixture firstNameTextBox = window.textBox("firstNameTextBox");
 			JTextComponentFixture lastNameTextBox = window.textBox("lastNameTextBox");
@@ -216,7 +216,7 @@ class GuesthouseSwingViewTest {
 		void testDeleteGuestButtonShouldBeEnabledOnlyWhenAGuestIsSelected() {
 			// Setup.
 			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guest));
@@ -244,7 +244,7 @@ class GuesthouseSwingViewTest {
 			Guest previusGuest2 = new Guest("4", "testFirstName4", "testLastName4", "test4@email.com", "4444444444");
 			Guest guest1 = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 			Guest guest2 = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
 				listGuestsModel.addElement(previusGuest1);
@@ -262,7 +262,7 @@ class GuesthouseSwingViewTest {
 			assertThat(guestsListContent).containsExactly(
 					"id=1, firstName=testFirstName1, lastName=testLastName1, email=test1@email.com, telNum=0000000000",
 					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			guestsListContent = window.comboBox("guestComBox").contents();
 			assertThat(guestsListContent).containsExactly("1, testFirstName1, testLastName1",
 					"2, testFirstName2, testLastName2");
@@ -286,7 +286,7 @@ class GuesthouseSwingViewTest {
 			window.textBox("lastNameTextBox").requireEmpty();
 			window.textBox("emailTextBox").requireEmpty();
 			window.textBox("telephoneNumberTextBox").requireEmpty();
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			String[] guestComBoxContent = window.comboBox("guestComBox").contents();
 			assertThat(guestComBoxContent).containsExactly("1, testFirstName, testLastName");
 		}
@@ -297,7 +297,7 @@ class GuesthouseSwingViewTest {
 			// Setup.
 			Guest guestToRemove = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 			Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
 				listGuestsModel.addElement(guestToRemove);
@@ -315,7 +315,7 @@ class GuesthouseSwingViewTest {
 			String[] guestsListContent = window.list("guestsList").contents();
 			assertThat(guestsListContent).containsExactly(
 					"id=2, firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			String[] guestComBoxContent = window.comboBox("guestComBox").contents();
 			assertThat(guestComBoxContent).containsExactly("2, testFirstName2, testLastName2");
 			window.label("errorLogMessageLabel").requireText(" ");
@@ -328,7 +328,7 @@ class GuesthouseSwingViewTest {
 			Guest guestNoLongerPresent = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com",
 					"0000000000");
 			Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
 				listGuestsModel.addElement(guestNoLongerPresent);
@@ -356,7 +356,7 @@ class GuesthouseSwingViewTest {
 		@DisplayName("Add Guest Button should delegate to guest controller newGuest() - testAddGuestButtonShouldDelegateToGuestControllerNewGuest()")
 		void testAddGuestButtonShouldDelegateToGuestControllerNewGuest() {
 			// Setup.
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 			window.textBox("firstNameTextBox").enterText("test");
 			window.textBox("lastNameTextBox").enterText("test");
 			window.textBox("emailTextBox").setText("test@email.com");
@@ -375,7 +375,7 @@ class GuesthouseSwingViewTest {
 			// Setup.
 			Guest guestToDelete = new Guest("1", "testFirstName1", "testLastName1", "test1@email.com", "0000000000");
 			Guest anotherGuest = new Guest("2", "testFirstName2", "testLastName2", "test2@email.com", "1111111111");
-			window.tabbedPane("tabbedPane").selectTab("Guests");
+			window.tabbedPane("tabbedPane").focus().selectTab("Guests");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Guest> listGuestsModel = guesthouseSwingView.getListGuestsModel();
 				listGuestsModel.addElement(guestToDelete);
@@ -401,7 +401,7 @@ class GuesthouseSwingViewTest {
 		void testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled() {
 			// Setup.
 			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 
 			// Verify.
@@ -417,7 +417,7 @@ class GuesthouseSwingViewTest {
 		@DisplayName("Add Booking Button should be disabled when some booking infos are not set - testWhenBookingInfosAreSetThenAddBookingButtonShouldBeEnabled()")
 		void testWhenSomeBookingInfosAreNotSetThenAddBookingButtonShouldBeDisabled() {
 			// Setup.
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 			JTextComponentFixture checkInDateTextBox = window.textBox("checkInDateTextBox");
@@ -491,7 +491,7 @@ class GuesthouseSwingViewTest {
 			// Setup.
 			Booking booking = new Booking("1", "1", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10), 1,
 					Room.SINGLE);
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getListBookingsModel().addElement(booking));
 			JListFixture bookingsList = window.list("bookingsList");
 			JButtonFixture deleteBookingButton = window.button("deleteBookingButton");
@@ -506,7 +506,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Search By Dates Button should be enabled when booking dates are not blank - testWhenBookingDatesAreNotBlankThenSearchByDatesButtonShouldBeEnabled()")
 		void testWhenBookingDatesAreNotBlankThenSearchByDatesButtonShouldBeEnabled() {
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			window.textBox("checkInDateTextBox").enterText("test");
 			window.textBox("checkOutDateTextBox").enterText("test");
@@ -516,7 +516,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Search By Dates Button should be disabled when either check in or check out are blank - testWhenEitherCheckInOrCheckOutAreBlankThenSearchByDatesButtonShouldBeDisabled()")
 		void testWhenEitherCheckInOrCheckOutAreBlankThenSearchByDatesButtonShouldBeDisabled() {
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			JTextComponentFixture checkInDateTextBox = window.textBox("checkInDateTextBox");
 			JTextComponentFixture checkOutDateTextBox = window.textBox("checkOutDateTextBox");
@@ -537,7 +537,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Search By Room Button should be enabled only when a room is selected - testSearchByRoomButtonShouldBeEnabledOnlyWhenARoomIsSelected()")
 		void testSearchByRoomButtonShouldBeEnabledOnlyWhenARoomIsSelected() {
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			window.comboBox("roomComBox").selectItem(0);
 			window.button("searchByRoomButton").requireEnabled();
@@ -550,7 +550,7 @@ class GuesthouseSwingViewTest {
 		void testSearchByGuestButtonShouldBeEnabledOnlyWhenAGuestIsSelected() {
 			// Setup.
 			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getComboBoxGuestsModel().addElement(guest));
 
 			// Verify.
@@ -586,7 +586,7 @@ class GuesthouseSwingViewTest {
 				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
 				comboBoxGuestsModel.addElement(guest);
 			});
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.showBookings(Arrays.asList(booking1, booking2)));
@@ -612,7 +612,7 @@ class GuesthouseSwingViewTest {
 					1, Room.SINGLE);
 			Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
 					Room.DOUBLE);
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Booking> listBookingsModel = guesthouseSwingView.getListBookingsModel();
 				listBookingsModel.addElement(bookingNoLongerPresent);
@@ -642,7 +642,7 @@ class GuesthouseSwingViewTest {
 				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
 				comboBoxGuestsModel.addElement(guest);
 			});
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			// Execute.
 			GuiActionRunner.execute(() -> guesthouseSwingView.bookingAdded(bookingToAdd));
@@ -667,7 +667,7 @@ class GuesthouseSwingViewTest {
 					Room.SINGLE);
 			Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
 					Room.DOUBLE);
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Booking> listBookingsModel = guesthouseSwingView.getListBookingsModel();
 				listBookingsModel.addElement(bookingToRemove);
@@ -695,7 +695,7 @@ class GuesthouseSwingViewTest {
 		@DisplayName("Add Booking Button should delegate to booking controller newBooking() - testAddBookingButtonShouldDelegateToBookingControllerNewBooking()")
 		void testAddBookingButtonShouldDelegateToBookingControllerNewBooking() {
 			// Setup.
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			GuiActionRunner.execute(() -> {
 				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
@@ -717,7 +717,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Search By Dats Button should delegate to booking controller searchBookingsByDates() - testSearchByDatesButtonShouldDelegateToBookingControllerSearchBookingsByDates()")
 		void testSearchByDatesButtonShouldDelegateToBookingControllerSearchBookingsByDates() {
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			window.textBox("checkInDateTextBox").enterText("1-1-2021");
 			window.textBox("checkOutDateTextBox").enterText("1-10-2021");
@@ -728,7 +728,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("Search By Room Button should delegate to booking controller searchBookingsByRoom() - testSearchByRoomButtonShouldDelegateToBookingControllerSearchBookingsByRoom()")
 		void testSearchByRoomButtonShouldDelegateToBookingControllerSearchBookingsByRoom() {
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			window.comboBox("roomComBox").selectItem("SINGLE");
 			window.button("searchByRoomButton").click();
@@ -739,7 +739,7 @@ class GuesthouseSwingViewTest {
 		@DisplayName("Search By Guest Button should delegate to booking controller searchBookingsByGuest() - testSearchByGuestButtonShouldDelegateToBookingControllerSearchBookingsByGuest()")
 		void testSearchByGuestButtonShouldDelegateToBookingControllerSearchBookingsByGuest() {
 			// Setup.
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			Guest guest = new Guest("1", "testFirstName", "testLastName", "test@email.com", "0000000000");
 			GuiActionRunner.execute(() -> {
 				DefaultComboBoxModel<Guest> comboBoxGuestsModel = guesthouseSwingView.getComboBoxGuestsModel();
@@ -762,7 +762,7 @@ class GuesthouseSwingViewTest {
 					Room.SINGLE);
 			Booking anotherBooking = new Booking("2", "1", LocalDate.of(2021, 2, 1), LocalDate.of(2021, 2, 10), 2,
 					Room.DOUBLE);
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> {
 				DefaultListModel<Booking> listBookingsModel = guesthouseSwingView.getListBookingsModel();
 				listBookingsModel.addElement(bookingToDelete);
@@ -780,7 +780,7 @@ class GuesthouseSwingViewTest {
 		@Test
 		@DisplayName("All Bookings Button should delegate to booking controller allBookings() - testAllBookingsButtonShouldDelegateToBookingControllerAllBookings()")
 		void testAllBookingsButtonShouldDelegateToBookingControllerAllBookings() {
-			window.tabbedPane("tabbedPane").selectTab("Bookings");
+			window.tabbedPane("tabbedPane").focus().selectTab("Bookings");
 
 			window.button("allBookingsButton").click();
 			verify(bookingController).allBookings();
