@@ -100,7 +100,7 @@ class GuesthouseSwingViewIT {
 					+ ", firstName=testFirstName1, lastName=testLastName1, email=test1@email.com, telNum=1111111111";
 			String guest2ListString = "id=" + getIdSubstring(guest2.getId())
 					+ ", firstName=testFirstName2, lastName=testLastName2, email=test2@email.com, telNum=2222222222";
-			window.tabbedPane().selectTab("Guests");
+			window.tabbedPane().focus().selectTab("Guests");
 
 			// Execute.
 			GuiActionRunner.execute(() -> guestController.allGuests());
@@ -112,7 +112,7 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Add guest button success - testAddGuestButtonSuccess()")
 		void testAddGuestButtonSuccess() {
-			window.tabbedPane().selectTab("Guests");
+			window.tabbedPane().focus().selectTab("Guests");
 			window.textBox("firstNameTextBox").enterText("test");
 			window.textBox("lastNameTextBox").enterText("test");
 			window.textBox("emailTextBox").setText("test@email.com");
@@ -126,7 +126,7 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Delete guest button success - testDeleteGuestButtonSuccess()")
 		void testDeleteGuestButtonSuccess() {
-			window.tabbedPane().selectTab("Guests");
+			window.tabbedPane().focus().selectTab("Guests");
 			GuiActionRunner.execute(
 					() -> guestController.newGuest("testFirstName", "testLastName", "test@email.com", "1234567890"));
 			window.list().selectItem(0);
@@ -137,7 +137,7 @@ class GuesthouseSwingViewIT {
 		@Test
 		@DisplayName("Add guest button error when email is not Valid - testAddGuestButtonErrorWhenEmailIsNotValid()")
 		void testAddGuestButtonErrorWhenEmailIsNotValid() {
-			window.tabbedPane().selectTab("Guests");
+			window.tabbedPane().focus().selectTab("Guests");
 			window.textBox("firstNameTextBox").enterText("test");
 			window.textBox("lastNameTextBox").enterText("test");
 			window.textBox("emailTextBox").enterText("email");
@@ -154,7 +154,7 @@ class GuesthouseSwingViewIT {
 			// Setup.
 			Guest guestNotPresent = new Guest(new ObjectId().toString(), "testFirstName", "testLastName",
 					"test@email.com", "1111111111");
-			window.tabbedPane().selectTab("Guests");
+			window.tabbedPane().focus().selectTab("Guests");
 			GuiActionRunner.execute(() -> guesthouseSwingView.getListGuestsModel().addElement(guestNotPresent));
 
 			// Execute.
@@ -178,7 +178,7 @@ class GuesthouseSwingViewIT {
 		void testAddBookingButtonSuccess() {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
@@ -209,7 +209,7 @@ class GuesthouseSwingViewIT {
 					Room.DOUBLE);
 			bookingRepository.save(booking1);
 			bookingRepository.save(booking2);
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("05-01-2021");
@@ -245,7 +245,7 @@ class GuesthouseSwingViewIT {
 			String booking3ListString = "id=" + getIdSubstring(booking3.getId()) + ", guestId="
 					+ getIdSubstring(booking3.getGuestId())
 					+ ", checkIn=01/02/2021, checkOut=10/02/2021, numGuests=1, room=SINGLE";
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 
 			// Execute.
 			window.comboBox("roomComBox").selectItem("SINGLE");
@@ -271,7 +271,7 @@ class GuesthouseSwingViewIT {
 			String booking1ListString = "id=" + getIdSubstring(booking1.getId()) + ", guestId="
 					+ getIdSubstring(booking1.getGuestId())
 					+ ", checkIn=01/01/2021, checkOut=10/01/2021, numGuests=1, room=SINGLE";
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 
 			// Execute.
 			window.comboBox("guestComBox").selectItem(0);
@@ -297,7 +297,7 @@ class GuesthouseSwingViewIT {
 			String booking2ListString = "id=" + getIdSubstring(booking2.getId()) + ", guestId="
 					+ getIdSubstring(booking2.getGuestId())
 					+ ", checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE";
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 
 			// Execute.
 			window.button("allBookingsButton").click();
@@ -322,7 +322,7 @@ class GuesthouseSwingViewIT {
 			String booking2ListString = "id=" + getIdSubstring(booking2.getId()) + ", guestId="
 					+ getIdSubstring(booking2.getGuestId())
 					+ ", checkIn=01/02/2021, checkOut=10/02/2021, numGuests=2, room=DOUBLE";
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 
 			// Execute.
 			GuiActionRunner.execute(() -> bookingController.allBookings());
@@ -336,7 +336,7 @@ class GuesthouseSwingViewIT {
 		void testDeleteBookingButtonSuccess() {
 			Guest guest = new Guest(new ObjectId().toString(), "testFirstName", "testLastName", "test@email.com",
 					"0000000000");
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 			GuiActionRunner
 					.execute(() -> bookingController.newBooking(guest, "01/01/2021", "10/01/2021", 1, Room.SINGLE));
 			window.list().selectItem(0);
@@ -355,7 +355,7 @@ class GuesthouseSwingViewIT {
 					Room.SINGLE);
 			bookingRepository.save(booking1);
 			bookingRepository.save(booking2);
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
 
 			// Execute.
@@ -378,7 +378,7 @@ class GuesthouseSwingViewIT {
 			// Setup.
 			Guest guest = new Guest(new ObjectId().toString(), "test", "test", "test@email.com", "1111111111");
 			GuiActionRunner.execute(() -> guesthouseSwingView.guestAdded(guest));
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 
 			// Execute.
 			window.textBox("checkInDateTextBox").enterText("01012021");
@@ -399,7 +399,7 @@ class GuesthouseSwingViewIT {
 					"1111111111");
 			Booking bookingNotPresent = new Booking(new ObjectId().toString(), guest.getId(), LocalDate.of(2021, 1, 1),
 					LocalDate.of(2021, 1, 10), 1, Room.SINGLE);
-			window.tabbedPane().selectTab("Bookings");
+			window.tabbedPane().focus().selectTab("Bookings");
 			GuiActionRunner.execute(() -> {
 				guesthouseSwingView.guestAdded(guest);
 				guesthouseSwingView.getListBookingsModel().addElement(bookingNotPresent);
