@@ -10,5 +10,26 @@ Project for Advanced Techniques and Tools for Software Development (ATTSD) Cours
 
 Simple app to manage reservations of a guesthouse.
 
+## How to Build the Project
+
+1. Clone the Repository.
+```sh
+git clone https://github.com/elia-mercatanti/guesthouse-reservations
+```
+
+2. Set Project Main Directory.
+```sh
+cd guesthouse-reservations
+```
+
+3. Build the Project - Compile code, Unit, Integration and End To End tests and Fatjar
+```sh
+./gradlew build
+```
+or With Also JaCoCo and Pitest Report
+```sh
+./gradlew build jacocoTestReport pitest
+```
+
 # Author
 - Elia Mercatanti

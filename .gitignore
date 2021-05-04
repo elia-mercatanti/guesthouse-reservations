@@ -6,3 +6,11 @@ build
 
 # Ignore Eclipse binary files
 bin
+
+# Ignore Latex files for the report
+report/report.aux
+report/report.log
+report/report.synctex.gz
+report/report.tex
+report/report.out
+report/report.toc

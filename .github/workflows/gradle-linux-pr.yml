@@ -52,6 +52,7 @@ jobs:
             path: '**/build/reports/tests/endToEndTest'
       -  name: Archive Jar and Fatjar
          uses: actions/upload-artifact@v2
+         if: ${{ success() }}
          with:
             name: guesthouse-reservations-packages
             path: '**/build/libs'
