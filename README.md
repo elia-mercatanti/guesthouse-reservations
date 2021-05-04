@@ -10,6 +10,8 @@ Project for Advanced Techniques and Tools for Software Development (ATTSD) Cours
 
 Simple app to manage reservations of a guesthouse.
 
+More details can be found in the report of the project: [Report](https://github.com/elia-mercatanti/guesthouse-reservations/blob/main/report/report.pdf).
+
 ## How to Build the Project
 
 1. Clone the Repository.
@@ -33,3 +35,6 @@ or With Also JaCoCo and Pitest Report
 
 # Author
 - Elia Mercatanti
+
+## License
+Licensed under the term of [MIT License](https://github.com/elia-mercatanti/guesthouse-reservations/blob/main/LICENSE).
