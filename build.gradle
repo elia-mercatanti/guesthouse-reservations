@@ -148,7 +148,7 @@ task stopContainer(type: DockerStopContainer) {
     targetContainerId(createContainer.containerId)
 }
 
-// Ensure that integration tests are run before the check task but after unit test and E2E test after IT.
+// Ensure that IT and E2E tests are run with check task but ITs after unit test and E2E test after IT.
 check.dependsOn integrationTest
 check.dependsOn endToEndTest
 integrationTest.mustRunAfter test
