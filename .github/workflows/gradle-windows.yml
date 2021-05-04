@@ -70,6 +70,7 @@ jobs:
             path: '**/build/reports/pitest'
       -  name: Archive Jar and Fatjar
          uses: actions/upload-artifact@v2
+         if: ${{ success() }}
          with:
             name: guesthouse-reservations-packages
             path: '**/build/libs'
